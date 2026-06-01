@@ -83,6 +83,24 @@
   .price-card li::before{content:"✓";color:var(--emerald);font-weight:700}
   .pop{position:absolute;top:-11px;right:22px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
     padding:4px 11px;border-radius:100px;background:linear-gradient(135deg,var(--emerald),var(--cyan));color:#04130e;font-weight:700}
+  /* testimonials */
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+  @media(max-width:920px){.testi-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.testi-grid{grid-template-columns:1fr}}
+  .testi{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel);
+    backdrop-filter:blur(10px);aspect-ratio:16/9;cursor:pointer;transition:border-color .4s,transform .4s var(--ease)}
+  .testi:hover{border-color:var(--line2);transform:translateY(-3px)}
+  .testi .poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+    background:radial-gradient(ellipse at 50% 35%,rgba(22,224,168,.14),transparent 60%),linear-gradient(160deg,#0b1a18,#06121a)}
+  .testi .play{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--emerald),var(--cyan));color:#04130e;font-size:22px;padding-left:4px;
+    box-shadow:0 0 30px rgba(22,224,168,.4);transition:transform .3s}
+  .testi:hover .play{transform:scale(1.08)}
+  .testi .cap{position:absolute;bottom:10px;left:12px;right:12px;font-family:var(--mono);font-size:11px;color:var(--mut);
+    display:flex;justify-content:space-between;align-items:center}
+  .testi .cap .badge{color:var(--emerald2)}
+  .testi .stars{color:var(--gold);font-size:12px;letter-spacing:1px}
+  .testi iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
 </style></head><body>
 <canvas id="bg-canvas" data-mode="globe"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
 
@@ -312,6 +330,17 @@
     <p class="center" style="margin-top:28px"><a class="btn" href="./blog/index.html" data-i18n="blog_all_cta">Lihat semua artikel →</a></p>
   </div></section>
 
+  <!-- ============ 8b · TESTIMONIALS ============ -->
+  <section class="block" id="testimoni"><div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow" data-i18n="ts_eyebrow">Apa kata mereka</div>
+      <h2 class="h2" data-i18n-html="ts_h2">Dipercaya trader &amp; investor <span class="g-text">nyata</span></h2>
+      <p class="lead center" style="margin-top:16px" data-i18n="ts_lead">Bukan klaim kosong — dengar langsung pengalaman pengguna profitoath. Tap untuk memutar.</p>
+    </div>
+    <div class="testi-grid reveal" id="testiGrid"></div>
+    <p class="center" style="margin-top:26px;color:var(--dim);font-size:13px" data-i18n="ts_note">🎬 Video dimuat saat diputar agar halaman tetap ringan.</p>
+  </div></section>
+
   <!-- ============ 9 · CTA BAND ============ -->
   <section class="block"><div class="wrap">
     <div class="cta-band reveal">
@@ -342,6 +371,11 @@
 <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
 <script src="./assets/site.js"></script>
 <script>window.PO_I18N_PAGE = {
+  ts_eyebrow:{id:"Apa kata mereka", en:"What they say"},
+  ts_h2:{id:"Dipercaya trader &amp; investor <span class=\"g-text\">nyata</span>", en:"Trusted by <span class=\"g-text\">real</span> traders &amp; investors"},
+  ts_lead:{id:"Bukan klaim kosong — dengar langsung pengalaman pengguna profitoath. Tap untuk memutar.", en:"Not empty claims — hear real profitoath users for yourself. Tap to play."},
+  ts_note:{id:"🎬 Video dimuat saat diputar agar halaman tetap ringan.", en:"🎬 Videos load on play to keep the page fast."},
+  ts_badge:{id:"Pengguna profitoath", en:"profitoath user"},
   hero_pill:{id:"<span class=\"dot\"></span>Data realtime · 43 negara · 69.221 instrumen", en:"<span class=\"dot\"></span>Realtime data · 43 countries · 69,221 instruments"},
   hero_h1:{id:"Riset saham kelas <span class=\"g-text\">institusi</span>, langsung dari <span class=\"g-text\">Telegram</span> Anda.", en:"<span class=\"g-text\">Institutional</span>-grade stock research, straight from your <span class=\"g-text\">Telegram</span>."},
   hero_lead:{id:"profitoath menyatukan analisa teknikal, forecast AI, backtest IDX-realistis, dan optimasi portofolio kuantitatif dalam satu bot. Tanpa terminal mahal, tanpa spreadsheet rumit, cukup ketik tickernya.", en:"profitoath brings together technical analysis, AI forecasting, IDX-realistic backtesting, and quantitative portfolio optimization in one bot. No expensive terminal, no complex spreadsheets, just type the ticker."},
@@ -451,4 +485,60 @@
   hp_blog3_h3:{id:"Optimasi Portofolio Markowitz", en:"Markowitz Portfolio Optimization"},
   hp_blog3_p:{id:"Dari frontier efisien sampai keterbatasan Mean-Variance, lalu kapan Risk Parity dan HRP menjadi pilihan yang lebih kokoh untuk portofolio nyata.", en:"From the efficient frontier to the limits of Mean-Variance, and when Risk Parity and HRP become the more robust choice for real portfolios."}
 };</script>
-<script src="./assets/i18n.js"></script></body></html>
+<script src="./assets/i18n.js"></script>
+<script>
+/* ===== Testimonials: lazy-load Google Drive videos, language-aware ===== */
+(function(){
+  var TESTI=[
+    {n:1,en:"1RNYtJ8jaK0PflFzqXnzNM0ZyxrhzsccI",id:"1arya8C1ev9LSMvGqzkMqwJxOM3BEkAgK"},
+    {n:2,en:"1a8VjflZ0Ye9H7Y7I5_wTDTGr8hWxzWXb",id:"1n013BJdDzC6qEhAw68Voa4wiqLKEw_k3"},
+    {n:3,en:"1QoEFovzWZ4w5fU9TCssGOPHaBMm2wOzi",id:"1NCx9tdCK1GC6kCZghoJP_J0vMLaEptzm"},
+    {n:4,en:"1sINsZjHc4ZxgqH43CbjbHmgwSg1Y2Ow7",id:"1PAKx_V5thY2i4KFbuxG5XJVSbJWnM1Ob"},
+    {n:5,en:"1Eqo6p8WYir4f2KoHdNTcs-bc9f4CPBdE",id:"1ZgWi8Q6pQiRP-xCneEcxfz42Kqavjxgt"},
+    {n:6,en:"1ZvuCNrzonkk2XQVyd9iCdRhdVGH_2tC6",id:"1vGWcc6nLKQ0y39N5967j799vKpHIKdoR"},
+    {n:7,en:"1WcxZhL25cYqu8QPW0nfKMd8ucNvhdSYI",id:"1_BcU59EBponz94odOBKFF9Ja-ZTKLw5B"},
+    {n:8,en:"1BneOTT_sIjkJGQjPK3O0r9YvH95jKgro",id:"1n7wtf_eOiUZQO8P4kuW88k_Ms7F54AfZ"},
+    {n:9,en:"1HhToPbAg0bkHv20lLw0wu1I3BtihqP9D",id:"1RdrlfBPc1AhrY4VvNhx6b6yYaUo6Td5S"},
+    {n:10,en:"1Ks0Ltxze-9E9_JEOq2si3AQGLB6k7_Tv",id:"1xIYgpZcTM5_vNlGyicShfxj0EBYiQTZt"},
+    {n:11,en:"1R1myRdtjNyttDS3lcj6cnruvHyfs3VvJ",id:"10hmyhT3QL1I5Xrsed6IghqbTlYSphxYp"},
+    {n:12,en:"1mmunXHfwCA1Ur3Kiip2c_2mxhoI6zNSy",id:"1Emqtx3ynmmbyPLdcXXQDpWmSzlkTTZ5J"}
+  ];
+  var grid=document.getElementById('testiGrid');
+  if(!grid) return;
+  function lang(){ try{ var l=localStorage.getItem('po_lang'); return (l==='en'||l==='id')?l:'id'; }catch(e){ return 'id'; } }
+  function badge(){ return (window.PO_I18N && PO_I18N.t && PO_I18N.t('ts_badge')) || (lang()==='en'?'profitoath user':'Pengguna profitoath'); }
+  TESTI.forEach(function(t){
+    var card=document.createElement('div');
+    card.className='testi';
+    card.setAttribute('role','button'); card.setAttribute('tabindex','0');
+    card.setAttribute('aria-label','Play testimonial '+t.n);
+    card.innerHTML='<div class="poster"><div class="play">▶</div>'+
+      '<div class="cap"><span class="badge">'+badge()+' #'+t.n+'</span><span class="stars">★★★★★</span></div></div>';
+    function play(){
+      if(card.dataset.loaded) return;
+      card.dataset.loaded='1';
+      var fid = lang()==='en' ? t.en : t.id;
+      var ifr=document.createElement('iframe');
+      ifr.src='https://drive.google.com/file/d/'+fid+'/preview';
+      ifr.allow='autoplay; encrypted-media';
+      ifr.setAttribute('allowfullscreen','');
+      ifr.loading='lazy';
+      card.innerHTML=''; card.appendChild(ifr);
+    }
+    card.addEventListener('click',play);
+    card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); play(); }});
+    grid.appendChild(card);
+  });
+  // Re-localize the not-yet-played posters when language switches.
+  document.addEventListener('click',function(e){
+    if(e.target && e.target.closest && e.target.closest('.po-lang')){
+      setTimeout(function(){
+        grid.querySelectorAll('.testi:not([data-loaded]) .cap .badge').forEach(function(b,i){
+          b.textContent=badge()+' #'+(i+1);
+        });
+      },60);
+    }
+  });
+})();
+</script>
+</body></html>
