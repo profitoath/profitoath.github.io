@@ -1,565 +1,585 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
+<!DOCTYPE html><html lang="id"><head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<meta name="theme-color" content="#05080c"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"/>
 <title>profitoath — Mini App</title>
 <link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../assets/style.css"/>
-<!-- Telegram WebApp SDK (must load before our integration script) -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  /* ===== Mini App shell — mobile-first, native feel ===== */
-  html,body{background:var(--bg)}
-  body{overflow-x:hidden}
-  .app{
-    max-width:520px;margin:0 auto;min-height:100vh;position:relative;z-index:5;
-    padding:
-      calc(64px + env(safe-area-inset-top,0px))      /* header height + notch */
-      max(14px, env(safe-area-inset-right,0px))
-      calc(26px + env(safe-area-inset-bottom,0px))
-      max(14px, env(safe-area-inset-left,0px));
-  }
-
-  /* sticky glass header */
-  .app-head{
-    position:fixed;top:0;left:0;right:0;z-index:50;
-    max-width:520px;margin:0 auto;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:
-      calc(12px + env(safe-area-inset-top,0px))
-      max(14px, env(safe-area-inset-right,0px))
-      12px
-      max(14px, env(safe-area-inset-left,0px));
-    backdrop-filter:blur(16px);
-    background:linear-gradient(180deg,rgba(5,8,12,.92),rgba(5,8,12,.62));
-    border-bottom:1px solid var(--line);
-  }
-  .app-head .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em;font-size:17px}
-  .app-head .brand img{width:28px;height:28px;filter:drop-shadow(0 0 10px rgba(22,224,168,.5))}
-  .app-head .brand b{color:var(--emerald2)}
-  .head-right{display:flex;align-items:center;gap:8px}
-
-  .tier-badge{
-    display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:700;
-    letter-spacing:.06em;padding:6px 11px;border-radius:100px;border:1px solid var(--line2);
-    background:rgba(255,255,255,.02);color:var(--mut);white-space:nowrap;
-  }
-  .tier-badge .em{font-size:13px;line-height:1}
-  .tier-badge[data-tier="PRO"]{border-color:rgba(11,208,255,.5);color:var(--cyan)}
-  .tier-badge[data-tier="VIP"]{border-color:rgba(124,92,255,.6);color:#b9a8ff}
-  .tier-badge[data-tier="ADMIN"]{border-color:rgba(245,200,122,.6);color:var(--gold)}
-
-  .lang-chip{
-    font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer;
-    padding:6px 11px;border-radius:100px;border:1px solid var(--line2);color:var(--mut);
-    background:rgba(255,255,255,.02);transition:all .3s;-webkit-tap-highlight-color:transparent;
-  }
-  .lang-chip:hover,.lang-chip:active{border-color:var(--emerald);color:var(--emerald2);background:rgba(22,224,168,.07)}
-
-  /* card stack */
-  .stack{display:flex;flex-direction:column;gap:16px}
-  .app .glass{padding:20px}
-  .sec-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--emerald);margin-bottom:6px}
-  .sec-title{font-size:18px;font-weight:700;letter-spacing:-.01em}
-  .sec-sub{color:var(--mut);font-size:13px;line-height:1.55;margin-top:4px}
-  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
-  .card-head .ic{
-    width:38px;height:38px;flex:0 0 38px;border-radius:11px;display:grid;place-items:center;
-    border:1px solid var(--line2);background:rgba(22,224,168,.06);color:var(--emerald2);font-size:18px;
-  }
-
-  /* ticker input */
-  .field-row{display:flex;gap:10px}
-  .tk-input{
-    flex:1;min-width:0;font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.04em;
-    color:var(--txt);background:rgba(5,8,12,.6);border:1px solid var(--line2);border-radius:var(--r-sm);
-    padding:13px 15px;text-transform:uppercase;transition:border-color .3s,box-shadow .3s;outline:none;width:100%;
-  }
-  .tk-input::placeholder{color:var(--dim);text-transform:none;letter-spacing:0;font-weight:400}
-  .tk-input:focus{border-color:var(--emerald);box-shadow:0 0 0 3px rgba(22,224,168,.12)}
-  .full{width:100%;justify-content:center}
-  .chips{margin:14px 0}
-
-  /* quick actions grid */
-  .qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .qa{
-    display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;cursor:pointer;
-    border:1px solid var(--line);border-radius:14px;padding:16px 8px;background:rgba(255,255,255,.02);
-    color:var(--txt);transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;font-family:var(--sans);
-  }
-  .qa:hover,.qa:active{border-color:var(--emerald);background:rgba(22,224,168,.06);transform:translateY(-2px)}
-  .qa .qa-ic{font-size:22px;line-height:1}
-  .qa .qa-l{font-size:12px;font-weight:600;color:var(--mut)}
-  .qa:hover .qa-l,.qa:active .qa-l{color:var(--emerald2)}
-
-  /* watchlist sparklines */
-  .wl{display:flex;flex-direction:column;gap:2px}
-  .wl-row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line)}
-  .wl-row:last-child{border-bottom:none}
-  .wl-sym{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--txt);width:64px;flex:0 0 64px}
-  .spark{flex:1;display:flex;align-items:flex-end;gap:2px;height:30px;min-width:0}
-  .spark span{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(180deg,var(--emerald),rgba(22,224,168,.15));min-height:3px}
-  .spark.dn span{background:linear-gradient(180deg,var(--red),rgba(255,93,108,.15))}
-  .wl-chg{font-family:var(--mono);font-size:12.5px;font-weight:700;width:62px;text-align:right;flex:0 0 62px}
-  .wl-chg.up{color:var(--emerald)}.wl-chg.dn{color:var(--red)}
-
-  /* account */
-  .acct{display:flex;align-items:center;justify-content:space-between;gap:14px}
-  .acct-left{display:flex;align-items:center;gap:12px}
-  .acct-ring{
-    width:46px;height:46px;flex:0 0 46px;border-radius:50%;display:grid;place-items:center;font-size:22px;
-    border:1px solid var(--line2);background:radial-gradient(circle at 40% 35%,rgba(22,224,168,.18),rgba(7,11,17,.6));
-  }
-  .acct-name{font-weight:700;font-size:15px}
-  .acct-tier{font-family:var(--mono);font-size:11.5px;color:var(--mut);margin-top:2px}
-
-  /* inline note (browser fallback) */
-  .note{
-    margin-top:14px;font-size:12.5px;line-height:1.5;color:var(--gold);
-    border:1px solid rgba(245,200,122,.35);border-radius:11px;padding:11px 13px;
-    background:rgba(245,200,122,.06);display:none;align-items:flex-start;gap:9px;
-  }
-  .note.show{display:flex}
-  .note .ni{font-size:15px;line-height:1.2}
-
-  /* market ticker strip */
-  .app .ticker{border-radius:14px;border:1px solid var(--line);margin-top:4px}
-  .app .ticker .track{animation-duration:34s}
-
-  .foot-mini{text-align:center;color:var(--dim);font-size:11px;font-family:var(--mono);letter-spacing:.04em;margin-top:6px;line-height:1.6}
-  .foot-mini a{color:var(--mut)}
-  .foot-mini a:hover{color:var(--emerald2)}
-</style>
-</head>
+  body{background:var(--bg);min-height:100vh}
+  .app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 8px) 14px calc(env(safe-area-inset-bottom) + 80px)}
+  /* header */
+  .ah{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;padding:12px 4px;margin:0 -4px 6px;
+    background:linear-gradient(180deg,var(--bg) 70%,transparent);backdrop-filter:blur(8px)}
+  .ah img{width:30px;height:30px;filter:drop-shadow(0 0 8px rgba(22,224,168,.5))}
+  .ah .nm{font-weight:800;letter-spacing:-.02em;font-size:17px;flex:1}
+  .ah .nm b{color:var(--emerald2)}
+  .tierb{font-family:var(--mono);font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;border:1px solid var(--line2);display:flex;gap:5px;align-items:center}
+  .langc{font-family:var(--mono);font-size:11px;border:1px solid var(--line2);border-radius:100px;overflow:hidden;display:flex}
+  .langc button{appearance:none;border:0;background:none;color:var(--mut);padding:5px 9px;font-family:inherit;font-weight:700;cursor:pointer}
+  .langc button.on{background:linear-gradient(135deg,var(--emerald),var(--cyan));color:#04130e}
+  /* search */
+  .search{display:flex;gap:8px;margin-bottom:10px}
+  .search input{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--line2);border-radius:12px;color:var(--txt);
+    padding:13px 15px;font-size:16px;font-family:var(--sans);outline:none}
+  .search input:focus{border-color:var(--emerald)}
+  .search .go{background:linear-gradient(135deg,var(--emerald),var(--cyan));color:#04130e;border:0;border-radius:12px;
+    padding:0 18px;font-weight:800;font-size:15px;cursor:pointer}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:100px;border:1px solid var(--line2);
+    color:var(--mut);cursor:pointer;background:rgba(255,255,255,.02)}
+  .chip.on{border-color:var(--emerald);color:var(--emerald2);background:rgba(22,224,168,.08)}
+  /* current instrument bar */
+  .instbar{display:none;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin-bottom:12px;background:var(--panel)}
+  .instbar.show{display:flex}
+  .instbar .s{font-weight:800;font-size:16px}.instbar .n{color:var(--mut);font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .instbar .px{font-family:var(--mono);font-weight:700;color:var(--emerald2)}
+  /* tool grid */
+  .tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+  .tool{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:12px 6px;text-align:center;cursor:pointer;
+    transition:border-color .25s,transform .25s;position:relative}
+  .tool:active{transform:scale(.95)}
+  .tool.on{border-color:var(--emerald);background:rgba(22,224,168,.08)}
+  .tool .i{font-size:20px;display:block;margin-bottom:5px}
+  .tool .l{font-size:10.5px;color:var(--mut);font-weight:600;line-height:1.2}
+  .tool.lock{opacity:.5}
+  .tool .lk{position:absolute;top:5px;right:6px;font-size:9px}
+  /* result */
+  .result{border:1px solid var(--line);border-radius:16px;background:var(--panel);min-height:160px;padding:16px;position:relative}
+  .result img{width:100%;border-radius:10px;display:block}
+  .rtitle{font-weight:800;font-size:16px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .rsub{color:var(--dim);font-family:var(--mono);font-size:11px;margin-bottom:12px}
+  .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 0;color:var(--mut)}
+  .spin{width:34px;height:34px;border:3px solid var(--line2);border-top-color:var(--emerald);border-radius:50%;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .empty{color:var(--dim);text-align:center;padding:38px 10px;font-size:14px;line-height:1.6}
+  .err{color:var(--red);text-align:center;padding:30px 12px;font-size:14px}
+  /* data rows */
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .kv:last-child{border:0}.kv .k{color:var(--mut)}.kv .v{font-family:var(--mono);font-weight:700}
+  .v.up{color:var(--emerald)}.v.dn{color:var(--red)}
+  .verdict{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:18px;padding:8px 14px;border-radius:12px;margin:4px 0 10px}
+  .badge{font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:8px;border:1px solid var(--line2)}
+  .reasons{list-style:none;margin:8px 0;padding:0}.reasons li{padding:6px 0;color:var(--mut);font-size:13.5px;border-bottom:1px solid var(--line)}
+  .reasons li:before{content:"• ";color:var(--emerald)}
+  .grp{margin-top:14px}.grp h4{font-size:13px;color:var(--emerald2);font-family:var(--mono);letter-spacing:.05em;margin-bottom:6px;text-transform:uppercase}
+  .tfrow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .tfrow:last-child{border:0}.tfrow .t{color:var(--mut);font-family:var(--mono)}
+  .pill2{font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px}
+  .sbuy{background:rgba(22,224,168,.18);color:var(--emerald2)}.ssell{background:rgba(255,93,108,.18);color:var(--red)}.sneu{background:rgba(138,160,173,.18);color:var(--mut)}
+  /* strategy/method selector */
+  .seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  .seg button{font-family:var(--mono);font-size:11px;padding:7px 11px;border-radius:9px;border:1px solid var(--line2);background:rgba(255,255,255,.02);color:var(--mut);cursor:pointer}
+  .seg button.on{border-color:var(--emerald);color:var(--emerald2);background:rgba(22,224,168,.08)}
+  .note{font-size:12px;color:var(--dim);margin-top:12px;text-align:center;line-height:1.5}
+  .upsell{text-align:center;padding:30px 16px}.upsell .lk{font-size:30px}.upsell h4{margin:10px 0 6px;font-size:16px}
+  .upsell p{color:var(--mut);font-size:13.5px;margin-bottom:14px}
+  .wm{text-align:center;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:10px;opacity:.7}
+  .footer-note{text-align:center;font-size:10.5px;color:var(--dim);line-height:1.5;margin-top:18px;padding:0 8px}
+</style></head>
 <body>
-<div class="grid-overlay"></div>
-<div class="vignette"></div>
-
-<!-- ===== sticky glass header ===== -->
-<header class="app-head">
-  <a class="brand" href="../index.html">
+<div class="app">
+  <div class="ah">
     <img src="../assets/logo.svg" alt="profitoath"/>
-    <span>profit<b>oath</b></span>
-  </a>
-  <div class="head-right">
-    <span class="tier-badge" id="tierBadge" data-tier="FREE"><span class="em">🆓</span><span id="tierText">FREE</span></span>
-    <button class="lang-chip" id="langChip" type="button" aria-label="Toggle language">ID</button>
+    <div class="nm">profit<b>oath</b></div>
+    <span class="tierb" id="tierb"><span id="tierEm">🆓</span><span id="tierTx">FREE</span></span>
+    <div class="langc"><button data-l="id" class="on">ID</button><button data-l="en">EN</button></div>
   </div>
-</header>
 
-<!-- ===== app body ===== -->
-<main class="app">
-  <div class="stack">
-
-    <!-- Analisa Cepat -->
-    <section class="glass" aria-labelledby="t-analyze">
-      <div class="card-head">
-        <div class="ic">⚡</div>
-        <div style="flex:1">
-          <div class="sec-label" data-i18n="analyze_label">Analisa Cepat</div>
-          <div class="sec-title" id="t-analyze" data-i18n="analyze_title">Analisa instan</div>
-          <div class="sec-sub" data-i18n="analyze_sub">Masukkan ticker lalu pilih kelas aset.</div>
-        </div>
-      </div>
-
-      <div class="field-row">
-        <input class="tk-input" id="symbol" type="text" inputmode="text" autocomplete="off"
-               autocapitalize="characters" spellcheck="false"
-               placeholder="BBCA, AAPL, BTCUSD…" data-i18n-ph="symbol_ph" aria-label="Ticker symbol"/>
-      </div>
-
-      <div class="chips" id="assetChips" role="group" aria-label="Asset class">
-        <button class="chip active" type="button" data-asset="stock"     data-i18n="asset_stock">Saham</button>
-        <button class="chip"        type="button" data-asset="forex"     data-i18n="asset_forex">Forex</button>
-        <button class="chip"        type="button" data-asset="commodity" data-i18n="asset_commodity">Komoditas</button>
-        <button class="chip"        type="button" data-asset="index"     data-i18n="asset_index">Indeks</button>
-        <button class="chip"        type="button" data-asset="crypto"    data-i18n="asset_crypto">Kripto</button>
-      </div>
-
-      <button class="btn btn-primary btn-lg full" id="analyzeBtn" type="button" data-i18n="analyze_btn">Analisa</button>
-
-      <div class="note" id="analyzeNote">
-        <span class="ni">ℹ️</span>
-        <span data-i18n="open_in_tg">Buka lewat bot Telegram untuk hasil live.</span>
-      </div>
-    </section>
-
-    <!-- Quick Actions -->
-    <section class="glass" aria-labelledby="t-qa">
-      <div class="card-head">
-        <div class="ic">⌗</div>
-        <div style="flex:1">
-          <div class="sec-label" data-i18n="qa_label">Quick Actions</div>
-          <div class="sec-title" id="t-qa" data-i18n="qa_title">Aksi cepat</div>
-        </div>
-      </div>
-      <div class="qa-grid" id="qaGrid">
-        <button class="qa" type="button" data-action="chart">     <span class="qa-ic">📈</span><span class="qa-l" data-i18n="qa_chart">Chart</span></button>
-        <button class="qa" type="button" data-action="forecast">  <span class="qa-ic">🔮</span><span class="qa-l" data-i18n="qa_forecast">Forecast</span></button>
-        <button class="qa" type="button" data-action="backtest">  <span class="qa-ic">⏮️</span><span class="qa-l" data-i18n="qa_backtest">Backtest</span></button>
-        <button class="qa" type="button" data-action="screener">  <span class="qa-ic">🔎</span><span class="qa-l" data-i18n="qa_screener">Screener</span></button>
-        <button class="qa" type="button" data-action="portfolio"> <span class="qa-ic">📊</span><span class="qa-l" data-i18n="qa_portfolio">Portfolio</span></button>
-        <button class="qa" type="button" data-action="capacity">  <span class="qa-ic">🧮</span><span class="qa-l" data-i18n="qa_capacity">Capacity</span></button>
-      </div>
-      <div class="note" id="qaNote">
-        <span class="ni">ℹ️</span>
-        <span data-i18n="open_in_tg">Buka lewat bot Telegram untuk hasil live.</span>
-      </div>
-    </section>
-
-    <!-- Watchlist -->
-    <section class="glass" aria-labelledby="t-wl">
-      <div class="card-head">
-        <div class="ic">★</div>
-        <div style="flex:1">
-          <div class="sec-label" data-i18n="wl_label">Watchlist</div>
-          <div class="sec-title" id="t-wl" data-i18n="wl_title">Pantauan</div>
-          <div class="sec-sub" data-i18n="wl_sub">Contoh data, dekoratif.</div>
-        </div>
-      </div>
-      <div class="wl" id="watchlist"></div>
-    </section>
-
-    <!-- Akun / Account -->
-    <section class="glass" aria-labelledby="t-acct">
-      <div class="card-head">
-        <div class="ic">◈</div>
-        <div style="flex:1">
-          <div class="sec-label" data-i18n="acct_label">Akun</div>
-          <div class="sec-title" id="t-acct" data-i18n="acct_title">Akun saya</div>
-        </div>
-      </div>
-      <div class="acct">
-        <div class="acct-left">
-          <div class="acct-ring" id="acctEmoji">🆓</div>
-          <div>
-            <div class="acct-name" id="acctName" data-i18n="acct_guest">Tamu</div>
-            <div class="acct-tier"><span data-i18n="acct_plan">Paket</span>: <span id="acctTier">FREE</span></div>
-          </div>
-        </div>
-        <button class="btn" id="upgradeBtn" type="button" data-i18n="acct_upgrade">Upgrade</button>
-      </div>
-      <div class="note" id="upgradeNote">
-        <span class="ni">ℹ️</span>
-        <span data-i18n="open_in_tg">Buka lewat bot Telegram untuk hasil live.</span>
-      </div>
-    </section>
-
-    <!-- Market ticker strip -->
-    <div class="ticker" aria-hidden="true">
-      <div class="track" id="tickerTrack"></div>
-    </div>
-
-    <div class="foot-mini">
-      <div data-i18n="foot_note">profitoath · alat analisa, bukan saran finansial.</div>
-      <a href="../index.html" data-i18n="foot_link">Kembali ke situs</a>
-    </div>
-
+  <div class="search">
+    <input id="sym" type="text" autocomplete="off" spellcheck="false" placeholder="BBCA, AAPL, EUR/USD…"/>
+    <button class="go" id="goBtn">→</button>
   </div>
-</main>
+  <div class="chips" id="assetChips">
+    <span class="chip on" data-a="">Auto</span>
+    <span class="chip" data-a="STOCK">Saham</span>
+    <span class="chip" data-a="FOREX">Forex</span>
+    <span class="chip" data-a="COMMODITY">Komoditas</span>
+    <span class="chip" data-a="INDEX">Indeks</span>
+    <span class="chip" data-a="CRYPTO">Kripto</span>
+  </div>
+
+  <div class="instbar" id="instbar">
+    <span class="s" id="ibSym">—</span><span class="n" id="ibName"></span><span class="px" id="ibPx"></span>
+  </div>
+
+  <div class="tools" id="tools"></div>
+
+  <div class="result" id="result">
+    <div class="empty" id="emptyState"></div>
+  </div>
+
+  <div class="footer-note" id="footerNote"></div>
+</div>
 
 <script>
+/* ============================================================
+   profitoath Mini App — everything renders in-app via same-origin API.
+   No sendData to chat. API base = same origin (served by api_server.py).
+   ============================================================ */
 (function(){
   "use strict";
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var $all=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+  var tg=(window.Telegram&&window.Telegram.WebApp)?window.Telegram.WebApp:null;
+  /* API base: when the page is served from a clean static host (GitHub Pages),
+     the bot injects ?api=<backend-origin> so we call the FastAPI backend there.
+     Falls back to same-origin (when the backend itself serves this page). */
+  var API=(function(){
+    try{
+      var a=new URLSearchParams(location.search).get("api");
+      if(a){ return a.replace(/\/+$/,"")+"/api"; }
+    }catch(e){}
+    return "/api";
+  })();
 
-  /* ============================================================
-     Telegram WebApp handle — guarded everywhere.
-     `tg` is undefined in a normal browser; the page must still work.
-     ============================================================ */
-  var tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-  /* Lenient: treat as "inside Telegram" when the SDK is present AND we have
-     either initData OR a user object OR a known platform. Some clients leave
-     initData empty for reply-keyboard web apps even though sendData works. */
-  var inTelegram = !!(tg && (
-    (tg.initData && tg.initData.length > 0) ||
-    (tg.initDataUnsafe && tg.initDataUnsafe.user) ||
-    (tg.platform && tg.platform !== 'unknown')
-  ));
+  /* ---- tier from ?tier= ---- */
+  function qp(n){try{return new URLSearchParams(location.search).get(n);}catch(e){return null;}}
+  var TIER=(qp("tier")||"FREE").toUpperCase();
+  var TIER_RANK={FREE:0,PRO:1,VIP:2,ADMIN:3};
+  var TIER_EM={FREE:"🆓",PRO:"⭐",VIP:"💎",ADMIN:"👑"};
 
-  /* ---------- helpers ---------- */
-  function $(sel, root){ return (root||document).querySelector(sel); }
-  function $all(sel, root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
-  function haptic(style){
-    try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(style||'light'); }catch(e){}
-  }
-  function qsParam(name){
-    try{ return new URLSearchParams(window.location.search).get(name); }catch(e){ return null; }
-  }
+  /* ---- language ---- */
+  var lang=(function(){try{var l=localStorage.getItem("po_lang");if(l==="en"||l==="id")return l;}catch(e){}
+    if(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&/^id/i.test(tg.initDataUnsafe.user.language_code||""))return "id";
+    return (qp("lang")==="en")?"en":"id";})();
 
-  /* ============================================================
-     i18n dictionary (ID / EN)
-     ============================================================ */
-  var I18N = {
-    id:{
-      analyze_label:"Analisa Cepat", analyze_title:"Analisa instan",
-      analyze_sub:"Masukkan ticker lalu pilih kelas aset.", symbol_ph:"BBCA, AAPL, BTCUSD…",
-      asset_stock:"Saham", asset_forex:"Forex", asset_commodity:"Komoditas", asset_index:"Indeks", asset_crypto:"Kripto",
-      analyze_btn:"Analisa",
-      qa_label:"Quick Actions", qa_title:"Aksi cepat",
-      qa_chart:"Chart", qa_forecast:"Forecast", qa_backtest:"Backtest",
-      qa_screener:"Screener", qa_portfolio:"Portfolio", qa_capacity:"Kapasitas",
-      wl_label:"Watchlist", wl_title:"Pantauan", wl_sub:"Contoh data, dekoratif.",
-      acct_label:"Akun", acct_title:"Akun saya", acct_guest:"Tamu", acct_plan:"Paket", acct_upgrade:"Upgrade",
-      open_in_tg:"Buka lewat bot Telegram untuk hasil live.",
-      foot_note:"profitoath · alat analisa, bukan saran finansial.", foot_link:"Kembali ke situs",
-      mb_analyze:"⚡ Analisa", need_symbol:"Masukkan ticker dulu."
-    },
-    en:{
-      analyze_label:"Quick Analysis", analyze_title:"Instant analysis",
-      analyze_sub:"Enter a ticker then pick an asset class.", symbol_ph:"BBCA, AAPL, BTCUSD…",
-      asset_stock:"Stocks", asset_forex:"Forex", asset_commodity:"Commodities", asset_index:"Indices", asset_crypto:"Crypto",
-      analyze_btn:"Analyze",
-      qa_label:"Quick Actions", qa_title:"Quick actions",
-      qa_chart:"Chart", qa_forecast:"Forecast", qa_backtest:"Backtest",
-      qa_screener:"Screener", qa_portfolio:"Portfolio", qa_capacity:"Capacity",
-      wl_label:"Watchlist", wl_title:"Watchlist", wl_sub:"Sample data, decorative.",
-      acct_label:"Account", acct_title:"My account", acct_guest:"Guest", acct_plan:"Plan", acct_upgrade:"Upgrade",
-      open_in_tg:"Open via the Telegram bot for live results.",
-      foot_note:"profitoath · an analysis tool, not financial advice.", foot_link:"Back to site",
-      mb_analyze:"⚡ Analyze", need_symbol:"Enter a ticker first."
-    }
+  var T={
+    id:{search_ph:"BBCA, AAPL, EUR/USD…",empty:"Ketik kode instrumen di atas, lalu pilih alat analisa.",
+      loading:"Memuat…",pick:"Pilih instrumen:",need:"Masukkan kode dulu.",notfound:"Instrumen tidak ditemukan.",
+      verdict:"Verdict",regime:"Regime",forecast:"Forecast",confidence:"keyakinan",reasons:"Alasan",
+      lockttl:"Fitur Terkunci",lockmsg:"Fitur ini tersedia untuk tier ",upg:"Upgrade lewat bot Telegram (/upgrade).",
+      strat:"Strategi",method:"Metode",run:"Jalankan",foot:"⚠️ Alat analisa & edukasi, bukan nasihat investasi. Data realtime. DYOR.",
+      buy:"Beli",sell:"Jual",neutral:"Netral",overall:"Sinyal",ma:"Moving Average",ti:"Indikator"},
+    en:{search_ph:"BBCA, AAPL, EUR/USD…",empty:"Type an instrument code above, then pick an analysis tool.",
+      loading:"Loading…",pick:"Choose instrument:",need:"Enter a code first.",notfound:"Instrument not found.",
+      verdict:"Verdict",regime:"Regime",forecast:"Forecast",confidence:"confidence",reasons:"Reasons",
+      lockttl:"Feature Locked",lockmsg:"This feature is available for tier ",upg:"Upgrade via the Telegram bot (/upgrade).",
+      strat:"Strategy",method:"Method",run:"Run",foot:"⚠️ Analysis & education tool, not investment advice. Realtime data. DYOR.",
+      buy:"Buy",sell:"Sell",neutral:"Neutral",overall:"Signal",ma:"Moving Average",ti:"Indicators"}
   };
+  function t(k){return (T[lang]&&T[lang][k])||T.id[k]||k;}
 
-  /* ---------- language resolve: localStorage > Telegram > default(id) ---------- */
-  function detectLang(){
-    var saved = null;
-    try{ saved = localStorage.getItem('po_lang'); }catch(e){}
-    if(saved === 'id' || saved === 'en') return saved;
-    var code = '';
-    try{
-      if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code){
-        code = String(tg.initDataUnsafe.user.language_code).toLowerCase();
+  /* ---- tools: key, icon, label id/en, min tier ---- */
+  var TOOLS=[
+    {k:"chart",     i:"📊", id:"Chart",      en:"Chart",      tier:"FREE", kind:"img"},
+    {k:"analyze",   i:"🎯", id:"Verdict",    en:"Verdict",    tier:"FREE", kind:"analyze"},
+    {k:"consensus", i:"🧭", id:"Konsensus",  en:"Consensus",  tier:"FREE", kind:"consensus"},
+    {k:"tapower",   i:"🚀", id:"TAPOWER",    en:"TAPOWER",    tier:"FREE", kind:"tapower"},
+    {k:"regime",    i:"🌡️", id:"Regime",     en:"Regime",     tier:"FREE", kind:"regime"},
+    {k:"watchlist", i:"⭐", id:"Watchlist",  en:"Watchlist",  tier:"FREE", kind:"watchlist"},
+    {k:"forecast",  i:"🔮", id:"Forecast",   en:"Forecast",   tier:"PRO",  kind:"forecast"},
+    {k:"fundamental",i:"🏦",id:"Fundamental",en:"Fundamental",tier:"PRO",  kind:"fundamental"},
+    {k:"backtest",  i:"⏮️", id:"Backtest",   en:"Backtest",   tier:"PRO",  kind:"backtest"},
+    {k:"screener",  i:"🔎", id:"Screener",   en:"Screener",   tier:"PRO",  kind:"screener"},
+    {k:"capacity",  i:"💰", id:"Kapasitas",  en:"Capacity",   tier:"VIP",  kind:"capacity"},
+    {k:"portfolio", i:"📦", id:"Portfolio",  en:"Portfolio",  tier:"VIP",  kind:"portfolio"}
+  ];
+
+  /* ---- watchlist (localStorage) ---- */
+  function getWL(){try{return JSON.parse(localStorage.getItem("po_watchlist")||"[]");}catch(e){return [];}}
+  function setWL(a){try{localStorage.setItem("po_watchlist",JSON.stringify(a));}catch(e){}}
+  function addWL(s){s=(s||"").trim().toUpperCase();if(!s)return getWL();var w=getWL();if(w.indexOf(s)<0)w.push(s);setWL(w);return w;}
+  function delWL(s){var w=getWL().filter(function(x){return x!==(s||"").toUpperCase();});setWL(w);return w;}
+
+  var state={asset:"",symbol:"",resolved:null,activeTool:null};
+
+  /* ---- render header tier + footer ---- */
+  function applyChrome(){
+    var tn=TIER_RANK[TIER]!=null?TIER:"FREE";
+    $("#tierEm").textContent=TIER_EM[tn]||"🆓"; $("#tierTx").textContent=tn;
+    $("#sym").setAttribute("placeholder",t("search_ph"));
+    $("#emptyState").textContent=t("empty");
+    $("#footerNote").textContent=t("foot");
+    $all(".langc button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-l")===lang);});
+    // localize asset chips
+    var am={"":lang==="en"?"Auto":"Auto","STOCK":lang==="en"?"Stocks":"Saham","FOREX":"Forex",
+      "COMMODITY":lang==="en"?"Commodity":"Komoditas","INDEX":lang==="en"?"Index":"Indeks","CRYPTO":lang==="en"?"Crypto":"Kripto"};
+    $all("#assetChips .chip").forEach(function(c){var a=c.getAttribute("data-a");if(am[a]!=null)c.textContent=am[a];});
+    renderTools();
+  }
+
+  function renderTools(){
+    var g=$("#tools");g.innerHTML="";
+    TOOLS.forEach(function(tool){
+      var locked=TIER_RANK[TIER]<TIER_RANK[tool.tier];
+      var d=document.createElement("div");
+      d.className="tool"+(locked?" lock":"")+(state.activeTool===tool.k?" on":"");
+      d.innerHTML='<span class="i">'+tool.i+'</span><span class="l">'+(tool[lang]||tool.id)+'</span>'+(locked?'<span class="lk">🔒</span>':'');
+      d.addEventListener("click",function(){ haptic(); selectTool(tool); });
+      g.appendChild(d);
+    });
+  }
+  function haptic(){try{if(tg&&tg.HapticFeedback)tg.HapticFeedback.impactOccurred("light");}catch(e){}}
+
+  /* ---- API ---- */
+  /* ngrok-free shows an HTML interstitial for plain browser requests; the
+     'ngrok-skip-browser-warning' header bypasses it so fetch() gets real JSON. */
+  var APIHDR={"Accept":"application/json","ngrok-skip-browser-warning":"1"};
+  function api(path){
+    return fetch(API+path,{headers:APIHDR}).then(function(r){return r.json();});
+  }
+  /* Images must carry the same header, so we fetch as a blob (can't set headers
+     on a bare <img src>). Returns a promise of an object URL. */
+  function imgBlob(path){
+    return fetch(API+path,{headers:{"ngrok-skip-browser-warning":"1"}})
+      .then(function(r){ if(!r.ok) throw new Error("img "+r.status); return r.blob(); })
+      .then(function(b){ return URL.createObjectURL(b); });
+  }
+  function showLoading(){$("#result").innerHTML='<div class="loading"><div class="spin"></div><div>'+t("loading")+'</div></div>';}
+  function showErr(m){$("#result").innerHTML='<div class="err">⚠️ '+esc(m)+'</div>';}
+  function esc(s){return String(s==null?"":s).replace(/[<>&]/g,function(c){return{"<":"&lt;",">":"&gt;","&":"&amp;"}[c];});}
+  function num(x){if(x==null||isNaN(x))return "—";return Number(x).toLocaleString(lang==="en"?"en-US":"id-ID",{maximumFractionDigits:2});}
+  function pct(x,signed){if(x==null||isNaN(x))return "—";var v=Number(x);return (signed&&v>0?"+":"")+v.toFixed(2)+"%";}
+
+  /* ---- main: pick a tool ---- */
+  function selectTool(tool){
+    if(TIER_RANK[TIER]<TIER_RANK[tool.tier]){ renderLock(tool); state.activeTool=tool.k; renderTools(); return; }
+    state.activeTool=tool.k; renderTools();
+    // tools that need a symbol vs global (watchlist/screener/portfolio)
+    if(tool.k==="watchlist"){ return renderWatchlist(); }
+    if(tool.k==="screener"){ return renderScreener(); }
+    if(tool.k==="portfolio"){ return renderPortfolio(); }
+    var sym=($("#sym").value||"").trim();
+    if(!sym){ showErr(t("need")); return; }
+    runSymbolTool(tool, sym);
+  }
+
+  function renderLock(tool){
+    $("#result").innerHTML='<div class="upsell"><div class="lk">🔒</div><h4>'+t("lockttl")+'</h4>'+
+      '<p>'+t("lockmsg")+'<b>'+tool.tier+'</b>.<br>'+t("upg")+'</p></div>';
+  }
+
+  function runSymbolTool(tool, sym){
+    showLoading();
+    var a=state.asset?("&asset="+state.asset):"";
+    var q="?symbol="+encodeURIComponent(sym)+a;
+    if(tool.kind==="img"){ return renderChart(sym,q); }
+    if(tool.kind==="backtest"){ return renderBacktest(sym); }
+    if(tool.kind==="capacity"){ return renderCapacity(sym,q); }
+    // JSON tools
+    api("/"+tool.k+q).then(function(j){
+      if(!j||!j.ok){ showErr((j&&j.error)||t("notfound")); return; }
+      updateInst(j);
+      if(tool.kind==="analyze")return renderAnalyze(j);
+      if(tool.kind==="forecast")return renderForecast(j);
+      if(tool.kind==="tapower")return renderTapower(j);
+      if(tool.kind==="consensus")return renderConsensus(j);
+      if(tool.kind==="regime")return renderRegime(j);
+      if(tool.kind==="fundamental")return renderFundamental(j);
+    }).catch(function(e){showErr(e.message||"error");});
+  }
+
+  function updateInst(j){
+    if(j.symbol){ $("#ibSym").textContent=j.symbol; $("#instbar").classList.add("show"); }
+    if(j.name)$("#ibName").textContent=j.name;
+    if(j.last_close!=null)$("#ibPx").textContent=num(j.last_close);
+  }
+
+  /* ---- renderers ---- */
+  function head(title,sub){return '<div class="rtitle">'+esc(title)+'</div>'+(sub?'<div class="rsub">'+esc(sub)+'</div>':'');}
+  function wm(){return '<div class="wm">profitoath · @PROFITOATH_BOT</div>';}
+
+  function renderChart(sym,q){
+    imgBlob("/chart"+q+"&bars=90").then(function(url){
+      var img=new Image(); img.src=url;
+      $("#result").innerHTML=head("Chart · "+sym,"EMA·RSI·MACD");
+      $("#result").appendChild(img);
+      // download button (watermarked PNG)
+      var dl=document.createElement("a");
+      dl.href=url; dl.download="profitoath_"+sym+".png";
+      dl.className="btn"; dl.style.cssText="display:block;text-align:center;margin-top:10px;text-decoration:none";
+      dl.textContent="⬇️ "+(lang==="en"?"Download chart":"Unduh chart");
+      dl.addEventListener("click",function(){haptic();});
+      $("#result").appendChild(dl);
+      var d=document.createElement("div");d.innerHTML=wm();$("#result").appendChild(d);
+    }).catch(function(){ showErr(t("notfound")); });
+  }
+
+  function renderAnalyze(j){
+    var em={Bullish:"🚀",Bearish:"🛑",Neutral:"➖"}[j.verdict]||"➖";
+    var cls=j.verdict==="Bullish"?"sbuy":(j.verdict==="Bearish"?"ssell":"sneu");
+    var h=head(j.symbol+(j.name?" · "+j.name:""), (j.asset_class||"")+" "+(j.exchange||""));
+    h+='<div class="verdict '+cls+'">'+em+' '+esc(j.verdict)+'</div>';
+    h+='<div class="kv"><span class="k">'+(lang==="en"?"Price":"Harga")+'</span><span class="v">'+num(j.last_close)+'</span></div>';
+    if(j.regime)h+='<div class="kv"><span class="k">'+t("regime")+'</span><span class="v">'+esc(j.regime)+'</span></div>';
+    if(j.forecast){var f=j.forecast;var fc=f.direction==="BULLISH"?"up":(f.direction==="BEARISH"?"dn":"");
+      h+='<div class="kv"><span class="k">'+t("forecast")+' '+(f.horizon||5)+'h</span><span class="v '+fc+'">'+pct(f.point_pct,true)+'</span></div>';}
+    if(j.reasons&&j.reasons.length){h+='<div class="grp"><h4>'+t("reasons")+'</h4><ul class="reasons">';
+      j.reasons.forEach(function(r){h+='<li>'+esc(r)+'</li>';});h+='</ul></div>';}
+    $("#result").innerHTML=h+wm();
+  }
+
+  function renderForecast(j){
+    var f=j.forecast||{};var fc=f.direction==="BULLISH"?"up":(f.direction==="BEARISH"?"dn":"");
+    var h=head((lang==="en"?"Forecast · ":"Forecast · ")+j.symbol,(f.model_name||""));
+    h+='<div class="verdict '+(fc==="up"?"sbuy":fc==="dn"?"ssell":"sneu")+'">'+ (f.direction||"NEUTRAL")+'</div>';
+    h+='<div class="kv"><span class="k">'+(lang==="en"?"Estimate":"Estimasi")+' '+(f.horizon||5)+'h</span><span class="v '+fc+'">'+pct(f.point_forecast_pct,true)+'</span></div>';
+    h+='<div class="kv"><span class="k">'+(lang==="en"?"Range":"Rentang")+'</span><span class="v">'+pct(f.lower_pct,true)+' … '+pct(f.upper_pct,true)+'</span></div>';
+    h+='<div class="kv"><span class="k">'+t("confidence")+'</span><span class="v">'+Math.round((f.confidence||0)*100)+'%</span></div>';
+    $("#result").innerHTML=h+wm();
+  }
+
+  function renderTapower(j){
+    var rec=j.recommendation||"NEUTRAL";
+    var cls=/STRONG BUY|BUY/.test(rec)?"sbuy":/SELL/.test(rec)?"ssell":"sneu";
+    var h=head("TAPOWER · "+j.symbol,lang==="en"?"indicator consensus":"konsensus indikator");
+    h+='<div class="verdict '+cls+'">'+esc(rec)+'</div>';
+    h+='<div class="kv"><span class="k">🟢 '+t("buy")+'</span><span class="v up">'+j.buy+'</span></div>';
+    h+='<div class="kv"><span class="k">🔴 '+t("sell")+'</span><span class="v dn">'+j.sell+'</span></div>';
+    h+='<div class="kv"><span class="k">⚪ '+t("neutral")+'</span><span class="v">'+j.neutral+'</span></div>';
+    if(j.votes&&j.votes.length){h+='<div class="grp"><h4>'+t("ti")+'</h4>';
+      j.votes.forEach(function(v){var s=v[1]==="BUY"?"sbuy":v[1]==="SELL"?"ssell":"sneu";
+        h+='<div class="tfrow"><span class="t">'+esc(v[0])+'</span><span class="pill2 '+s+'">'+esc(v[1])+'</span></div>';});h+='</div>';}
+    $("#result").innerHTML=h+wm();
+  }
+
+  function renderConsensus(j){
+    var rows=j.rows||[];if(!rows.length){showErr(t("notfound"));return;}
+    var head_=rows.filter(function(r){return r.timeframe==="86400";})[0]||rows[rows.length-1];
+    var ov=head_.overall||"";var cls=/Strong Buy|Buy/.test(ov)?"sbuy":/Sell/.test(ov)?"ssell":"sneu";
+    var h=head((lang==="en"?"Consensus · ":"Konsensus · ")+j.symbol,head_.label||"");
+    h+='<div class="verdict '+cls+'">'+esc(ov)+'</div>';
+    if(head_.ma_buy)h+='<div class="kv"><span class="k">'+t("ma")+'</span><span class="v">'+esc(head_.ma_buy)+' · '+esc(head_.ma_sell)+'</span></div>';
+    if(head_.ti_buy)h+='<div class="kv"><span class="k">'+t("ti")+'</span><span class="v">'+esc(head_.ti_buy)+' · '+esc(head_.ti_sell)+' · '+esc(head_.ti_neutral)+'</span></div>';
+    h+='<div class="grp"><h4>'+(lang==="en"?"Per timeframe":"Per timeframe")+'</h4>';
+    rows.forEach(function(r){var o=r.overall||"";var c=/Strong Buy|Buy/.test(o)?"sbuy":/Sell/.test(o)?"ssell":"sneu";
+      h+='<div class="tfrow"><span class="t">'+esc(r.label||r.timeframe)+'</span><span class="pill2 '+c+'">'+esc(o)+'</span></div>';});
+    h+='</div>';
+    $("#result").innerHTML=h+wm();
+  }
+
+  function renderRegime(j){
+    var r=j.regime||{};var em={BULL_TREND:"🐂",BEAR_TREND:"🐻",RANGE:"↔️",HIGH_VOL:"🌊"}[r.regime]||"❓";
+    var h=head((lang==="en"?"Regime · ":"Regime · ")+j.symbol,"");
+    h+='<div class="verdict sneu">'+em+' '+esc(r.regime||"UNKNOWN")+'</div>';
+    if(r.trend_strength!=null)h+='<div class="kv"><span class="k">ADX</span><span class="v">'+num(r.trend_strength)+'</span></div>';
+    if(r.volatility_pct!=null)h+='<div class="kv"><span class="k">'+(lang==="en"?"Volatility":"Volatilitas")+'</span><span class="v">'+pct(r.volatility_pct)+'</span></div>';
+    if(r.reasons&&r.reasons.length){h+='<div class="grp"><h4>'+t("reasons")+'</h4><ul class="reasons">';
+      r.reasons.forEach(function(x){h+='<li>'+esc(x)+'</li>';});h+='</ul></div>';}
+    $("#result").innerHTML=h+wm();
+  }
+
+  function renderFundamental(j){
+    var d=j.data||{};var ov=d.overview||{};var ra=d.ratios||{};var yoy=d.yoy||{};
+    var h=head((lang==="en"?"Fundamental · ":"Fundamental · ")+j.symbol,j.name||"");
+    var keys=["P/E Ratio","EPS","Market Cap","Dividend (Yield)","52wk Range","Beta","Revenue","Next Earnings Date"];
+    keys.forEach(function(k){if(ov[k]&&ov[k]!=="-")h+='<div class="kv"><span class="k">'+esc(k)+'</span><span class="v">'+esc(ov[k])+'</span></div>';});
+
+    // YoY side-by-side: annual revenue & net income across years, user compares.
+    function fmtBig(x){if(x==null||isNaN(x))return "—";var a=Math.abs(x);
+      if(a>=1e12)return (x/1e12).toFixed(2)+"T";if(a>=1e9)return (x/1e9).toFixed(2)+"B";
+      if(a>=1e6)return (x/1e6).toFixed(1)+"jt";return num(x);}
+    var ann=(yoy.annual||[]);
+    if(ann.length>=2){
+      h+='<div class="grp"><h4>'+(lang==="en"?"Annual — Revenue vs Net Income":"Tahunan — Pendapatan vs Laba Bersih")+'</h4>';
+      h+='<div class="tfrow" style="color:var(--dim);font-size:11px"><span class="t">'+(lang==="en"?"Year":"Tahun")+'</span><span>'+(lang==="en"?"Revenue · Net":"Pendapatan · Laba")+'</span></div>';
+      ann.forEach(function(r){
+        h+='<div class="tfrow"><span class="t">'+esc((r.date||"").replace("Dec 31, ",""))+'</span>'+
+           '<span class="v">'+fmtBig(r.revenue)+' · '+fmtBig(r.net_income)+'</span></div>';
+      });
+      var c=yoy.compare||{};
+      if(c.revenue||c.net_income){
+        h+='<div class="tfrow" style="border-top:1px solid var(--line2);margin-top:4px;padding-top:8px"><span class="t">'+(lang==="en"?"YoY change":"Perubahan YoY")+'</span><span>';
+        if(c.revenue)h+='<span class="pill2 '+(c.revenue.yoy_pct>=0?"sbuy":"ssell")+'">Rev '+pct(c.revenue.yoy_pct,true)+'</span> ';
+        if(c.net_income)h+='<span class="pill2 '+(c.net_income.yoy_pct>=0?"sbuy":"ssell")+'">Net '+pct(c.net_income.yoy_pct,true)+'</span>';
+        h+='</span></div>';
       }
-    }catch(e){}
-    if(!code && navigator.language) code = String(navigator.language).toLowerCase();
-    return code.indexOf('id') === 0 ? 'id' : 'en';
-  }
-
-  var lang = detectLang();
-
-  function t(key){ return (I18N[lang] && I18N[lang][key]) || (I18N.id[key]) || key; }
-
-  function applyLang(){
-    document.documentElement.lang = lang;
-    $all('[data-i18n]').forEach(function(el){
-      var k = el.getAttribute('data-i18n');
-      if(I18N[lang][k] != null) el.textContent = I18N[lang][k];
-    });
-    $all('[data-i18n-ph]').forEach(function(el){
-      var k = el.getAttribute('data-i18n-ph');
-      if(I18N[lang][k] != null) el.setAttribute('placeholder', I18N[lang][k]);
-    });
-    var chip = $('#langChip');
-    if(chip) chip.textContent = (lang === 'id') ? 'ID' : 'EN';
-    // keep Telegram MainButton label in sync
-    if(tg && tg.MainButton){
-      try{ tg.MainButton.setText(t('mb_analyze')); }catch(e){}
+      h+='</div>';
     }
+    // Quarterly series too (so user can compare quarter trends).
+    var qtr=(yoy.quarterly||[]);
+    if(qtr.length>=2){
+      h+='<div class="grp"><h4>'+(lang==="en"?"Quarterly — Revenue vs Net":"Kuartalan — Pendapatan vs Laba")+'</h4>';
+      qtr.forEach(function(r){
+        h+='<div class="tfrow"><span class="t">'+esc(r.date||"")+'</span><span class="v">'+fmtBig(r.revenue)+' · '+fmtBig(r.net_income)+'</span></div>';
+      });
+      h+='</div>';
+    }
+
+    var titles={INC:lang==="en"?"Profitability":"Profitabilitas",BAL:lang==="en"?"Balance":"Neraca",CAS:lang==="en"?"Cash Flow":"Arus Kas"};
+    Object.keys(titles).forEach(function(g){var rows=ra[g]||[];var good=rows.filter(function(r){return r.val&&r.val!=="-";});
+      if(good.length){h+='<div class="grp"><h4>'+titles[g]+'</h4>';
+        good.slice(0,5).forEach(function(r){h+='<div class="kv"><span class="k">'+esc(r.trans)+(r.type?" ("+r.type+")":"")+'</span><span class="v">'+esc(r.val)+'</span></div>';});h+='</div>';}});
+    if(d.summary_text)h+='<div class="grp"><h4>'+(lang==="en"?"Earnings":"Kinerja")+'</h4><p style="color:var(--mut);font-size:13px;line-height:1.6">'+esc(d.summary_text.slice(0,500))+'…</p></div>';
+    $("#result").innerHTML=h+wm();
   }
 
-  $('#langChip').addEventListener('click', function(){
-    haptic('light');
-    lang = (lang === 'id') ? 'en' : 'id';
-    try{ localStorage.setItem('po_lang', lang); }catch(e){}
-    applyLang();
-  });
-
-  /* ============================================================
-     Tier badge from ?tier= (FREE|PRO|VIP|ADMIN)
-     ============================================================ */
-  var TIER_EMOJI = { FREE:"🆓", PRO:"⭐", VIP:"💎", ADMIN:"👑" };
-  function applyTier(){
-    var raw = (qsParam('tier') || 'FREE').toUpperCase();
-    var tier = TIER_EMOJI[raw] ? raw : 'FREE';
-    var emoji = TIER_EMOJI[tier];
-    var badge = $('#tierBadge');
-    badge.setAttribute('data-tier', tier);
-    $('#tierText').textContent = tier;
-    badge.querySelector('.em').textContent = emoji;
-    $('#acctTier').textContent = tier;
-    $('#acctEmoji').textContent = emoji;
-    // pull a display name from Telegram if present
-    try{
-      if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user){
-        var u = tg.initDataUnsafe.user;
-        var nm = (u.first_name || '') + (u.last_name ? (' ' + u.last_name) : '');
-        if(nm.trim()) $('#acctName').textContent = nm.trim();
-      }
-    }catch(e){}
+  function renderCapacity(sym,q){
+    showLoading();
+    api("/capacity"+q).then(function(j){
+      if(!j||!j.ok){showErr((j&&j.error)||t("notfound"));return;}
+      updateInst(j);
+      var h=head((lang==="en"?"Capacity · ":"Kapasitas · ")+j.symbol,j.asset_class||"");
+      var cap=j.capacity;
+      if(cap){
+        h+='<div class="kv"><span class="k">'+(lang==="en"?"Liquidity":"Likuiditas")+'</span><span class="v">'+esc(cap.liquidity_tier||"—")+'</span></div>';
+        h+='<div class="kv"><span class="k">ADVT</span><span class="v">'+rp(cap.advt_idr)+'</span></div>';
+        h+='<div class="kv"><span class="k">'+(lang==="en"?"Max/day":"Maks/hari")+'</span><span class="v">'+rp(cap.max_deployable_per_day)+'</span></div>';
+        if(cap.days_to_enter!=null)h+='<div class="kv"><span class="k">'+(lang==="en"?"Days to enter":"Hari masuk")+'</span><span class="v">'+num(cap.days_to_enter)+'</span></div>';
+      }else{h+='<p style="color:var(--mut);font-size:13px">'+(lang==="en"?"Volume-based capacity not applicable to this asset class; risk shown below.":"Kapasitas berbasis volume tak berlaku untuk aset ini; risiko di bawah.")+'</p>';}
+      var rk=j.risk||{};
+      h+='<div class="grp"><h4>'+(lang==="en"?"Risk (Rupiah)":"Risiko (Rupiah)")+'</h4>';
+      h+='<div class="kv"><span class="k">VaR (95%)</span><span class="v dn">'+rp(rk.var_idr)+'</span></div>';
+      h+='<div class="kv"><span class="k">CVaR (95%)</span><span class="v dn">'+rp(rk.cvar_idr)+'</span></div>';
+      h+='<div class="kv"><span class="k">VaR ~'+(lang==="en"?"1 month":"1 bulan")+'</span><span class="v dn">'+rp(rk.var_idr_monthly)+'</span></div></div>';
+      $("#result").innerHTML=h+wm();
+    }).catch(function(e){showErr(e.message||"error");});
   }
+  function rp(x){if(x==null||isNaN(x))return "—";var a=Math.abs(x),s=x<0?"-":"";
+    if(a>=1e12)return s+"Rp"+(a/1e12).toFixed(2)+"T";if(a>=1e9)return s+"Rp"+(a/1e9).toFixed(2)+"M";
+    if(a>=1e6)return s+"Rp"+(a/1e6).toFixed(1)+"jt";return s+"Rp"+num(a);}
 
-  /* ============================================================
-     Asset-class chip selection
-     ============================================================ */
-  var currentAsset = 'stock';
-  $all('#assetChips .chip').forEach(function(c){
-    c.addEventListener('click', function(){
-      haptic('light');
-      $all('#assetChips .chip').forEach(function(x){ x.classList.remove('active'); });
-      c.classList.add('active');
-      currentAsset = c.getAttribute('data-asset');
+  function renderBacktest(sym){
+    var strat=state.bt_strat||"EMA_CROSS";
+    showLoading();
+    api("/backtest?symbol="+encodeURIComponent(sym)+"&strategy="+strat).then(function(j){
+      if(!j||!j.ok){showErr((j&&j.error)||t("notfound"));return;}
+      var m=j.metrics||{};
+      var h=head((lang==="en"?"Backtest · ":"Backtest · ")+j.symbol,strat);
+      // strategy selector
+      h+='<div class="seg" id="btSeg"></div>';
+      h+='<div class="kv"><span class="k">CAGR</span><span class="v '+(m.cagr>0?"up":"dn")+'">'+pct((m.cagr||0)*100,true)+'</span></div>';
+      h+='<div class="kv"><span class="k">Sharpe</span><span class="v">'+num(m.sharpe_ratio)+'</span></div>';
+      h+='<div class="kv"><span class="k">Max DD</span><span class="v dn">'+pct((m.max_drawdown_pct||0)*100)+'</span></div>';
+      h+='<div class="kv"><span class="k">Win rate</span><span class="v">'+pct((m.win_rate||0)*100)+'</span></div>';
+      h+='<div class="kv"><span class="k">Profit factor</span><span class="v">'+num(m.profit_factor)+'</span></div>';
+      h+='<div class="kv"><span class="k">'+(lang==="en"?"Trades":"Jumlah trade")+'</span><span class="v">'+(j.n_trades||0)+'</span></div>';
+      h+='<div id="btChart" style="margin-top:12px;min-height:40px;color:var(--dim);font-size:12px">'+t("loading")+'</div>';
+      $("#result").innerHTML=h+wm();
+      buildBtSeg(sym);
+      // tearsheet image via blob (carries ngrok-skip header)
+      imgBlob("/backtest_chart?symbol="+encodeURIComponent(sym)+"&strategy="+strat).then(function(url){
+        var c=$("#btChart"); if(c){ c.innerHTML=""; var im=new Image(); im.style.width="100%"; im.src=url; c.appendChild(im); }
+      }).catch(function(){ var c=$("#btChart"); if(c)c.textContent=""; });
+    }).catch(function(e){showErr(e.message||"error");});
+  }
+  function buildBtSeg(sym){
+    var seg=$("#btSeg");if(!seg)return;
+    api("/strategies").then(function(j){
+      (j.strategies||["EMA_CROSS"]).forEach(function(s){
+        var b=document.createElement("button");b.textContent=s;b.className=(s===(state.bt_strat||"EMA_CROSS"))?"on":"";
+        b.addEventListener("click",function(){state.bt_strat=s;renderBacktest(sym);});seg.appendChild(b);});
     });
-  });
-
-  /* ============================================================
-     send() — emit to bot when inside Telegram, else show note.
-     payload is a plain object; we JSON.stringify before sendData.
-     ============================================================ */
-  function send(payload, noteId){
-    haptic('light');
-    // Always TRY sendData when the SDK exposes it — detection of "inTelegram"
-    // can be wrong on some clients, so we attempt the real call and only fall
-    // back to the note if it actually throws or is unavailable.
-    if(tg && typeof tg.sendData === 'function'){
-      try{
-        tg.sendData(JSON.stringify(payload));
-        if(typeof tg.close === 'function') tg.close();
-        return;
-      }catch(e){ /* fall through to note */ }
-    }
-    var note = noteId ? $(noteId) : null;
-    if(note){
-      note.classList.add('show');
-      note.scrollIntoView({behavior:'smooth', block:'nearest'});
-    }
   }
 
-  function doAnalyze(){
-    var sym = ($('#symbol').value || '').trim().toUpperCase();
-    if(!sym){
-      var note = $('#analyzeNote');
-      note.querySelector('span:last-child').textContent = t('need_symbol');
-      note.classList.add('show');
-      try{ $('#symbol').focus(); }catch(e){}
-      // restore the standard note text shortly after, so future browser taps read correctly
-      setTimeout(function(){ if(note.classList.contains('show')) note.querySelector('span:last-child').textContent = t('open_in_tg'); }, 2200);
+  function renderScreener(){
+    var wl=getWL();
+    if(!wl.length){
+      $("#result").innerHTML=head("Screener","")+'<div class="empty">'+
+        (lang==="en"?"Your watchlist is empty. Open ⭐ Watchlist and add symbols first — the screener scans only your watchlist, so it stays fast."
+                    :"Watchlist kosong. Buka ⭐ Watchlist dan tambah saham dulu — screener hanya memindai watchlist agar tetap cepat.")+
+        '</div>';
       return;
     }
-    send({ action:'analyze', symbol:sym, asset:currentAsset }, '#analyzeNote');
+    showLoading();
+    var strat=state.scr_strat?("&strategy="+state.scr_strat):"";
+    api("/screener?symbols="+encodeURIComponent(wl.join(","))+"&top=50"+strat).then(function(j){
+      if(!j||!j.ok){showErr((j&&j.error)||"error");return;}
+      var h=head("Screener",(lang==="en"?"watchlist ranking ("+wl.length+")":"ranking watchlist ("+wl.length+")"));
+      (j.rows||[]).forEach(function(r,i){
+        var sc=r.signal==="BUY"?"sbuy":r.signal==="SELL"?"ssell":"";
+        h+='<div class="kv tapk" data-sym="'+esc(r.symbol)+'" style="cursor:pointer"><span class="k">'+(i+1)+'. '+esc(r.symbol)+'</span><span class="v">'+num(r.last_close)+' · '+(r.composite!=null?r.composite.toFixed(2):"—")+(r.signal?' <span class="pill2 '+sc+'">'+r.signal+'</span>':'')+'</span></div>';
+      });
+      $("#result").innerHTML=h+wm();
+      $all("#result .tapk").forEach(function(el){el.addEventListener("click",function(){
+        $("#sym").value=el.getAttribute("data-sym");runDefault();});});
+    }).catch(function(e){showErr(e.message||"error");});
   }
 
-  $('#analyzeBtn').addEventListener('click', doAnalyze);
-
-  /* Quick actions */
-  $all('#qaGrid .qa').forEach(function(b){
-    b.addEventListener('click', function(){
-      send({ action: b.getAttribute('data-action') }, '#qaNote');
-    });
-  });
-
-  /* Upgrade */
-  $('#upgradeBtn').addEventListener('click', function(){
-    send({ action:'upgrade' }, '#upgradeNote');
-  });
-
-  /* ============================================================
-     Watchlist sparklines (decorative, JS-generated)
-     ============================================================ */
-  (function buildWatchlist(){
-    var rows = [
-      { sym:'BBCA',   up:true,  chg:'+1.24%', bars:[5,7,6,9,8,11,10,13,12,15] },
-      { sym:'TLKM',   up:false, chg:'-0.62%', bars:[12,11,12,9,10,8,9,7,6,7] },
-      { sym:'AAPL',   up:true,  chg:'+0.88%', bars:[8,8,9,10,9,11,12,12,14,15] },
-      { sym:'BTCUSD', up:true,  chg:'+2.41%', bars:[6,8,7,9,11,10,12,14,13,16] }
-    ];
-    var host = $('#watchlist');
-    rows.forEach(function(r){
-      var row = document.createElement('div'); row.className = 'wl-row';
-
-      var sym = document.createElement('div'); sym.className = 'wl-sym'; sym.textContent = r.sym;
-
-      var spark = document.createElement('div'); spark.className = 'spark' + (r.up ? '' : ' dn');
-      var max = Math.max.apply(null, r.bars) || 1;
-      r.bars.forEach(function(v){
-        var b = document.createElement('span');
-        b.style.height = Math.round((v / max) * 100) + '%';
-        spark.appendChild(b);
+  function renderWatchlist(){
+    var wl=getWL();
+    var h=head("⭐ Watchlist",(lang==="en"?"tap to analyze · tap ✕ to remove":"tap untuk analisa · tap ✕ untuk hapus"));
+    // add box
+    h+='<div class="search" style="margin:6px 0 12px"><input id="wlAdd" type="text" placeholder="'+
+      (lang==="en"?"Add symbol (e.g. BBCA)":"Tambah kode (mis. BBCA)")+'" autocomplete="off"/>'+
+      '<button class="go" id="wlAddBtn">+</button></div>';
+    if(!wl.length){
+      h+='<div class="empty">'+(lang==="en"?"No symbols yet. Add a few — these power the fast Screener.":"Belum ada saham. Tambahkan beberapa — ini yang dipakai Screener cepat.")+'</div>';
+    }else{
+      wl.forEach(function(s){
+        h+='<div class="kv"><span class="k tapk" data-sym="'+esc(s)+'" style="cursor:pointer;font-weight:700">'+esc(s)+'</span>'+
+          '<span class="v rmwl" data-sym="'+esc(s)+'" style="cursor:pointer;color:var(--red)">✕</span></div>';
       });
-
-      var chg = document.createElement('div'); chg.className = 'wl-chg ' + (r.up ? 'up' : 'dn'); chg.textContent = r.chg;
-
-      row.appendChild(sym); row.appendChild(spark); row.appendChild(chg);
-      host.appendChild(row);
-    });
-  })();
-
-  /* ============================================================
-     Market ticker strip (built in JS, duplicated for seamless loop)
-     ============================================================ */
-  (function buildTicker(){
-    var items = [
-      { s:'IHSG',   v:'7.314,2', d:'+0.42%', up:true },
-      { s:'BBCA',   v:'10.275',  d:'+1.24%', up:true },
-      { s:'TLKM',   v:'2.810',   d:'-0.62%', up:false },
-      { s:'BMRI',   v:'6.450',   d:'+0.78%', up:true },
-      { s:'AAPL',   v:'214.80',  d:'+0.88%', up:true },
-      { s:'BTCUSD', v:'68.940',  d:'+2.41%', up:true },
-      { s:'XAUUSD', v:'2.342',   d:'-0.18%', up:false },
-      { s:'EURUSD', v:'1.0842',  d:'+0.11%', up:true }
-    ];
-    var track = $('#tickerTrack');
-    function frag(){
-      var f = document.createDocumentFragment();
-      items.forEach(function(it){
-        var el = document.createElement('span'); el.className = 'it';
-        var b = document.createElement('b'); b.textContent = it.s;
-        var d = document.createElement('span'); d.className = it.up ? 'up' : 'dn'; d.textContent = ' ' + it.d;
-        el.appendChild(b);
-        el.appendChild(document.createTextNode(' ' + it.v));
-        el.appendChild(d);
-        f.appendChild(el);
-      });
-      return f;
     }
-    track.appendChild(frag());
-    track.appendChild(frag()); // second copy -> -50% keyframe loops seamlessly
-  })();
-
-  /* ============================================================
-     Telegram integration — all guarded; safe when tg is null.
-     ============================================================ */
-  if(tg){
-    try{ tg.ready(); }catch(e){}
-    try{ tg.expand(); }catch(e){}
-
-    // keep our dark theme as the base; set chrome to our bg color
-    try{ if(typeof tg.setHeaderColor === 'function') tg.setHeaderColor('#05080c'); }catch(e){}
-    try{ if(typeof tg.setBackgroundColor === 'function') tg.setBackgroundColor('#05080c'); }catch(e){}
-
-    // only adapt the accent if Telegram provides a button color
-    try{
-      var tp = tg.themeParams || {};
-      if(tp.button_color){
-        document.documentElement.style.setProperty('--emerald', tp.button_color);
-        if(tp.button_text_color){
-          // keep primary button readable against the adapted accent
-          document.documentElement.style.setProperty('--txt', document.documentElement.style.getPropertyValue('--txt') || '#e9f2f5');
-        }
-      }
-    }catch(e){}
-
-    // BackButton hidden on root
-    try{ if(tg.BackButton && typeof tg.BackButton.hide === 'function') tg.BackButton.hide(); }catch(e){}
-
-    // MainButton drives the primary "Analisa" action
-    try{
-      if(tg.MainButton){
-        tg.MainButton.setText(t('mb_analyze'));
-        tg.MainButton.show();
-        if(typeof tg.MainButton.onClick === 'function') tg.MainButton.onClick(doAnalyze);
-      }
-    }catch(e){}
+    $("#result").innerHTML=h+wm();
+    function wire(){
+      $all("#result .tapk").forEach(function(el){el.addEventListener("click",function(){
+        $("#sym").value=el.getAttribute("data-sym");runDefault();});});
+      $all("#result .rmwl").forEach(function(el){el.addEventListener("click",function(){
+        delWL(el.getAttribute("data-sym"));renderWatchlist();});});
+    }
+    wire();
+    var add=function(){var v=($("#wlAdd").value||"").trim();if(v){addWL(v);renderWatchlist();}};
+    $("#wlAddBtn").addEventListener("click",add);
+    $("#wlAdd").addEventListener("keydown",function(e){if(e.key==="Enter")add();});
   }
 
-  /* ---------- first paint ---------- */
-  applyTier();
-  applyLang();
+  function renderPortfolio(){
+    var def=($("#sym").value||"BBCA,BBRI,TLKM,ASII").trim();
+    var syms=def.indexOf(",")>=0?def:"BBCA,BBRI,TLKM,ASII";
+    var method=state.pf_method||"hrp";
+    showLoading();
+    api("/portfolio?symbols="+encodeURIComponent(syms)+"&method="+method).then(function(j){
+      if(!j||!j.ok){showErr((j&&j.error)||"error");return;}
+      var h=head("Portfolio",(lang==="en"?"optimal weights":"bobot optimal")+" · "+method.toUpperCase());
+      h+='<div class="seg" id="pfSeg"></div>';
+      var w=j.weights||{};Object.keys(w).forEach(function(s){
+        h+='<div class="kv"><span class="k">'+esc(s)+'</span><span class="v up">'+w[s]+'%</span></div>';});
+      $("#result").innerHTML=h+wm();
+      var seg=$("#pfSeg");["hrp","risk_parity","mean_variance","min_variance","equal"].forEach(function(mt){
+        var b=document.createElement("button");b.textContent=mt.toUpperCase();b.className=(mt===method)?"on":"";
+        b.addEventListener("click",function(){state.pf_method=mt;renderPortfolio();});seg.appendChild(b);});
+    }).catch(function(e){showErr(e.message||"error");});
+  }
+
+  /* ---- search / disambiguation ---- */
+  function doSearch(){
+    var q=($("#sym").value||"").trim();
+    if(!q){$("#sym").focus();return;}
+    haptic();showLoading();
+    var a=state.asset?("&asset="+state.asset):"";
+    api("/search?q="+encodeURIComponent(q)+a).then(function(j){
+      var rs=(j&&j.results)||[];
+      if(!rs.length){showErr(t("notfound"));return;}
+      if(rs.length===1){ pickInstrument(rs[0]); return; }
+      var h=head(t("pick"),q);
+      rs.forEach(function(r){
+        h+='<div class="kv" style="cursor:pointer" data-id="'+esc(r.id)+'" data-sym="'+esc(r.symbol)+'">'+
+          '<span class="k">'+esc(r.symbol)+' · '+esc(r.name||"")+'</span><span class="v">'+esc(r.country||r.exchange||r.asset_class||"")+'</span></div>';
+      });
+      $("#result").innerHTML=h;
+      $all("#result .kv[data-id]").forEach(function(el){el.addEventListener("click",function(){
+        $("#sym").value=el.getAttribute("data-sym");
+        runDefault();
+      });});
+    }).catch(function(e){showErr(e.message||"error");});
+  }
+  function pickInstrument(r){ $("#sym").value=r.symbol; runDefault(); }
+  function runDefault(){ // default action = chart
+    var sym=($("#sym").value||"").trim();
+    var chart=TOOLS[0]; state.activeTool="chart"; renderTools();
+    runSymbolTool(chart, sym);
+  }
+
+  /* ---- events ---- */
+  $("#goBtn").addEventListener("click",doSearch);
+  $("#sym").addEventListener("keydown",function(e){if(e.key==="Enter")doSearch();});
+  $all("#assetChips .chip").forEach(function(c){c.addEventListener("click",function(){
+    $all("#assetChips .chip").forEach(function(x){x.classList.remove("on");});c.classList.add("on");
+    state.asset=c.getAttribute("data-a");});});
+  $all(".langc button").forEach(function(b){b.addEventListener("click",function(){
+    lang=b.getAttribute("data-l");try{localStorage.setItem("po_lang",lang);}catch(e){}applyChrome();
+    // re-render active tool if any
+    if(state.activeTool){var tl=TOOLS.filter(function(x){return x.k===state.activeTool;})[0];if(tl)selectTool(tl);}
+  });});
+
+  /* ---- Telegram chrome ---- */
+  if(tg){try{tg.ready();tg.expand();tg.setHeaderColor&&tg.setHeaderColor("#05080c");tg.setBackgroundColor&&tg.setBackgroundColor("#05080c");}catch(e){}}
+
+  applyChrome();
 })();
 </script>
-</body>
-</html>
+</body></html>
