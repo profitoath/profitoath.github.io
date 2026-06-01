@@ -272,7 +272,14 @@
      `tg` is undefined in a normal browser; the page must still work.
      ============================================================ */
   var tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-  var inTelegram = !!(tg && tg.initData && tg.initData.length > 0);
+  /* Lenient: treat as "inside Telegram" when the SDK is present AND we have
+     either initData OR a user object OR a known platform. Some clients leave
+     initData empty for reply-keyboard web apps even though sendData works. */
+  var inTelegram = !!(tg && (
+    (tg.initData && tg.initData.length > 0) ||
+    (tg.initDataUnsafe && tg.initDataUnsafe.user) ||
+    (tg.platform && tg.platform !== 'unknown')
+  ));
 
   /* ---------- helpers ---------- */
   function $(sel, root){ return (root||document).querySelector(sel); }
@@ -405,15 +412,20 @@
      ============================================================ */
   function send(payload, noteId){
     haptic('light');
-    if(inTelegram && typeof tg.sendData === 'function'){
-      tg.sendData(JSON.stringify(payload));
-      if(typeof tg.close === 'function') tg.close();
-    }else{
-      var note = noteId ? $(noteId) : null;
-      if(note){
-        note.classList.add('show');
-        note.scrollIntoView({behavior:'smooth', block:'nearest'});
-      }
+    // Always TRY sendData when the SDK exposes it — detection of "inTelegram"
+    // can be wrong on some clients, so we attempt the real call and only fall
+    // back to the note if it actually throws or is unavailable.
+    if(tg && typeof tg.sendData === 'function'){
+      try{
+        tg.sendData(JSON.stringify(payload));
+        if(typeof tg.close === 'function') tg.close();
+        return;
+      }catch(e){ /* fall through to note */ }
+    }
+    var note = noteId ? $(noteId) : null;
+    if(note){
+      note.classList.add('show');
+      note.scrollIntoView({behavior:'smooth', block:'nearest'});
     }
   }
 
