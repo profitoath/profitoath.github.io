@@ -1,0 +1,454 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>profitoath — Analisa Saham AI & Quant Finance di Telegram</title><meta name="description" content="Bot analisa saham AI kelas institusional di Telegram. Chart TA, forecast, backtest IDX-realistis (lot 100, ARA/ARB), screener, regime, optimasi portofolio MV/RP/HRP, VaR/CVaR Rupiah. Data realtime, 43 negara, 69.221 instrumen."/>
+<link rel="icon" type="image/svg+xml" href="./assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/style.css"/>
+<style>
+  /* ===== homepage-only layout ===== */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    padding:120px 28px 90px;position:relative}
+  .hero .pill{margin-bottom:30px}
+  .hero h1{max-width:16ch;margin:0 auto}
+  .hero .lead{margin:26px auto 0;font-size:clamp(16px,2vw,20px)}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:38px}
+  .scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:10px}
+  .scroll-hint .line{width:1px;height:42px;background:linear-gradient(var(--emerald),transparent);animation:sdrop 2.2s var(--ease) infinite}
+  @keyframes sdrop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}
+    55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+  .sec-head{max-width:60ch}
+  .sec-head.center{margin:0 auto 48px}
+  .card-link{display:inline-flex;gap:6px;align-items:center;color:var(--emerald2);font-size:13.5px;font-weight:600;margin-top:16px}
+  .card.is-link:hover .card-link{gap:11px}
+  .card-link,.card.is-link{transition:all .4s var(--ease)}
+
+  /* ===== quant teaser floating panels ===== */
+  .quant-stack{position:relative;min-height:440px}
+  .qpanel{padding:22px 24px;position:absolute}
+  .qpanel .qh{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);
+    display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .qpanel .qh .tk{color:var(--emerald2)}
+  .qp-rsi{top:0;left:0;width:62%;z-index:3}
+  .qp-macd{top:150px;right:0;width:60%;z-index:2}
+  .qp-w{bottom:0;left:8%;width:66%;z-index:4}
+  /* RSI gauge */
+  .gauge{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--red),var(--gold) 45%,var(--emerald));position:relative;margin:6px 0 10px}
+  .gauge .pin{position:absolute;top:-5px;width:3px;height:20px;border-radius:3px;background:#fff;box-shadow:0 0 10px #fff;left:58%}
+  .gauge-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .rsi-val{font-size:34px;font-weight:800;letter-spacing:-.03em;font-family:var(--mono);color:var(--emerald2)}
+  .rsi-tag{font-size:12px;color:var(--mut)}
+  /* MACD bars */
+  .macd{display:flex;align-items:flex-end;gap:5px;height:90px}
+  .macd span{flex:1;border-radius:3px 3px 0 0;background:var(--emerald);opacity:.85}
+  .macd span.n{background:var(--red)}
+  /* portfolio weights */
+  .wrow{display:flex;align-items:center;gap:12px;margin:11px 0;font-family:var(--mono);font-size:12px}
+  .wrow .nm{width:54px;color:var(--txt)}
+  .wbar{flex:1;height:8px;border-radius:5px;background:rgba(255,255,255,.05);overflow:hidden}
+  .wbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--emerald),var(--cyan))}
+  .wrow .pc{width:42px;text-align:right;color:var(--mut)}
+  @media(max-width:920px){.quant-stack{min-height:0;display:flex;flex-direction:column;gap:18px}
+    .qpanel{position:static;width:100%!important}}
+
+  /* ===== telegram phone mockup ===== */
+  .phone{width:312px;margin:0 auto;border-radius:42px;padding:14px;background:linear-gradient(160deg,#12202a,#070d13);
+    border:1px solid var(--line2);box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 60px rgba(22,224,168,.08)}
+  .phone .screen{border-radius:30px;background:#070d13;overflow:hidden;border:1px solid var(--line)}
+  .tg-top{display:flex;align-items:center;gap:11px;padding:14px 16px;background:rgba(11,208,255,.05);border-bottom:1px solid var(--line)}
+  .tg-top .ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--emerald),var(--cyan));
+    display:grid;place-items:center;font-weight:800;color:#04130e;font-size:15px}
+  .tg-top .nm{font-weight:700;font-size:14px;line-height:1.2}
+  .tg-top .st{font-size:11px;color:var(--emerald)}
+  .tg-body{padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-height:430px;
+    background:radial-gradient(circle at 80% 0%,rgba(22,224,168,.05),transparent 60%)}
+  .bub{max-width:82%;padding:10px 13px;border-radius:15px;font-size:13px;line-height:1.5}
+  .bub.me{align-self:flex-end;background:linear-gradient(135deg,var(--emerald),var(--cyan));color:#04130e;
+    border-bottom-right-radius:5px;font-family:var(--mono);font-weight:600}
+  .bub.bot{align-self:flex-start;background:rgba(18,26,34,.9);border:1px solid var(--line);color:#dbe7ec;border-bottom-left-radius:5px}
+  .bub.bot .ttl{font-weight:700;color:var(--txt);font-size:13px}
+  .bub.bot .mono{font-size:11.5px;color:var(--mut);display:block;margin-top:3px}
+  .sig{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:700;
+    padding:3px 9px;border-radius:7px;background:rgba(22,224,168,.12);border:1px solid var(--line2);color:var(--emerald2);margin-top:6px}
+
+  /* ===== pricing preview ===== */
+  .price-card{display:flex;flex-direction:column;height:100%}
+  .price-card .tier{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+  .price-card.feat{border-color:var(--line2);box-shadow:0 0 40px rgba(22,224,168,.10)}
+  .price-card .amt{font-size:40px;font-weight:800;letter-spacing:-.03em;margin:14px 0 4px}
+  .price-card .per{font-size:13px;color:var(--dim);font-family:var(--mono)}
+  .price-card ul{list-style:none;margin:22px 0;display:flex;flex-direction:column;gap:11px;flex:1}
+  .price-card li{font-size:13.5px;color:var(--mut);display:flex;gap:10px;align-items:flex-start}
+  .price-card li::before{content:"✓";color:var(--emerald);font-weight:700}
+  .pop{position:absolute;top:-11px;right:22px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    padding:4px 11px;border-radius:100px;background:linear-gradient(135deg,var(--emerald),var(--cyan));color:#04130e;font-weight:700}
+</style></head><body>
+<canvas id="bg-canvas" data-mode="globe"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="./pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+
+  <!-- ============ 1 · HERO ============ -->
+  <header class="hero">
+    <span class="pill" data-i18n-html="hero_pill"><span class="dot"></span>Data realtime · 43 negara · 69.221 instrumen</span>
+    <h1 class="h1" data-stagger data-i18n-html="hero_h1">Riset saham kelas <span class="g-text">institusi</span>, langsung dari <span class="g-text">Telegram</span> Anda.</h1>
+    <p class="lead center" data-fade data-i18n="hero_lead">profitoath menyatukan analisa teknikal, forecast AI, backtest IDX-realistis, dan optimasi portofolio kuantitatif dalam satu bot. Tanpa terminal mahal, tanpa spreadsheet rumit, cukup ketik tickernya.</p>
+    <div class="hero-cta" data-fade>
+      <a class="btn btn-primary btn-lg" href="./pricing.html" data-i18n="hero_cta1">Coba 7 hari gratis →</a>
+      <a class="btn btn-lg btn-ghost" href="./quant.html" data-i18n="hero_cta2">Lihat quant engine</a>
+    </div>
+    <div class="scroll-hint"><span data-i18n="scroll_hint">Gulir</span><span class="line"></span></div>
+  </header>
+
+  <!-- ============ 2 · TICKER ============ -->
+  <div class="ticker"><div class="track" id="ticker-track"></div></div>
+
+  <!-- ============ 3 · STATS ============ -->
+  <section class="block reveal"><div class="wrap">
+    <div class="grid-4">
+      <div class="stat"><div class="n" data-count="43">0</div><div class="l" data-i18n="hp_stat1_l">Negara & bursa terhubung</div></div>
+      <div class="stat"><div class="n" data-count="69221">0</div><div class="l" data-i18n="hp_stat2_l">Instrumen tersedia offline</div></div>
+      <div class="stat"><div class="n" data-count="5">0</div><div class="l" data-i18n="hp_stat3_l">Strategi backtest siap pakai</div></div>
+      <div class="stat"><div class="n" data-count="100" data-suffix="%">0</div><div class="l" data-i18n="hp_stat4_l">Data realtime</div></div>
+    </div>
+  </div></section>
+
+  <!-- ============ 4 · FEATURES PREVIEW ============ -->
+  <section class="block" id="fitur"><div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow" data-i18n="s_feat_eyebrow">Satu bot · seluruh alur riset</div>
+      <h2 class="h2" data-i18n-html="s_feat_h2">Dari sinyal mentah ke keputusan <span class="g-text">terukur</span></h2>
+      <p class="lead center" style="margin-top:16px" data-i18n="s_feat_lead">Enam modul inti yang saling terhubung. Mulai dari membaca grafik sampai mengukur risiko portofolio dalam Rupiah, semuanya dipanggil lewat perintah singkat.</p>
+    </div>
+    <div class="grid-3">
+      <a class="card is-link reveal" href="./features.html">
+        <div class="ic">📈</div><h3 data-i18n="feat1_h3">Chart & Analisa Teknikal</h3>
+        <p data-i18n="feat1_p">Grafik candlestick multi-timeframe lengkap dengan RSI, MACD, Bollinger Bands, EMA, dan deteksi support/resistance otomatis. Render rapi langsung di chat.</p>
+        <span class="card-link" data-i18n-html="card_feat_link">Pelajari fitur <span>→</span></span>
+      </a>
+      <a class="card is-link reveal" href="./features.html">
+        <div class="ic">🧠</div><h3 data-i18n="feat2_h3">Forecast AI</h3>
+        <p data-i18n="feat2_p">Proyeksi pergerakan harga berbasis model machine learning dengan rentang keyakinan, bukan satu angka tunggal. Konteks tren, momentum, dan volatilitas disertakan.</p>
+        <span class="card-link" data-i18n-html="card_feat_link">Pelajari fitur <span>→</span></span>
+      </a>
+      <a class="card is-link reveal" href="./features.html">
+        <div class="ic">⏮️</div><h3 data-i18n="feat3_h3">Backtest IDX-Realistis</h3>
+        <p data-i18n="feat3_p">Uji strategi dengan aturan bursa nyata: lot 100 lembar, batas ARA/ARB, dan biaya transaksi. Hasil mendekati kondisi eksekusi sebenarnya, bukan simulasi ideal.</p>
+        <span class="card-link" data-i18n-html="card_feat_link">Pelajari fitur <span>→</span></span>
+      </a>
+      <a class="card is-link reveal" href="./features.html">
+        <div class="ic">🔎</div><h3 data-i18n="feat4_h3">Screener</h3>
+        <p data-i18n="feat4_p">Saring ribuan emiten dengan filter teknikal dan fundamental dalam hitungan detik. Temukan kandidat sesuai kriteria momentum, valuasi, atau breakout Anda.</p>
+        <span class="card-link" data-i18n-html="card_feat_link">Pelajari fitur <span>→</span></span>
+      </a>
+      <a class="card is-link reveal" href="./features.html">
+        <div class="ic">🌗</div><h3 data-i18n="feat5_h3">Deteksi Regime</h3>
+        <p data-i18n="feat5_p">Kenali apakah pasar sedang trending, ranging, atau bergejolak. profitoath mengklasifikasikan regime sehingga strategi Anda menyesuaikan kondisi, bukan melawannya.</p>
+        <span class="card-link" data-i18n-html="card_feat_link">Pelajari fitur <span>→</span></span>
+      </a>
+      <a class="card is-link reveal" href="./features.html">
+        <div class="ic">🔔</div><h3 data-i18n="feat6_h3">Alert Cerdas</h3>
+        <p data-i18n="feat6_p">Pasang notifikasi pada level harga, persilangan indikator, atau pergeseran regime. Bot memantau pasar 24 jam dan mengabari Anda saat momen yang dipantau tiba.</p>
+        <span class="card-link" data-i18n-html="card_feat_link">Pelajari fitur <span>→</span></span>
+      </a>
+    </div>
+  </div></section>
+
+  <!-- ============ 5 · QUANT ENGINE TEASER ============ -->
+  <section class="block" id="quant-teaser"><div class="wrap">
+    <div class="split">
+      <div class="reveal">
+        <div class="eyebrow" data-i18n="s_quant_eyebrow">Quant Engine</div>
+        <h2 class="h2" data-i18n-html="s_quant_h2">Matematika portofolio yang biasanya <span class="g-text">terkunci</span> di meja institusi</h2>
+        <p class="lead" style="margin-top:18px" data-i18n="s_quant_lead">profitoath menjalankan optimasi bobot Mean-Variance (Markowitz), Risk Parity, dan Hierarchical Risk Parity (HRP) di balik layar. Ukur Value at Risk dan Conditional VaR langsung dalam Rupiah, lalu cek kapasitas strategi hingga modal miliaran tanpa menggeser harga pasar.</p>
+        <ul class="lead" style="margin:22px 0 0;padding-left:20px;list-style:disc">
+          <li data-i18n="s_quant_li1">Alokasi MV / RP / HRP dengan batas bobot yang dapat diatur</li>
+          <li data-i18n-html="s_quant_li2_html">VaR &amp; CVaR dalam nominal Rupiah, bukan persentase abstrak</li>
+          <li data-i18n="s_quant_li3">Analisa kapasitas: berapa modal yang masih realistis dijalankan</li>
+        </ul>
+        <a class="btn btn-primary btn-lg" href="./quant.html" style="margin-top:30px" data-i18n="s_quant_cta">Jelajahi quant engine →</a>
+      </div>
+      <div class="quant-stack reveal">
+        <div class="qpanel glass qp-rsi" data-parallax="-40">
+          <div class="qh"><span>RSI · 14</span><span class="tk">BBCA · 1D</span></div>
+          <div class="rsi-val">58.4</div>
+          <div class="gauge"><span class="pin"></span></div>
+          <div class="gauge-row"><span>30 · oversold</span><span>70 · overbought</span></div>
+          <div class="rsi-tag" data-i18n="hp_rsi_tag">Momentum netral-positif, ruang naik masih terbuka.</div>
+        </div>
+        <div class="qpanel glass qp-macd" data-parallax="30">
+          <div class="qh"><span>MACD histogram</span><span class="tk">cross ↑</span></div>
+          <div class="macd">
+            <span class="n" style="height:30%"></span><span class="n" style="height:20%"></span>
+            <span style="height:14%"></span><span style="height:34%"></span><span style="height:52%"></span>
+            <span style="height:46%"></span><span style="height:70%"></span><span style="height:88%"></span>
+            <span style="height:66%"></span><span style="height:78%"></span>
+          </div>
+        </div>
+        <div class="qpanel glass qp-w" data-parallax="-20">
+          <div class="qh"><span data-i18n="hp_qpw_label">Bobot portofolio · HRP</span><span class="tk">VaR 95% · Rp</span></div>
+          <div class="wrow"><span class="nm">BBCA</span><span class="wbar"><i style="width:34%"></i></span><span class="pc">34%</span></div>
+          <div class="wrow"><span class="nm">TLKM</span><span class="wbar"><i style="width:26%"></i></span><span class="pc">26%</span></div>
+          <div class="wrow"><span class="nm">ASII</span><span class="wbar"><i style="width:22%"></i></span><span class="pc">22%</span></div>
+          <div class="wrow"><span class="nm">ANTM</span><span class="wbar"><i style="width:18%"></i></span><span class="pc">18%</span></div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ============ 6 · TELEGRAM PHONE MOCKUP ============ -->
+  <section class="block"><div class="wrap">
+    <div class="split">
+      <div class="phone reveal" data-parallax="-30">
+        <div class="screen">
+          <div class="tg-top"><div class="ava">P</div><div><div class="nm">profitoath bot</div><div class="st" data-i18n="hp_tg_status">● online · membaca pasar</div></div></div>
+          <div class="tg-body">
+            <div class="bub me">/chart BBCA</div>
+            <div class="bub bot"><span class="ttl">BBCA · Bank Central Asia</span>
+              <span class="mono" data-i18n="hp_tg_chart_data">9.875 (+1,4%) · Vol 84,2 jt · RSI 58 · MACD ↑</span>
+              <span class="sig" data-i18n="hp_tg_sig">▲ BIAS BULLISH</span></div>
+            <div class="bub me">/forecast BBCA</div>
+            <div class="bub bot"><span class="ttl" data-i18n="hp_tg_fc_ttl">Proyeksi 5 hari</span>
+              <span class="mono" data-i18n="hp_tg_fc_data">Median 10.050 · rentang 9.700–10.350</span>
+              <span class="mono" data-i18n="hp_tg_fc_conf">Keyakinan 68% · regime: trending</span></div>
+            <div class="bub me">/capacity</div>
+            <div class="bub bot"><span class="ttl" data-i18n="hp_tg_cap_ttl">Kapasitas strategi</span>
+              <span class="mono" data-i18n="hp_tg_cap_data">Modal realistis ≤ Rp 7,4 M tanpa slippage berarti</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="eyebrow" data-i18n="s_tg_eyebrow">Tanpa instalasi · tanpa kurva belajar</div>
+        <h2 class="h2" data-i18n-html="s_tg_h2">Sekuat terminal pro, <span class="g-text">sesederhana</span> mengirim pesan</h2>
+        <p class="lead" style="margin-top:18px" data-i18n-html="hp_tg_p1">Tak ada dashboard yang harus dipelajari berhari-hari. Ketik perintah, dapat jawaban. <span class="mono" style="color:var(--emerald2)">/chart</span>, <span class="mono" style="color:var(--emerald2)">/forecast</span>, <span class="mono" style="color:var(--emerald2)">/backtest</span>, dan <span class="mono" style="color:var(--emerald2)">/capacity</span> mengubah Telegram menjadi meja riset kuantitatif yang selalu di saku Anda.</p>
+        <p class="lead" style="margin-top:16px" data-i18n="hp_tg_p2">Pembayaran fleksibel lewat Telegram Stars maupun QRIS, langsung dari dalam chat. Mulai gratis, naik tier kapan pun Anda siap.</p>
+        <a class="btn btn-primary btn-lg" href="./features.html" style="margin-top:28px" data-i18n="s_tg_cta">Lihat semua perintah →</a>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ============ 7 · PRICING PREVIEW ============ -->
+  <section class="block" id="harga"><div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow" data-i18n="s_price_eyebrow">Harga transparan</div>
+      <h2 class="h2" data-i18n-html="s_price_h2">Mulai gratis, naik level saat <span class="g-text">siap</span></h2>
+      <p class="lead center" style="margin-top:16px" data-i18n="s_price_lead">Tiga tier sederhana. Bayar pakai Telegram Stars atau QRIS, tanpa kontrak, batalkan kapan saja.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card price-card reveal">
+        <span class="tier" data-i18n="tier_free">Free</span>
+        <div class="amt">Rp 0</div><div class="per" data-i18n="pp_free_per">/ selamanya</div>
+        <ul>
+          <li data-i18n-html="pp_free_li1_html">Chart &amp; indikator teknikal dasar</li>
+          <li data-i18n="pp_free_li2">Akses 69.221 instrumen offline</li>
+          <li data-i18n="pp_free_li3">Screener terbatas harian</li>
+          <li data-i18n-html="pp_free_li4_html">Komunitas &amp; edukasi</li>
+        </ul>
+        <a class="btn" href="./pricing.html" data-i18n="pp_free_cta">Mulai gratis</a>
+      </div>
+      <div class="card price-card feat reveal">
+        <span class="pop" data-i18n="tier_popular">Populer</span>
+        <span class="tier" data-i18n="tier_pro">Pro</span>
+        <div class="amt">Rp 99rb</div><div class="per" data-i18n="pp_pro_per">/ bulan</div>
+        <ul>
+          <li data-i18n="pp_pro_li1">Semua fitur Free, tanpa batas harian</li>
+          <li data-i18n-html="pp_pro_li2_html">Forecast AI &amp; deteksi regime</li>
+          <li data-i18n="pp_pro_li3">Backtest IDX-realistis (lot 100, ARA/ARB)</li>
+          <li data-i18n="pp_pro_li4">Alert cerdas tak terbatas</li>
+        </ul>
+        <a class="btn btn-primary" href="./pricing.html" data-i18n="pp_pro_cta">Pilih Pro →</a>
+      </div>
+      <div class="card price-card reveal">
+        <span class="tier" data-i18n="tier_vip">VIP</span>
+        <div class="amt">Rp 299rb</div><div class="per" data-i18n="pp_vip_per">/ bulan</div>
+        <ul>
+          <li data-i18n="pp_vip_li1">Semua fitur Pro</li>
+          <li data-i18n="pp_vip_li2">Quant engine penuh: MV · RP · HRP</li>
+          <li data-i18n-html="pp_vip_li3_html">VaR/CVaR Rupiah &amp; analisa kapasitas</li>
+          <li data-i18n-html="pp_vip_li4_html">Prioritas data realtime &amp; dukungan</li>
+        </ul>
+        <a class="btn" href="./pricing.html" data-i18n="pp_vip_cta">Pilih VIP</a>
+      </div>
+    </div>
+    <p class="center" style="margin-top:28px;color:var(--mut);font-size:14px" data-i18n-html="hp_price_foot">Butuh rincian fitur per tier? <a href="./pricing.html" style="color:var(--emerald2)">Lihat halaman harga lengkap →</a></p>
+  </div></section>
+
+  <!-- ============ 8 · BLOG TEASER ============ -->
+  <section class="block"><div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow" data-i18n="s_blog_eyebrow">Dari ruang riset</div>
+      <h2 class="h2" data-i18n-html="s_blog_h2">Belajar membaca pasar seperti <span class="g-text">kuant</span></h2>
+      <p class="lead center" style="margin-top:16px" data-i18n="s_blog_lead">Panduan teknis yang ringkas dan jujur, ditulis untuk analis yang ingin paham mesin di balik angka.</p>
+    </div>
+    <div class="grid-3">
+      <a class="card post-card reveal" href="./blog/cara-membaca-rsi-macd.html">
+        <div class="thumb"><span class="tag" data-i18n="hp_blog1_tag">Analisa Teknikal</span></div>
+        <h3 data-i18n-html="hp_blog1_h3">Cara Membaca RSI &amp; MACD Tanpa Bias</h3>
+        <p data-i18n="hp_blog1_p">Dua indikator paling populer, dan dua kesalahan paling umum. Pahami divergensi, persilangan, serta cara menyaring sinyal palsu di pasar IDX.</p>
+        <span class="read-more" data-i18n-html="hp_blog_readmore">Baca artikel <span>→</span></span>
+      </a>
+      <a class="card post-card reveal" href="./blog/apa-itu-backtesting-saham.html">
+        <div class="thumb"><span class="tag" data-i18n="hp_blog2_tag">Backtest</span></div>
+        <h3 data-i18n="hp_blog2_h3">Apa Itu Backtesting Saham?</h3>
+        <p data-i18n="hp_blog2_p">Mengapa backtest yang mengabaikan lot 100, ARA/ARB, dan biaya transaksi menipu diri sendiri. Kerangka pengujian yang realistis untuk bursa Indonesia.</p>
+        <span class="read-more" data-i18n-html="hp_blog_readmore">Baca artikel <span>→</span></span>
+      </a>
+      <a class="card post-card reveal" href="./blog/optimasi-portofolio-markowitz.html">
+        <div class="thumb"><span class="tag" data-i18n="hp_blog3_tag">Quant Finance</span></div>
+        <h3 data-i18n="hp_blog3_h3">Optimasi Portofolio Markowitz</h3>
+        <p data-i18n="hp_blog3_p">Dari frontier efisien sampai keterbatasan Mean-Variance, lalu kapan Risk Parity dan HRP menjadi pilihan yang lebih kokoh untuk portofolio nyata.</p>
+        <span class="read-more" data-i18n-html="hp_blog_readmore">Baca artikel <span>→</span></span>
+      </a>
+    </div>
+    <p class="center" style="margin-top:28px"><a class="btn" href="./blog/index.html" data-i18n="blog_all_cta">Lihat semua artikel →</a></p>
+  </div></section>
+
+  <!-- ============ 9 · CTA BAND ============ -->
+  <section class="block"><div class="wrap">
+    <div class="cta-band reveal">
+      <div class="eyebrow center" data-i18n="cta_band_eyebrow">Siap menganalisa lebih cerdas?</div>
+      <h2 data-i18n-html="cta_band_h2">Mulai riset kuantitatif Anda <span class="g-text">hari ini</span></h2>
+      <p data-i18n="cta_band_p">Gratis 7 hari penuh fitur. Tanpa kartu kredit, cukup akun Telegram. Tingkatkan ke Pro atau VIP kapan pun lewat Telegram Stars atau QRIS.</p>
+      <div class="hero-cta" style="margin-top:30px">
+        <a class="btn btn-primary btn-lg" href="./pricing.html" data-i18n="cta_band_cta1">Coba 7 hari gratis →</a>
+        <a class="btn btn-lg btn-ghost" href="./docs.html" data-i18n="cta_band_cta2">Baca dokumentasi</a>
+      </div>
+    </div>
+  </div></section>
+
+</main>
+
+<footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+    <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a><a href="./docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="./about.html" data-i18n="footer_about_link">Tentang</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a><a href="./glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="./assets/site.js"></script>
+<script>window.PO_I18N_PAGE = {
+  hero_pill:{id:"<span class=\"dot\"></span>Data realtime · 43 negara · 69.221 instrumen", en:"<span class=\"dot\"></span>Realtime data · 43 countries · 69,221 instruments"},
+  hero_h1:{id:"Riset saham kelas <span class=\"g-text\">institusi</span>, langsung dari <span class=\"g-text\">Telegram</span> Anda.", en:"<span class=\"g-text\">Institutional</span>-grade stock research, straight from your <span class=\"g-text\">Telegram</span>."},
+  hero_lead:{id:"profitoath menyatukan analisa teknikal, forecast AI, backtest IDX-realistis, dan optimasi portofolio kuantitatif dalam satu bot. Tanpa terminal mahal, tanpa spreadsheet rumit, cukup ketik tickernya.", en:"profitoath brings together technical analysis, AI forecasting, IDX-realistic backtesting, and quantitative portfolio optimization in one bot. No expensive terminal, no complex spreadsheets, just type the ticker."},
+  hero_cta1:{id:"Coba 7 hari gratis →", en:"Try 7 days free →"},
+  hero_cta2:{id:"Lihat quant engine", en:"See the quant engine"},
+  scroll_hint:{id:"Gulir", en:"Scroll"},
+
+  s_feat_eyebrow:{id:"Satu bot · seluruh alur riset", en:"One bot · the entire research workflow"},
+  s_feat_h2:{id:"Dari sinyal mentah ke keputusan <span class=\"g-text\">terukur</span>", en:"From raw signals to <span class=\"g-text\">measured</span> decisions"},
+  s_feat_lead:{id:"Enam modul inti yang saling terhubung. Mulai dari membaca grafik sampai mengukur risiko portofolio dalam Rupiah, semuanya dipanggil lewat perintah singkat.", en:"Six interconnected core modules. From reading charts to measuring portfolio risk in Rupiah, all called with a short command."},
+
+  feat1_h3:{id:"Chart & Analisa Teknikal", en:"Charts & Technical Analysis"},
+  feat1_p:{id:"Grafik candlestick multi-timeframe lengkap dengan RSI, MACD, Bollinger Bands, EMA, dan deteksi support/resistance otomatis. Render rapi langsung di chat.", en:"Multi-timeframe candlestick charts complete with RSI, MACD, Bollinger Bands, EMA, and automatic support/resistance detection. Cleanly rendered right in the chat."},
+  feat2_h3:{id:"Forecast AI", en:"AI Forecast"},
+  feat2_p:{id:"Proyeksi pergerakan harga berbasis model machine learning dengan rentang keyakinan, bukan satu angka tunggal. Konteks tren, momentum, dan volatilitas disertakan.", en:"Price movement projections powered by machine learning models with confidence ranges, not a single number. Trend, momentum, and volatility context included."},
+  feat3_h3:{id:"Backtest IDX-Realistis", en:"IDX-Realistic Backtest"},
+  feat3_p:{id:"Uji strategi dengan aturan bursa nyata: lot 100 lembar, batas ARA/ARB, dan biaya transaksi. Hasil mendekati kondisi eksekusi sebenarnya, bukan simulasi ideal.", en:"Test strategies with real exchange rules: 100-share lots, ARA/ARB limits, and transaction costs. Results close to actual execution conditions, not an idealized simulation."},
+  feat4_h3:{id:"Screener", en:"Screener"},
+  feat4_p:{id:"Saring ribuan emiten dengan filter teknikal dan fundamental dalam hitungan detik. Temukan kandidat sesuai kriteria momentum, valuasi, atau breakout Anda.", en:"Filter thousands of listed stocks with technical and fundamental filters in seconds. Find candidates matching your momentum, valuation, or breakout criteria."},
+  feat5_h3:{id:"Deteksi Regime", en:"Regime Detection"},
+  feat5_p:{id:"Kenali apakah pasar sedang trending, ranging, atau bergejolak. profitoath mengklasifikasikan regime sehingga strategi Anda menyesuaikan kondisi, bukan melawannya.", en:"Recognize whether the market is trending, ranging, or turbulent. profitoath classifies the regime so your strategy adapts to conditions instead of fighting them."},
+  feat6_h3:{id:"Alert Cerdas", en:"Smart Alerts"},
+  feat6_p:{id:"Pasang notifikasi pada level harga, persilangan indikator, atau pergeseran regime. Bot memantau pasar 24 jam dan mengabari Anda saat momen yang dipantau tiba.", en:"Set notifications on price levels, indicator crossovers, or regime shifts. The bot watches the market 24 hours a day and alerts you when the moment you're tracking arrives."},
+  card_feat_link:{id:"Pelajari fitur <span>→</span>", en:"Learn the feature <span>→</span>"},
+
+  s_quant_eyebrow:{id:"Quant Engine", en:"Quant Engine"},
+  s_quant_h2:{id:"Matematika portofolio yang biasanya <span class=\"g-text\">terkunci</span> di meja institusi", en:"Portfolio mathematics usually <span class=\"g-text\">locked</span> behind institutional desks"},
+  s_quant_lead:{id:"profitoath menjalankan optimasi bobot Mean-Variance (Markowitz), Risk Parity, dan Hierarchical Risk Parity (HRP) di balik layar. Ukur Value at Risk dan Conditional VaR langsung dalam Rupiah, lalu cek kapasitas strategi hingga modal miliaran tanpa menggeser harga pasar.", en:"profitoath runs Mean-Variance (Markowitz), Risk Parity, and Hierarchical Risk Parity (HRP) weight optimization behind the scenes. Measure Value at Risk and Conditional VaR directly in Rupiah, then check strategy capacity up to billions in capital without moving the market price."},
+  s_quant_li1:{id:"Alokasi MV / RP / HRP dengan batas bobot yang dapat diatur", en:"MV / RP / HRP allocation with adjustable weight limits"},
+  s_quant_li2_html:{id:"VaR &amp; CVaR dalam nominal Rupiah, bukan persentase abstrak", en:"VaR &amp; CVaR in nominal Rupiah, not abstract percentages"},
+  s_quant_li3:{id:"Analisa kapasitas: berapa modal yang masih realistis dijalankan", en:"Capacity analysis: how much capital is still realistic to deploy"},
+  s_quant_cta:{id:"Jelajahi quant engine →", en:"Explore the quant engine →"},
+
+  s_tg_eyebrow:{id:"Tanpa instalasi · tanpa kurva belajar", en:"No installation · no learning curve"},
+  s_tg_h2:{id:"Sekuat terminal pro, <span class=\"g-text\">sesederhana</span> mengirim pesan", en:"As powerful as a pro terminal, <span class=\"g-text\">as simple</span> as sending a message"},
+  s_tg_cta:{id:"Lihat semua perintah →", en:"See all commands →"},
+
+  s_price_eyebrow:{id:"Harga transparan", en:"Transparent pricing"},
+  s_price_h2:{id:"Mulai gratis, naik level saat <span class=\"g-text\">siap</span>", en:"Start free, level up when you're <span class=\"g-text\">ready</span>"},
+  s_price_lead:{id:"Tiga tier sederhana. Bayar pakai Telegram Stars atau QRIS, tanpa kontrak, batalkan kapan saja.", en:"Three simple tiers. Pay with Telegram Stars or QRIS, no contract, cancel anytime."},
+
+  tier_free:{id:"Free", en:"Free"},
+  pp_free_per:{id:"/ selamanya", en:"/ forever"},
+  pp_free_li1_html:{id:"Chart &amp; indikator teknikal dasar", en:"Charts &amp; basic technical indicators"},
+  pp_free_li2:{id:"Akses 69.221 instrumen offline", en:"Access to 69,221 offline instruments"},
+  pp_free_li3:{id:"Screener terbatas harian", en:"Limited daily screener"},
+  pp_free_li4_html:{id:"Komunitas &amp; edukasi", en:"Community &amp; education"},
+  pp_free_cta:{id:"Mulai gratis", en:"Start free"},
+
+  tier_popular:{id:"Populer", en:"Popular"},
+  tier_pro:{id:"Pro", en:"Pro"},
+  pp_pro_per:{id:"/ bulan", en:"/ month"},
+  pp_pro_li1:{id:"Semua fitur Free, tanpa batas harian", en:"All Free features, with no daily limits"},
+  pp_pro_li2_html:{id:"Forecast AI &amp; deteksi regime", en:"AI forecast &amp; regime detection"},
+  pp_pro_li3:{id:"Backtest IDX-realistis (lot 100, ARA/ARB)", en:"IDX-realistic backtest (lot 100, ARA/ARB)"},
+  pp_pro_li4:{id:"Alert cerdas tak terbatas", en:"Unlimited smart alerts"},
+  pp_pro_cta:{id:"Pilih Pro →", en:"Choose Pro →"},
+
+  tier_vip:{id:"VIP", en:"VIP"},
+  pp_vip_per:{id:"/ bulan", en:"/ month"},
+  pp_vip_li1:{id:"Semua fitur Pro", en:"All Pro features"},
+  pp_vip_li2:{id:"Quant engine penuh: MV · RP · HRP", en:"Full quant engine: MV · RP · HRP"},
+  pp_vip_li3_html:{id:"VaR/CVaR Rupiah &amp; analisa kapasitas", en:"VaR/CVaR in Rupiah &amp; capacity analysis"},
+  pp_vip_li4_html:{id:"Prioritas data realtime &amp; dukungan", en:"Priority realtime data &amp; support"},
+  pp_vip_cta:{id:"Pilih VIP", en:"Choose VIP"},
+
+  s_blog_eyebrow:{id:"Dari ruang riset", en:"From the research room"},
+  s_blog_h2:{id:"Belajar membaca pasar seperti <span class=\"g-text\">kuant</span>", en:"Learn to read the market like a <span class=\"g-text\">quant</span>"},
+  s_blog_lead:{id:"Panduan teknis yang ringkas dan jujur, ditulis untuk analis yang ingin paham mesin di balik angka.", en:"Concise, honest technical guides, written for analysts who want to understand the machine behind the numbers."},
+  blog_all_cta:{id:"Lihat semua artikel →", en:"See all articles →"},
+
+  cta_band_eyebrow:{id:"Siap menganalisa lebih cerdas?", en:"Ready to analyze smarter?"},
+  cta_band_h2:{id:"Mulai riset kuantitatif Anda <span class=\"g-text\">hari ini</span>", en:"Start your quantitative research <span class=\"g-text\">today</span>"},
+  cta_band_p:{id:"Gratis 7 hari penuh fitur. Tanpa kartu kredit, cukup akun Telegram. Tingkatkan ke Pro atau VIP kapan pun lewat Telegram Stars atau QRIS.", en:"7 days free with full features. No credit card, just a Telegram account. Upgrade to Pro or VIP anytime via Telegram Stars or QRIS."},
+  cta_band_cta1:{id:"Coba 7 hari gratis →", en:"Try 7 days free →"},
+  cta_band_cta2:{id:"Baca dokumentasi", en:"Read the documentation"},
+
+  hp_stat1_l:{id:"Negara & bursa terhubung", en:"Countries & exchanges connected"},
+  hp_stat2_l:{id:"Instrumen tersedia offline", en:"Instruments available offline"},
+  hp_stat3_l:{id:"Strategi backtest siap pakai", en:"Ready-to-use backtest strategies"},
+  hp_stat4_l:{id:"Data realtime", en:"Realtime data"},
+
+  hp_rsi_tag:{id:"Momentum netral-positif, ruang naik masih terbuka.", en:"Neutral-positive momentum, room to rise remains open."},
+  hp_qpw_label:{id:"Bobot portofolio · HRP", en:"Portfolio weights · HRP"},
+
+  hp_tg_status:{id:"● online · membaca pasar", en:"● online · reading the market"},
+  hp_tg_chart_data:{id:"9.875 (+1,4%) · Vol 84,2 jt · RSI 58 · MACD ↑", en:"9,875 (+1.4%) · Vol 84.2M · RSI 58 · MACD ↑"},
+  hp_tg_sig:{id:"▲ BIAS BULLISH", en:"▲ BULLISH BIAS"},
+  hp_tg_fc_ttl:{id:"Proyeksi 5 hari", en:"5-day projection"},
+  hp_tg_fc_data:{id:"Median 10.050 · rentang 9.700–10.350", en:"Median 10,050 · range 9,700–10,350"},
+  hp_tg_fc_conf:{id:"Keyakinan 68% · regime: trending", en:"Confidence 68% · regime: trending"},
+  hp_tg_cap_ttl:{id:"Kapasitas strategi", en:"Strategy capacity"},
+  hp_tg_cap_data:{id:"Modal realistis ≤ Rp 7,4 M tanpa slippage berarti", en:"Realistic capital ≤ Rp 7.4B with no meaningful slippage"},
+  hp_tg_p1:{id:"Tak ada dashboard yang harus dipelajari berhari-hari. Ketik perintah, dapat jawaban. <span class=\"mono\" style=\"color:var(--emerald2)\">/chart</span>, <span class=\"mono\" style=\"color:var(--emerald2)\">/forecast</span>, <span class=\"mono\" style=\"color:var(--emerald2)\">/backtest</span>, dan <span class=\"mono\" style=\"color:var(--emerald2)\">/capacity</span> mengubah Telegram menjadi meja riset kuantitatif yang selalu di saku Anda.", en:"There's no dashboard to study for days. Type a command, get an answer. <span class=\"mono\" style=\"color:var(--emerald2)\">/chart</span>, <span class=\"mono\" style=\"color:var(--emerald2)\">/forecast</span>, <span class=\"mono\" style=\"color:var(--emerald2)\">/backtest</span>, and <span class=\"mono\" style=\"color:var(--emerald2)\">/capacity</span> turn Telegram into a quantitative research desk that's always in your pocket."},
+  hp_tg_p2:{id:"Pembayaran fleksibel lewat Telegram Stars maupun QRIS, langsung dari dalam chat. Mulai gratis, naik tier kapan pun Anda siap.", en:"Flexible payment via Telegram Stars or QRIS, right inside the chat. Start free, move up a tier whenever you're ready."},
+
+  hp_price_foot:{id:"Butuh rincian fitur per tier? <a href=\"./pricing.html\" style=\"color:var(--emerald2)\">Lihat halaman harga lengkap →</a>", en:"Need a per-tier feature breakdown? <a href=\"./pricing.html\" style=\"color:var(--emerald2)\">See the full pricing page →</a>"},
+
+  hp_blog1_tag:{id:"Analisa Teknikal", en:"Technical Analysis"},
+  hp_blog1_h3:{id:"Cara Membaca RSI &amp; MACD Tanpa Bias", en:"How to Read RSI &amp; MACD Without Bias"},
+  hp_blog1_p:{id:"Dua indikator paling populer, dan dua kesalahan paling umum. Pahami divergensi, persilangan, serta cara menyaring sinyal palsu di pasar IDX.", en:"The two most popular indicators, and the two most common mistakes. Understand divergences, crossovers, and how to filter out false signals in the IDX market."},
+  hp_blog_readmore:{id:"Baca artikel <span>→</span>", en:"Read article <span>→</span>"},
+  hp_blog2_tag:{id:"Backtest", en:"Backtest"},
+  hp_blog2_h3:{id:"Apa Itu Backtesting Saham?", en:"What Is Stock Backtesting?"},
+  hp_blog2_p:{id:"Mengapa backtest yang mengabaikan lot 100, ARA/ARB, dan biaya transaksi menipu diri sendiri. Kerangka pengujian yang realistis untuk bursa Indonesia.", en:"Why a backtest that ignores lot 100, ARA/ARB, and transaction costs is fooling itself. A realistic testing framework for the Indonesian exchange."},
+  hp_blog3_tag:{id:"Quant Finance", en:"Quant Finance"},
+  hp_blog3_h3:{id:"Optimasi Portofolio Markowitz", en:"Markowitz Portfolio Optimization"},
+  hp_blog3_p:{id:"Dari frontier efisien sampai keterbatasan Mean-Variance, lalu kapan Risk Parity dan HRP menjadi pilihan yang lebih kokoh untuk portofolio nyata.", en:"From the efficient frontier to the limits of Mean-Variance, and when Risk Parity and HRP become the more robust choice for real portfolios."}
+};</script>
+<script src="./assets/i18n.js"></script></body></html>

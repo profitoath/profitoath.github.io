@@ -1,0 +1,429 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quant Engine — Mesin Kuantitatif profitoath</title><meta name="description" content="Di balik profitoath: stack Python kelas riset, backtest IDX-realistis tanpa look-ahead bias, optimasi portofolio MV/RP/HRP, VaR/CVaR Rupiah, dan forecast probabilistik."/>
+<link rel="icon" type="image/svg+xml" href="./assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/style.css"/>
+<style>
+  .q-hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+  @media(max-width:920px){.q-hero-grid{grid-template-columns:1fr;gap:36px}}
+  .pipe{list-style:none;margin:0;padding:0}
+  .pipe li{position:relative;padding:16px 0 16px 38px;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--mut)}
+  .pipe li:last-child{border-bottom:none}
+  .pipe li::before{content:attr(data-step);position:absolute;left:0;top:15px;width:24px;height:24px;border-radius:8px;
+    display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:var(--emerald2);
+    border:1px solid var(--line2);background:rgba(22,224,168,.07)}
+  .pipe li b{color:var(--txt)}
+  .resultcard{overflow:hidden}
+  .resultcard .rc-head{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--mut)}
+  .resultcard .rc-head .live{display:inline-flex;align-items:center;gap:7px;color:var(--emerald)}
+  .resultcard .rc-head .live i{width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 9px var(--emerald);animation:pulse 2s infinite}
+  .rc-body{padding:8px 20px 18px}
+  .rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .rc-row:last-child{border-bottom:none}
+  .rc-row span{color:var(--mut)} .rc-row b{font-family:var(--mono);font-size:15px;color:var(--txt)}
+  .rc-row b.up{color:var(--emerald)} .rc-row b.dn{color:var(--red)}
+  .metric-tbl{width:100%;border-collapse:collapse;font-size:14px}
+  .metric-tbl th,.metric-tbl td{border-bottom:1px solid var(--line);padding:12px 14px;text-align:left;vertical-align:top}
+  .metric-tbl th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .metric-tbl td.m{font-family:var(--mono);color:var(--emerald2);white-space:nowrap}
+  .metric-tbl td.d{color:var(--mut)}
+  .tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+  .tags .t{font-family:var(--mono);font-size:11.5px;padding:6px 12px;border-radius:8px;border:1px solid var(--line2);color:var(--emerald2);background:rgba(22,224,168,.05)}
+  .lab{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  .kv{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .kv:last-child{border-bottom:none} .kv span{color:var(--mut)} .kv b{font-family:var(--mono);color:var(--txt)}
+  /* quantile band visual */
+  .band{position:relative;height:120px;margin-top:6px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,rgba(11,208,255,.05),rgba(22,224,168,.03))}
+  .band .fill{position:absolute;left:0;right:0;top:30%;bottom:24%;background:linear-gradient(180deg,rgba(11,208,255,.18),rgba(22,224,168,.10));border-top:1px dashed rgba(11,208,255,.5);border-bottom:1px dashed rgba(22,224,168,.5)}
+  .band .mid{position:absolute;left:0;right:0;top:52%;height:2px;background:linear-gradient(90deg,var(--cyan),var(--emerald))}
+  .band .q{position:absolute;right:12px;font-family:var(--mono);font-size:11px;color:var(--mut)}
+  .band .q.p90{top:26%;color:var(--cyan)} .band .q.p50{top:46%;color:var(--emerald2)} .band .q.p10{top:70%;color:var(--mut)}
+  .flowbars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:8px}
+  .flowbars i{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(var(--emerald2),rgba(22,224,168,.2))}
+</style></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" aria-current="page" data-i18n="nav_quant">Quant Engine</a>
+    <a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="./pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb reveal"><a href="./index.html" data-i18n="crumb_home">Beranda</a><span class="sep">/</span><span data-i18n="nav_quant">Quant Engine</span></div>
+      <div class="q-hero-grid" style="margin-top:34px">
+        <div class="reveal">
+          <div class="eyebrow" data-i18n="q_eyebrow">Mesin Kuantitatif</div>
+          <h1 class="h1" data-i18n-html="q_h1">Bukan sekadar bot.<br/><span class="g-text">Riset kuant beneran.</span></h1>
+          <p class="lead" style="margin-top:22px" data-i18n="q_lead">Di balik setiap sinyal ada disiplin yang sama dengan meja riset institusional: data bersih, asumsi pasar IDX yang jujur, backtest tanpa kebocoran data, dan ukuran risiko dalam Rupiah. Inilah cara kerjanya — tanpa Anda perlu menyentuh satu baris kode pun.</p>
+          <div class="tags">
+            <span class="t" data-i18n="q_tag_speed">⚡ Hasil dalam detik</span><span class="t" data-i18n="q_tag_idx">🇮🇩 Realistis-IDX</span><span class="t" data-i18n="q_tag_audit">🔍 Bisa diaudit</span><span class="t" data-i18n="q_tag_repro">♻️ Reproducible</span>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+            <a class="btn btn-primary btn-lg" href="./pricing.html" data-i18n="q_cta1">Coba Quant Engine →</a>
+            <a class="btn btn-lg btn-ghost" href="./features.html" data-i18n="q_cta2">Lihat semua fitur</a>
+          </div>
+        </div>
+        <div class="card resultcard reveal">
+          <div class="rc-head"><span data-i18n="q_demo_title">Backtest · BBCA · EMA Cross · 5thn</span><span class="live"><i></i><span data-i18n="q_demo_live">hasil</span></span></div>
+          <div class="rc-body">
+            <div class="rc-row"><span data-i18n="m_cagr">CAGR</span><b class="up">+18,4%</b></div>
+            <div class="rc-row"><span data-i18n="m_sharpe">Sharpe</span><b>1,31</b></div>
+            <div class="rc-row"><span data-i18n="m_sortino">Sortino</span><b>1,87</b></div>
+            <div class="rc-row"><span data-i18n="m_maxdd">Max Drawdown</span><b class="dn">-14,2%</b></div>
+            <div class="rc-row"><span data-i18n="m_calmar">Calmar</span><b>1,29</b></div>
+            <div class="rc-row"><span data-i18n="m_pf">Profit Factor</span><b>1,74</b></div>
+            <div class="rc-row"><span data-i18n="m_trades">Trade · Win rate</span><b>37 · 54%</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker reveal"><div class="track" id="ticker-track"></div></div>
+
+  <!-- ============ 01 · STACK ============ -->
+  <section class="block">
+    <div class="wrap">
+      <div class="reveal" style="max-width:720px">
+        <div class="eyebrow" data-i18n="s1_eyebrow">01 · Fondasi Komputasi</div>
+        <h2 class="h2" data-i18n-html="s1_h2">Mesin <span class="g-text">kelas riset</span></h2>
+        <p class="lead" style="margin-top:18px" data-i18n="s1_lead">Seluruh perhitungan berjalan di atas tumpukan numerik yang sama dipakai tim quant profesional — penuh vektorisasi, deterministik, dan konsisten setiap saat.</p>
+      </div>
+      <div class="grid-4 reveal" style="margin-top:44px">
+        <div class="card"><div class="ic">∑</div><h3 data-i18n="s1_c1_h">Data tervektorisasi</h3><p data-i18n="s1_c1_p">69.221 instrumen diproses sebagai deret waktu dalam sekali operasi — tanpa perulangan lambat, indikator dihitung serempak.</p></div>
+        <div class="card"><div class="ic">∫</div><h3 data-i18n="s1_c2_h">Optimasi numerik</h3><p data-i18n="s1_c2_p">Solver tingkat lanjut untuk frontier efisien, statistik distribusi, dan kalibrasi parameter risiko.</p></div>
+        <div class="card"><div class="ic">⌬</div><h3 data-i18n="s1_c3_h">Machine learning</h3><p data-i18n="s1_c3_p">Forecast memakai <a href="./glossary/index.html" data-i18n="s1_c3_a">Gradient Boosting</a> dengan validasi silang yang sadar urutan waktu.</p></div>
+        <div class="card"><div class="ic">◈</div><h3 data-i18n="s1_c4_h">Cache cerdas</h3><p data-i18n="s1_c4_p">Penyimpanan terkompresi agar tarikan data instan — backtest hari ini sama persis dengan minggu depan.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 · NO LOOK-AHEAD ============ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <div class="eyebrow" data-i18n="s2_eyebrow">02 · Integritas Sinyal</div>
+          <h2 class="h2" data-i18n-html="s2_h2">Tanpa <span class="g-text">look-ahead bias</span></h2>
+          <p class="lead" style="margin-top:18px" data-i18n="s2_lead">Dosa terbesar dalam backtest adalah memakai informasi yang belum tersedia saat keputusan dibuat. Kami menutup celah itu secara struktural.</p>
+          <ul class="pipe" style="margin-top:24px">
+            <li data-step="1"><b data-i18n="s2_l1_b">Sinyal lahir di hari ini.</b> <span data-i18n="s2_l1_t">Indikator hanya melihat data hingga penutupan — tidak pernah mengintip masa depan.</span></li>
+            <li data-step="2"><b data-i18n="s2_l2_b">Eksekusi di pembukaan besok.</b> <span data-i18n="s2_l2_t">Order terisi pada harga pembukaan hari berikutnya, persis seperti Anda menekan tombol setelah sinyal muncul.</span></li>
+            <li data-step="3"><b data-i18n="s2_l3_b">Tanpa kebocoran data.</b> <span data-i18n="s2_l3_t">Setiap input digeser satu langkah sebelum dipakai, mematikan kebocoran sekecil apa pun.</span></li>
+            <li data-step="4"><b data-i18n="s2_l4_b">Tanpa survivorship cheat.</b> <span data-i18n="s2_l4_t">Delisting dan suspensi dihormati pada tanggal aktualnya.</span></li>
+          </ul>
+          <p style="color:var(--mut);font-size:14px;margin-top:20px" data-i18n-html="s2_note">Pelajari istilahnya di <a href="./glossary/index.html" style="color:var(--emerald2)">Glosarium</a> — look-ahead bias, slippage, survivorship bias.</p>
+        </div>
+        <div class="card reveal">
+          <div class="lab" data-i18n="s2_panel_lab">Alur Eksekusi</div>
+          <h3 data-i18n="s2_panel_h">Sinyal → Tunggu → Isi</h3>
+          <div class="flowbars" id="flowbars"></div>
+          <p style="color:var(--mut);font-size:13.5px;margin-top:16px" data-i18n="s2_panel_p">Setiap perubahan posisi dikenai biaya &amp; slippage nyata, jadi kurva ekuitas mencerminkan hasil yang benar-benar bisa Anda capai — bukan angka di atas kertas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · BACKTEST & VALIDATION ============ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="reveal" style="max-width:720px">
+        <div class="eyebrow" data-i18n="s4_eyebrow">03 · Backtest &amp; Validasi</div>
+        <h2 class="h2" data-i18n-html="s4_h2">Cepat, lalu <span class="g-text">diuji jujur</span></h2>
+        <p class="lead" style="margin-top:18px" data-i18n="s4_lead">Ribuan hari diproses dalam hitungan milidetik, lalu hasilnya diuji apakah tahan terhadap data yang belum pernah dilihat strategi.</p>
+      </div>
+      <div class="split" style="margin-top:40px">
+        <div class="card reveal" style="padding:8px 0 0">
+          <table class="metric-tbl">
+            <thead><tr><th data-i18n="s4_th1">Metrik</th><th data-i18n="s4_th2">Arti</th></tr></thead>
+            <tbody>
+              <tr><td class="m" data-i18n="m_cagr">CAGR</td><td class="d" data-i18n="s4_d1">Pertumbuhan majemuk tahunan</td></tr>
+              <tr><td class="m" data-i18n="m_sharpe">Sharpe</td><td class="d" data-i18n="s4_d2">Return per unit volatilitas total</td></tr>
+              <tr><td class="m" data-i18n="m_sortino">Sortino</td><td class="d" data-i18n="s4_d3">Sharpe yang hanya menghukum downside</td></tr>
+              <tr><td class="m" data-i18n="m_maxdd">Max Drawdown</td><td class="d" data-i18n="s4_d4">Penurunan puncak-ke-lembah terdalam</td></tr>
+              <tr><td class="m" data-i18n="m_calmar">Calmar</td><td class="d" data-i18n="s4_d5">CAGR dibagi max drawdown</td></tr>
+              <tr><td class="m" data-i18n="m_pf">Profit Factor</td><td class="d" data-i18n="s4_d6">Total laba ÷ total rugi</td></tr>
+              <tr><td class="m">Deflated Sharpe</td><td class="d" data-i18n="s4_d7">Sharpe yang dikoreksi atas data-mining</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="reveal">
+          <h3 class="h3" style="margin-bottom:14px" data-i18n="s4_layers_h">Tiga lapis anti-overfitting</h3>
+          <ul class="pipe">
+            <li data-step="①"><b data-i18n="s4_l1_b">Walk-forward OOS.</b> <span data-i18n="s4_l1_t">Strategi dioptimasi di jendela in-sample lalu diuji pada periode berikutnya, digeser maju berulang.</span></li>
+            <li data-step="②"><b data-i18n="s4_l2_b">Monte Carlo.</b> <span data-i18n="s4_l2_t">Urutan transaksi diacak ribuan kali untuk memetakan distribusi drawdown — bukan satu jalur keberuntungan.</span></li>
+            <li data-step="③"><b data-i18n="s4_l3_b">Deflated Sharpe.</b> <span data-i18n="s4_l3_t">Mengoreksi Sharpe atas banyaknya strategi yang dicoba, memberi sinyal jujur apakah edge itu nyata.</span></li>
+          </ul>
+          <p style="color:var(--mut);font-size:14px;margin-top:20px" data-i18n-html="s4_note">Definisi tiap metrik di <a href="./glossary/index.html" style="color:var(--emerald2)">Glosarium</a>, studi kasus di <a href="./blog/index.html" style="color:var(--emerald2)">Blog</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 · PORTFOLIO ============ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="reveal" style="max-width:720px">
+        <div class="eyebrow" data-i18n="s5_eyebrow">04 · Alokasi Portofolio</div>
+        <h2 class="h2" data-i18n-html="s5_h2">Dari saham tunggal ke <span class="g-text">portofolio optimal</span></h2>
+        <p class="lead" style="margin-top:18px" data-i18n="s5_lead">Sinyal bagus saja tidak cukup — bobot yang tepat menentukan kelangsungan hidup. Tersedia tiga kerangka alokasi yang dipakai industri.</p>
+      </div>
+      <div class="grid-3 reveal" style="margin-top:40px">
+        <div class="card"><div class="ic">◢</div><h3 data-i18n="s5_c1_h">Mean-Variance</h3><p data-i18n="s5_c1_p">Frontier efisien ala Markowitz: maksimalkan return untuk tingkat risiko tertentu, atau cari portofolio Sharpe-maksimum.</p></div>
+        <div class="card"><div class="ic">⚖</div><h3 data-i18n="s5_c2_h">Risk Parity</h3><p data-i18n="s5_c2_p">Setiap aset menyumbang kontribusi risiko setara, bukan modal setara — jauh lebih tahan saat satu sektor bergejolak.</p></div>
+        <div class="card"><div class="ic">⛓</div><h3 data-i18n="s5_c3_h">HRP</h3><p data-i18n="s5_c3_p">Hierarchical Risk Parity: clustering pohon korelasi yang lebih stabil pada data berisik khas IDX.</p></div>
+      </div>
+      <p style="color:var(--mut);font-size:14px;margin-top:22px;max-width:720px" data-i18n-html="s5_note">Ketiganya menghormati lot 100, kapasitas hingga miliaran Rupiah, dan likuiditas tiap nama. Istilah <a href="./glossary/index.html" style="color:var(--emerald2)">efficient frontier</a>, <a href="./glossary/index.html" style="color:var(--emerald2)">risk parity</a>, dan <a href="./glossary/index.html" style="color:var(--emerald2)">HRP</a> dibahas di Glosarium.</p>
+    </div>
+  </section>
+
+  <!-- ============ 05 · RISK IN RUPIAH ============ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <div class="eyebrow" data-i18n="s6_eyebrow">05 · Manajemen Risiko</div>
+          <h2 class="h2" data-i18n-html="s6_h2">Risiko dalam <span class="g-gold">Rupiah</span>, bukan persen abstrak</h2>
+          <p class="lead" style="margin-top:18px" data-i18n="s6_lead">Angka risiko hanya berguna kalau bisa Anda rasakan. Statistik diterjemahkan menjadi rupiah konkret dan aturan ukuran posisi otomatis.</p>
+          <div class="tags" style="margin-top:24px">
+            <span class="t">VaR historical</span><span class="t">VaR parametrik</span><span class="t">CVaR</span>
+            <span class="t">ATR sizing</span><span class="t">Fractional Kelly</span><span class="t" data-i18n="s6_tag_cb">Circuit breaker</span>
+          </div>
+        </div>
+        <div class="card resultcard reveal">
+          <div class="rc-head"><span data-i18n="s6_demo_title">Risiko · BBCA · 1 hari · 95%</span><span class="live"><i></i><span data-i18n="q_demo_live">hasil</span></span></div>
+          <div class="rc-body">
+            <div class="rc-row"><span data-i18n="s6_r1">Posisi</span><b>Rp 100.000.000</b></div>
+            <div class="rc-row"><span>VaR (hist)</span><b class="dn">-Rp 2.140.000</b></div>
+            <div class="rc-row"><span>VaR (param)</span><b class="dn">-Rp 2.305.000</b></div>
+            <div class="rc-row"><span>CVaR</span><b class="dn">-Rp 3.270.000</b></div>
+            <div class="rc-row"><span data-i18n="s6_r5">Saran sizing (risk 1%)</span><b class="up">7 lot</b></div>
+            <div class="rc-row"><span>Kelly (½)</span><b>12,4%</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-4 reveal" style="margin-top:40px">
+        <div class="card"><h3 style="font-size:16px" data-i18n="s6_g1_h">VaR &amp; CVaR</h3><p data-i18n="s6_g1_p">Dua metode: historical (empiris) dan parametrik. CVaR menangkap ekor — rata-rata kerugian di skenario terburuk.</p></div>
+        <div class="card"><h3 style="font-size:16px" data-i18n="s6_g2_h">ATR position sizing</h3><p data-i18n="s6_g2_p">Ukuran posisi ditentukan volatilitas agar setiap trade mempertaruhkan persentase modal yang konstan.</p></div>
+        <div class="card"><h3 style="font-size:16px" data-i18n="s6_g3_h">Fractional Kelly</h3><p data-i18n="s6_g3_p">Fraksi dari Kelly penuh untuk pertumbuhan agresif tanpa risiko ruin yang ekstrem.</p></div>
+        <div class="card"><h3 style="font-size:16px" data-i18n="s6_g4_h">Circuit breaker</h3><p data-i18n="s6_g4_p">Batas drawdown otomatis menghentikan penambahan posisi saat ekuitas melewati ambang.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 · FORECAST ============ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="split">
+        <div class="card reveal">
+          <div class="lab" data-i18n="s7_panel_lab">Pita Prediksi 5 Hari</div>
+          <div class="band">
+            <div class="fill"></div><div class="mid"></div>
+            <span class="q p90">P90 · +4,1%</span><span class="q p50">P50 · +1,3%</span><span class="q p10">P10 · −2,2%</span>
+          </div>
+          <p style="color:var(--mut);font-size:13.5px;margin-top:16px" data-i18n="s7_panel_p">Alih-alih satu angka, forecast mengeluarkan rentang: skenario rendah, median, dan tinggi — agar ketidakpastian terlihat jelas.</p>
+        </div>
+        <div class="reveal">
+          <div class="eyebrow" data-i18n="s7_eyebrow">06 · Forecast</div>
+          <h2 class="h2" data-i18n-html="s7_h2">Prediksi <span class="g-text">probabilistik</span>, bukan satu angka</h2>
+          <p class="lead" style="margin-top:18px" data-i18n="s7_lead">Pasar itu rentang, bukan titik. Forecast kami mengeluarkan pita kuantil — skenario rendah (P10), median (P50), dan tinggi (P90) — agar Anda melihat ketidakpastian secara langsung.</p>
+          <ul class="pipe" style="margin-top:22px">
+            <li data-step="1"><b data-i18n="s7_l1_b">Fitur dari indikator.</b> <span data-i18n-html="s7_l1_t">Diturunkan dari <a href="./glossary/index.html" style="color:var(--emerald2)">RSI</a>, <a href="./glossary/index.html" style="color:var(--emerald2)">MACD</a>, ATR, momentum, dan return berlag.</span></li>
+            <li data-step="2"><b data-i18n="s7_l2_b">Model kuantil.</b> <span data-i18n="s7_l2_t">Tiga model untuk tiga skenario, menghasilkan pita prediksi alih-alih satu garis.</span></li>
+            <li data-step="3"><b data-i18n="s7_l3_b">Validasi sadar-waktu.</b> <span data-i18n="s7_l3_t">Latih selalu mendahului uji — tanpa kebocoran masa depan.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 · DATA ============ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="reveal" style="max-width:720px">
+        <div class="eyebrow" data-i18n="s8_eyebrow">07 · Lapisan Data</div>
+        <h2 class="h2" data-i18n-html="s8_h2">Data <span class="g-text">realtime</span> dengan cache cerdas</h2>
+        <p class="lead" style="margin-top:18px" data-i18n="s8_lead">Setiap analisis hanya sebagus datanya. Lapisan data kami menggabungkan kecepatan realtime dengan keandalan offline.</p>
+      </div>
+      <div class="grid-3 reveal" style="margin-top:40px">
+        <div class="card"><div class="ic">⌖</div><h3 data-i18n="s8_c1_h">Pemetaan presisi</h3><p data-i18n="s8_c1_p">Setiap dari 69.221 instrumen dipetakan langsung ke sumber data kami, sehingga data realtime konsisten lintas 43 negara tanpa ambiguitas simbol.</p></div>
+        <div class="card"><div class="ic">▦</div><h3 data-i18n="s8_c2_h">Cache offline</h3><p data-i18n="s8_c2_p">Bar historis disimpan terkompresi. Backtest berjalan offline, instan, dan sepenuhnya reproducible.</p></div>
+        <div class="card"><div class="ic">↻</div><h3 data-i18n="s8_c3_h">Fallback berlapis</h3><p data-i18n="s8_c3_p">Jika feed realtime tersendat, engine otomatis jatuh ke cache terakhir yang valid — analisis tidak pernah macet.</p></div>
+      </div>
+      <div class="grid-4 reveal" style="margin-top:40px">
+        <div class="stat"><div class="n" data-count="69221">0</div><div class="l" data-i18n="s8_st1">Instrumen siap-pakai</div></div>
+        <div class="stat"><div class="n" data-count="43">0</div><div class="l" data-i18n="s8_st2">Negara terjangkau</div></div>
+        <div class="stat"><div class="n mono">LIVE</div><div class="l" data-i18n="s8_st3">Sumber data realtime</div></div>
+        <div class="stat"><div class="n mono">100%</div><div class="l" data-i18n="s8_st4">Backtest reproducible</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <div class="eyebrow center" data-i18n="cta_eyebrow">Tiga tier · FREE / PRO / VIP</div>
+        <h2 data-i18n-html="cta_h2">Jalankan engine ini dari <span class="g-text">Telegram</span></h2>
+        <p data-i18n="cta_p">Bayar pakai Telegram Stars atau QRIS. Mulai dari paket gratis, naik ke PRO &amp; VIP saat butuh backtest tanpa batas, optimasi portofolio, dan risiko Rupiah penuh.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px">
+          <a class="btn btn-primary btn-lg" href="./pricing.html" data-i18n="cta_b1">Lihat Harga →</a>
+          <a class="btn btn-lg btn-ghost" href="./features.html" data-i18n="cta_b2">Jelajahi Fitur</a>
+          <a class="btn btn-lg btn-ghost" href="./docs.html" data-i18n="cta_b3">Baca Docs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+    <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a><a href="./docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="./about.html" data-i18n="footer_about_link">Tentang</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a><a href="./glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+
+<script>
+/* Page-specific EN dictionary — merged into the shared i18n before first paint.
+   Indonesian stays the literal HTML; this only supplies the English swaps so
+   switching to EN translates the ENTIRE page, not just nav/footer. */
+window.PO_I18N_PAGE = {
+  crumb_home:{id:"Beranda",en:"Home"},
+  q_eyebrow:{id:"Mesin Kuantitatif",en:"The Quant Engine"},
+  q_h1:{id:'Bukan sekadar bot.<br/><span class="g-text">Riset kuant beneran.</span>',en:'Not just a bot.<br/><span class="g-text">Real quant research.</span>'},
+  q_lead:{id:"Di balik setiap sinyal ada disiplin yang sama dengan meja riset institusional: data bersih, asumsi pasar IDX yang jujur, backtest tanpa kebocoran data, dan ukuran risiko dalam Rupiah. Inilah cara kerjanya — tanpa Anda perlu menyentuh satu baris kode pun.",en:"Behind every signal lies the same discipline as an institutional research desk: clean data, honest IDX market assumptions, leak-free backtesting, and risk measured in Rupiah. Here's how it works — without you ever touching a line of code."},
+  q_tag_speed:{id:"⚡ Hasil dalam detik",en:"⚡ Results in seconds"},
+  q_tag_idx:{id:"🇮🇩 Realistis-IDX",en:"🇮🇩 IDX-realistic"},
+  q_tag_audit:{id:"🔍 Bisa diaudit",en:"🔍 Auditable"},
+  q_tag_repro:{id:"♻️ Reproducible",en:"♻️ Reproducible"},
+  q_cta1:{id:"Coba Quant Engine →",en:"Try the Quant Engine →"},
+  q_cta2:{id:"Lihat semua fitur",en:"See all features"},
+  q_demo_title:{id:"Backtest · BBCA · EMA Cross · 5thn",en:"Backtest · BBCA · EMA Cross · 5yr"},
+  q_demo_live:{id:"hasil",en:"result"},
+  m_cagr:{id:"CAGR",en:"CAGR"},m_sharpe:{id:"Sharpe",en:"Sharpe"},m_sortino:{id:"Sortino",en:"Sortino"},
+  m_maxdd:{id:"Max Drawdown",en:"Max Drawdown"},m_calmar:{id:"Calmar",en:"Calmar"},m_pf:{id:"Profit Factor",en:"Profit Factor"},
+  m_trades:{id:"Trade · Win rate",en:"Trades · Win rate"},
+  s1_eyebrow:{id:"01 · Fondasi Komputasi",en:"01 · Computational Core"},
+  s1_h2:{id:'Mesin <span class="g-text">kelas riset</span>',en:'A <span class="g-text">research-grade</span> engine'},
+  s1_lead:{id:"Seluruh perhitungan berjalan di atas tumpukan numerik yang sama dipakai tim quant profesional — penuh vektorisasi, deterministik, dan konsisten setiap saat.",en:"Every computation runs on the same numerical stack professional quant teams use — fully vectorized, deterministic, and consistent every time."},
+  s1_c1_h:{id:"Data tervektorisasi",en:"Vectorized data"},
+  s1_c1_p:{id:"69.221 instrumen diproses sebagai deret waktu dalam sekali operasi — tanpa perulangan lambat, indikator dihitung serempak.",en:"69,221 instruments processed as time series in a single operation — no slow loops, indicators computed all at once."},
+  s1_c2_h:{id:"Optimasi numerik",en:"Numerical optimization"},
+  s1_c2_p:{id:"Solver tingkat lanjut untuk frontier efisien, statistik distribusi, dan kalibrasi parameter risiko.",en:"Advanced solvers for the efficient frontier, distribution statistics, and risk-parameter calibration."},
+  s1_c3_h:{id:"Machine learning",en:"Machine learning"},
+  s1_c3_p:{id:'Forecast memakai <a href="./glossary/index.html" data-i18n="s1_c3_a">Gradient Boosting</a> dengan validasi silang yang sadar urutan waktu.',en:'Forecasting uses <a href="./glossary/index.html" data-i18n="s1_c3_a">Gradient Boosting</a> with time-aware cross-validation.'},
+  s1_c3_a:{id:"Gradient Boosting",en:"Gradient Boosting"},
+  s1_c4_h:{id:"Cache cerdas",en:"Smart cache"},
+  s1_c4_p:{id:"Penyimpanan terkompresi agar tarikan data instan — backtest hari ini sama persis dengan minggu depan.",en:"Compressed storage for instant data pulls — today's backtest matches next week's exactly."},
+  s2_eyebrow:{id:"02 · Integritas Sinyal",en:"02 · Signal Integrity"},
+  s2_h2:{id:'Tanpa <span class="g-text">look-ahead bias</span>',en:'No <span class="g-text">look-ahead bias</span>'},
+  s2_lead:{id:"Dosa terbesar dalam backtest adalah memakai informasi yang belum tersedia saat keputusan dibuat. Kami menutup celah itu secara struktural.",en:"The cardinal sin of backtesting is using information not yet available when the decision was made. We close that gap structurally."},
+  s2_l1_b:{id:"Sinyal lahir di hari ini.",en:"The signal is born today."},
+  s2_l1_t:{id:"Indikator hanya melihat data hingga penutupan — tidak pernah mengintip masa depan.",en:"Indicators only see data up to today's close — never peeking into the future."},
+  s2_l2_b:{id:"Eksekusi di pembukaan besok.",en:"Execution at tomorrow's open."},
+  s2_l2_t:{id:"Order terisi pada harga pembukaan hari berikutnya, persis seperti Anda menekan tombol setelah sinyal muncul.",en:"Orders fill at the next day's opening price, exactly as if you pressed the button after the signal appeared."},
+  s2_l3_b:{id:"Tanpa kebocoran data.",en:"No data leakage."},
+  s2_l3_t:{id:"Setiap input digeser satu langkah sebelum dipakai, mematikan kebocoran sekecil apa pun.",en:"Every input is shifted one step before use, killing even the smallest leak."},
+  s2_l4_b:{id:"Tanpa survivorship cheat.",en:"No survivorship cheat."},
+  s2_l4_t:{id:"Delisting dan suspensi dihormati pada tanggal aktualnya.",en:"Delistings and suspensions are honored on their actual dates."},
+  s2_note:{id:'Pelajari istilahnya di <a href="./glossary/index.html" style="color:var(--emerald2)">Glosarium</a> — look-ahead bias, slippage, survivorship bias.',en:'Learn the terms in the <a href="./glossary/index.html" style="color:var(--emerald2)">Glossary</a> — look-ahead bias, slippage, survivorship bias.'},
+  s2_panel_lab:{id:"Alur Eksekusi",en:"Execution Flow"},
+  s2_panel_h:{id:"Sinyal → Tunggu → Isi",en:"Signal → Wait → Fill"},
+  s2_panel_p:{id:"Setiap perubahan posisi dikenai biaya & slippage nyata, jadi kurva ekuitas mencerminkan hasil yang benar-benar bisa Anda capai — bukan angka di atas kertas.",en:"Every position change incurs real fees & slippage, so the equity curve reflects results you could actually achieve — not paper numbers."},
+  s4_eyebrow:{id:"03 · Backtest & Validasi",en:"03 · Backtest & Validation"},
+  s4_h2:{id:'Cepat, lalu <span class="g-text">diuji jujur</span>',en:'Fast, then <span class="g-text">honestly tested</span>'},
+  s4_lead:{id:"Ribuan hari diproses dalam hitungan milidetik, lalu hasilnya diuji apakah tahan terhadap data yang belum pernah dilihat strategi.",en:"Thousands of days processed in milliseconds, then tested to see if the result holds up against data the strategy has never seen."},
+  s4_th1:{id:"Metrik",en:"Metric"},s4_th2:{id:"Arti",en:"Meaning"},
+  s4_d1:{id:"Pertumbuhan majemuk tahunan",en:"Compound annual growth"},
+  s4_d2:{id:"Return per unit volatilitas total",en:"Return per unit of total volatility"},
+  s4_d3:{id:"Sharpe yang hanya menghukum downside",en:"Sharpe that penalizes only the downside"},
+  s4_d4:{id:"Penurunan puncak-ke-lembah terdalam",en:"Deepest peak-to-trough decline"},
+  s4_d5:{id:"CAGR dibagi max drawdown",en:"CAGR divided by max drawdown"},
+  s4_d6:{id:"Total laba ÷ total rugi",en:"Total profit ÷ total loss"},
+  s4_d7:{id:"Sharpe yang dikoreksi atas data-mining",en:"Sharpe corrected for data-mining"},
+  s4_layers_h:{id:"Tiga lapis anti-overfitting",en:"Three layers of anti-overfitting"},
+  s4_l1_b:{id:"Walk-forward OOS.",en:"Walk-forward OOS."},
+  s4_l1_t:{id:"Strategi dioptimasi di jendela in-sample lalu diuji pada periode berikutnya, digeser maju berulang.",en:"The strategy is optimized on an in-sample window then tested on the next period, rolled forward repeatedly."},
+  s4_l2_b:{id:"Monte Carlo.",en:"Monte Carlo."},
+  s4_l2_t:{id:"Urutan transaksi diacak ribuan kali untuk memetakan distribusi drawdown — bukan satu jalur keberuntungan.",en:"Trade order is shuffled thousands of times to map the drawdown distribution — not one lucky path."},
+  s4_l3_b:{id:"Deflated Sharpe.",en:"Deflated Sharpe."},
+  s4_l3_t:{id:"Mengoreksi Sharpe atas banyaknya strategi yang dicoba, memberi sinyal jujur apakah edge itu nyata.",en:"Corrects Sharpe for the number of strategies tried, giving an honest read on whether the edge is real."},
+  s4_note:{id:'Definisi tiap metrik di <a href="./glossary/index.html" style="color:var(--emerald2)">Glosarium</a>, studi kasus di <a href="./blog/index.html" style="color:var(--emerald2)">Blog</a>.',en:'Each metric is defined in the <a href="./glossary/index.html" style="color:var(--emerald2)">Glossary</a>, with case studies on the <a href="./blog/index.html" style="color:var(--emerald2)">Blog</a>.'},
+  s5_eyebrow:{id:"04 · Alokasi Portofolio",en:"04 · Portfolio Allocation"},
+  s5_h2:{id:'Dari saham tunggal ke <span class="g-text">portofolio optimal</span>',en:'From a single stock to an <span class="g-text">optimal portfolio</span>'},
+  s5_lead:{id:"Sinyal bagus saja tidak cukup — bobot yang tepat menentukan kelangsungan hidup. Tersedia tiga kerangka alokasi yang dipakai industri.",en:"Good signals alone aren't enough — the right weights determine survival. Three industry-grade allocation frameworks are available."},
+  s5_c1_h:{id:"Mean-Variance",en:"Mean-Variance"},
+  s5_c1_p:{id:"Frontier efisien ala Markowitz: maksimalkan return untuk tingkat risiko tertentu, atau cari portofolio Sharpe-maksimum.",en:"Markowitz-style efficient frontier: maximize return for a given risk level, or find the maximum-Sharpe portfolio."},
+  s5_c2_h:{id:"Risk Parity",en:"Risk Parity"},
+  s5_c2_p:{id:"Setiap aset menyumbang kontribusi risiko setara, bukan modal setara — jauh lebih tahan saat satu sektor bergejolak.",en:"Each asset contributes equal risk, not equal capital — far more resilient when one sector turns volatile."},
+  s5_c3_h:{id:"HRP",en:"HRP"},
+  s5_c3_p:{id:"Hierarchical Risk Parity: clustering pohon korelasi yang lebih stabil pada data berisik khas IDX.",en:"Hierarchical Risk Parity: correlation-tree clustering that's more stable on the noisy data typical of IDX."},
+  s5_note:{id:'Ketiganya menghormati lot 100, kapasitas hingga miliaran Rupiah, dan likuiditas tiap nama. Istilah <a href="./glossary/index.html" style="color:var(--emerald2)">efficient frontier</a>, <a href="./glossary/index.html" style="color:var(--emerald2)">risk parity</a>, dan <a href="./glossary/index.html" style="color:var(--emerald2)">HRP</a> dibahas di Glosarium.',en:'All three respect 100-share lots, capacity into the billions of Rupiah, and each name\'s liquidity. The terms <a href="./glossary/index.html" style="color:var(--emerald2)">efficient frontier</a>, <a href="./glossary/index.html" style="color:var(--emerald2)">risk parity</a>, and <a href="./glossary/index.html" style="color:var(--emerald2)">HRP</a> are covered in the Glossary.'},
+  s6_eyebrow:{id:"05 · Manajemen Risiko",en:"05 · Risk Management"},
+  s6_h2:{id:'Risiko dalam <span class="g-gold">Rupiah</span>, bukan persen abstrak',en:'Risk in <span class="g-gold">Rupiah</span>, not abstract percentages'},
+  s6_lead:{id:"Angka risiko hanya berguna kalau bisa Anda rasakan. Statistik diterjemahkan menjadi rupiah konkret dan aturan ukuran posisi otomatis.",en:"Risk numbers only help if you can feel them. Statistics are translated into concrete Rupiah and automatic position-sizing rules."},
+  s6_tag_cb:{id:"Circuit breaker",en:"Circuit breaker"},
+  s6_demo_title:{id:"Risiko · BBCA · 1 hari · 95%",en:"Risk · BBCA · 1 day · 95%"},
+  s6_r1:{id:"Posisi",en:"Position"},
+  s6_r5:{id:"Saran sizing (risk 1%)",en:"Suggested sizing (1% risk)"},
+  s6_g1_h:{id:"VaR & CVaR",en:"VaR & CVaR"},
+  s6_g1_p:{id:"Dua metode: historical (empiris) dan parametrik. CVaR menangkap ekor — rata-rata kerugian di skenario terburuk.",en:"Two methods: historical (empirical) and parametric. CVaR captures the tail — the average loss in the worst scenarios."},
+  s6_g2_h:{id:"ATR position sizing",en:"ATR position sizing"},
+  s6_g2_p:{id:"Ukuran posisi ditentukan volatilitas agar setiap trade mempertaruhkan persentase modal yang konstan.",en:"Position size is set by volatility so each trade risks a constant percentage of capital."},
+  s6_g3_h:{id:"Fractional Kelly",en:"Fractional Kelly"},
+  s6_g3_p:{id:"Fraksi dari Kelly penuh untuk pertumbuhan agresif tanpa risiko ruin yang ekstrem.",en:"A fraction of full Kelly for aggressive growth without extreme risk of ruin."},
+  s6_g4_h:{id:"Circuit breaker",en:"Circuit breaker"},
+  s6_g4_p:{id:"Batas drawdown otomatis menghentikan penambahan posisi saat ekuitas melewati ambang.",en:"A drawdown limit automatically halts new positions when equity crosses the threshold."},
+  s7_panel_lab:{id:"Pita Prediksi 5 Hari",en:"5-Day Prediction Band"},
+  s7_panel_p:{id:"Alih-alih satu angka, forecast mengeluarkan rentang: skenario rendah, median, dan tinggi — agar ketidakpastian terlihat jelas.",en:"Instead of one number, the forecast outputs a range: low, median, and high scenarios — so uncertainty is plain to see."},
+  s7_eyebrow:{id:"06 · Forecast",en:"06 · Forecast"},
+  s7_h2:{id:'Prediksi <span class="g-text">probabilistik</span>, bukan satu angka',en:'<span class="g-text">Probabilistic</span> forecasts, not a single number'},
+  s7_lead:{id:"Pasar itu rentang, bukan titik. Forecast kami mengeluarkan pita kuantil — skenario rendah (P10), median (P50), dan tinggi (P90) — agar Anda melihat ketidakpastian secara langsung.",en:"Markets are ranges, not points. Our forecast outputs a quantile band — low (P10), median (P50), and high (P90) — so you see the uncertainty directly."},
+  s7_l1_b:{id:"Fitur dari indikator.",en:"Features from indicators."},
+  s7_l1_t:{id:'Diturunkan dari <a href="./glossary/index.html" style="color:var(--emerald2)">RSI</a>, <a href="./glossary/index.html" style="color:var(--emerald2)">MACD</a>, ATR, momentum, dan return berlag.',en:'Derived from <a href="./glossary/index.html" style="color:var(--emerald2)">RSI</a>, <a href="./glossary/index.html" style="color:var(--emerald2)">MACD</a>, ATR, momentum, and lagged returns.'},
+  s7_l2_b:{id:"Model kuantil.",en:"Quantile models."},
+  s7_l2_t:{id:"Tiga model untuk tiga skenario, menghasilkan pita prediksi alih-alih satu garis.",en:"Three models for three scenarios, producing a prediction band instead of a single line."},
+  s7_l3_b:{id:"Validasi sadar-waktu.",en:"Time-aware validation."},
+  s7_l3_t:{id:"Latih selalu mendahului uji — tanpa kebocoran masa depan.",en:"Training always precedes testing — no future leakage."},
+  s8_eyebrow:{id:"07 · Lapisan Data",en:"07 · Data Layer"},
+  s8_h2:{id:'Data <span class="g-text">realtime</span> dengan cache cerdas',en:'<span class="g-text">Real-time</span> data with a smart cache'},
+  s8_lead:{id:"Setiap analisis hanya sebagus datanya. Lapisan data kami menggabungkan kecepatan realtime dengan keandalan offline.",en:"Every analysis is only as good as its data. Our data layer combines real-time speed with offline reliability."},
+  s8_c1_h:{id:"Pemetaan presisi",en:"Precision mapping"},
+  s8_c1_p:{id:"Setiap dari 69.221 instrumen dipetakan langsung ke sumber data kami, sehingga data realtime konsisten lintas 43 negara tanpa ambiguitas simbol.",en:"Each of 69,221 instruments maps directly to its data source, so real-time data stays consistent across 43 countries with no symbol ambiguity."},
+  s8_c2_h:{id:"Cache offline",en:"Offline cache"},
+  s8_c2_p:{id:"Bar historis disimpan terkompresi. Backtest berjalan offline, instan, dan sepenuhnya reproducible.",en:"Historical bars are stored compressed. Backtests run offline, instantly, and fully reproducibly."},
+  s8_c3_h:{id:"Fallback berlapis",en:"Layered fallback"},
+  s8_c3_p:{id:"Jika feed realtime tersendat, engine otomatis jatuh ke cache terakhir yang valid — analisis tidak pernah macet.",en:"If the real-time feed stalls, the engine falls back to the last valid cache — analysis never stalls."},
+  s8_st1:{id:"Instrumen siap-pakai",en:"Ready-to-use instruments"},
+  s8_st2:{id:"Negara terjangkau",en:"Countries covered"},
+  s8_st3:{id:"Sumber data realtime",en:"Real-time data source"},
+  s8_st4:{id:"Backtest reproducible",en:"Reproducible backtests"},
+  cta_eyebrow:{id:"Tiga tier · FREE / PRO / VIP",en:"Three tiers · FREE / PRO / VIP"},
+  cta_h2:{id:'Jalankan engine ini dari <span class="g-text">Telegram</span>',en:'Run this engine from <span class="g-text">Telegram</span>'},
+  cta_p:{id:"Bayar pakai Telegram Stars atau QRIS. Mulai dari paket gratis, naik ke PRO & VIP saat butuh backtest tanpa batas, optimasi portofolio, dan risiko Rupiah penuh.",en:"Pay with Telegram Stars or QRIS. Start free, move up to PRO & VIP when you need unlimited backtests, portfolio optimization, and full Rupiah risk."},
+  cta_b1:{id:"Lihat Harga →",en:"See Pricing →"},cta_b2:{id:"Jelajahi Fitur",en:"Explore Features"},cta_b3:{id:"Baca Docs",en:"Read the Docs"}
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="./assets/site.js"></script>
+<script src="./assets/i18n.js"></script>
+<script>
+  /* decorative flow bars in the no-look-ahead panel */
+  (function(){var el=document.getElementById('flowbars');if(!el)return;var h='';
+    for(var i=0;i<18;i++){var v=22+Math.abs(Math.sin(i*0.6))*70;h+='<i style="height:'+v+'%"></i>';}el.innerHTML=h;})();
+</script>
+</body></html>

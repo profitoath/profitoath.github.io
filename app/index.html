@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#05080c"/>
+<title>profitoath — Mini App</title>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+<!-- Telegram WebApp SDK (must load before our integration script) -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  /* ===== Mini App shell — mobile-first, native feel ===== */
+  html,body{background:var(--bg)}
+  body{overflow-x:hidden}
+  .app{
+    max-width:520px;margin:0 auto;min-height:100vh;position:relative;z-index:5;
+    padding:
+      calc(64px + env(safe-area-inset-top,0px))      /* header height + notch */
+      max(14px, env(safe-area-inset-right,0px))
+      calc(26px + env(safe-area-inset-bottom,0px))
+      max(14px, env(safe-area-inset-left,0px));
+  }
+
+  /* sticky glass header */
+  .app-head{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    max-width:520px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:
+      calc(12px + env(safe-area-inset-top,0px))
+      max(14px, env(safe-area-inset-right,0px))
+      12px
+      max(14px, env(safe-area-inset-left,0px));
+    backdrop-filter:blur(16px);
+    background:linear-gradient(180deg,rgba(5,8,12,.92),rgba(5,8,12,.62));
+    border-bottom:1px solid var(--line);
+  }
+  .app-head .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em;font-size:17px}
+  .app-head .brand img{width:28px;height:28px;filter:drop-shadow(0 0 10px rgba(22,224,168,.5))}
+  .app-head .brand b{color:var(--emerald2)}
+  .head-right{display:flex;align-items:center;gap:8px}
+
+  .tier-badge{
+    display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:700;
+    letter-spacing:.06em;padding:6px 11px;border-radius:100px;border:1px solid var(--line2);
+    background:rgba(255,255,255,.02);color:var(--mut);white-space:nowrap;
+  }
+  .tier-badge .em{font-size:13px;line-height:1}
+  .tier-badge[data-tier="PRO"]{border-color:rgba(11,208,255,.5);color:var(--cyan)}
+  .tier-badge[data-tier="VIP"]{border-color:rgba(124,92,255,.6);color:#b9a8ff}
+  .tier-badge[data-tier="ADMIN"]{border-color:rgba(245,200,122,.6);color:var(--gold)}
+
+  .lang-chip{
+    font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer;
+    padding:6px 11px;border-radius:100px;border:1px solid var(--line2);color:var(--mut);
+    background:rgba(255,255,255,.02);transition:all .3s;-webkit-tap-highlight-color:transparent;
+  }
+  .lang-chip:hover,.lang-chip:active{border-color:var(--emerald);color:var(--emerald2);background:rgba(22,224,168,.07)}
+
+  /* card stack */
+  .stack{display:flex;flex-direction:column;gap:16px}
+  .app .glass{padding:20px}
+  .sec-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--emerald);margin-bottom:6px}
+  .sec-title{font-size:18px;font-weight:700;letter-spacing:-.01em}
+  .sec-sub{color:var(--mut);font-size:13px;line-height:1.55;margin-top:4px}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .card-head .ic{
+    width:38px;height:38px;flex:0 0 38px;border-radius:11px;display:grid;place-items:center;
+    border:1px solid var(--line2);background:rgba(22,224,168,.06);color:var(--emerald2);font-size:18px;
+  }
+
+  /* ticker input */
+  .field-row{display:flex;gap:10px}
+  .tk-input{
+    flex:1;min-width:0;font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:.04em;
+    color:var(--txt);background:rgba(5,8,12,.6);border:1px solid var(--line2);border-radius:var(--r-sm);
+    padding:13px 15px;text-transform:uppercase;transition:border-color .3s,box-shadow .3s;outline:none;width:100%;
+  }
+  .tk-input::placeholder{color:var(--dim);text-transform:none;letter-spacing:0;font-weight:400}
+  .tk-input:focus{border-color:var(--emerald);box-shadow:0 0 0 3px rgba(22,224,168,.12)}
+  .full{width:100%;justify-content:center}
+  .chips{margin:14px 0}
+
+  /* quick actions grid */
+  .qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .qa{
+    display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;cursor:pointer;
+    border:1px solid var(--line);border-radius:14px;padding:16px 8px;background:rgba(255,255,255,.02);
+    color:var(--txt);transition:all .3s var(--ease);-webkit-tap-highlight-color:transparent;font-family:var(--sans);
+  }
+  .qa:hover,.qa:active{border-color:var(--emerald);background:rgba(22,224,168,.06);transform:translateY(-2px)}
+  .qa .qa-ic{font-size:22px;line-height:1}
+  .qa .qa-l{font-size:12px;font-weight:600;color:var(--mut)}
+  .qa:hover .qa-l,.qa:active .qa-l{color:var(--emerald2)}
+
+  /* watchlist sparklines */
+  .wl{display:flex;flex-direction:column;gap:2px}
+  .wl-row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line)}
+  .wl-row:last-child{border-bottom:none}
+  .wl-sym{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--txt);width:64px;flex:0 0 64px}
+  .spark{flex:1;display:flex;align-items:flex-end;gap:2px;height:30px;min-width:0}
+  .spark span{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(180deg,var(--emerald),rgba(22,224,168,.15));min-height:3px}
+  .spark.dn span{background:linear-gradient(180deg,var(--red),rgba(255,93,108,.15))}
+  .wl-chg{font-family:var(--mono);font-size:12.5px;font-weight:700;width:62px;text-align:right;flex:0 0 62px}
+  .wl-chg.up{color:var(--emerald)}.wl-chg.dn{color:var(--red)}
+
+  /* account */
+  .acct{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .acct-left{display:flex;align-items:center;gap:12px}
+  .acct-ring{
+    width:46px;height:46px;flex:0 0 46px;border-radius:50%;display:grid;place-items:center;font-size:22px;
+    border:1px solid var(--line2);background:radial-gradient(circle at 40% 35%,rgba(22,224,168,.18),rgba(7,11,17,.6));
+  }
+  .acct-name{font-weight:700;font-size:15px}
+  .acct-tier{font-family:var(--mono);font-size:11.5px;color:var(--mut);margin-top:2px}
+
+  /* inline note (browser fallback) */
+  .note{
+    margin-top:14px;font-size:12.5px;line-height:1.5;color:var(--gold);
+    border:1px solid rgba(245,200,122,.35);border-radius:11px;padding:11px 13px;
+    background:rgba(245,200,122,.06);display:none;align-items:flex-start;gap:9px;
+  }
+  .note.show{display:flex}
+  .note .ni{font-size:15px;line-height:1.2}
+
+  /* market ticker strip */
+  .app .ticker{border-radius:14px;border:1px solid var(--line);margin-top:4px}
+  .app .ticker .track{animation-duration:34s}
+
+  .foot-mini{text-align:center;color:var(--dim);font-size:11px;font-family:var(--mono);letter-spacing:.04em;margin-top:6px;line-height:1.6}
+  .foot-mini a{color:var(--mut)}
+  .foot-mini a:hover{color:var(--emerald2)}
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+<div class="vignette"></div>
+
+<!-- ===== sticky glass header ===== -->
+<header class="app-head">
+  <a class="brand" href="../index.html">
+    <img src="../assets/logo.svg" alt="profitoath"/>
+    <span>profit<b>oath</b></span>
+  </a>
+  <div class="head-right">
+    <span class="tier-badge" id="tierBadge" data-tier="FREE"><span class="em">🆓</span><span id="tierText">FREE</span></span>
+    <button class="lang-chip" id="langChip" type="button" aria-label="Toggle language">ID</button>
+  </div>
+</header>
+
+<!-- ===== app body ===== -->
+<main class="app">
+  <div class="stack">
+
+    <!-- Analisa Cepat -->
+    <section class="glass" aria-labelledby="t-analyze">
+      <div class="card-head">
+        <div class="ic">⚡</div>
+        <div style="flex:1">
+          <div class="sec-label" data-i18n="analyze_label">Analisa Cepat</div>
+          <div class="sec-title" id="t-analyze" data-i18n="analyze_title">Analisa instan</div>
+          <div class="sec-sub" data-i18n="analyze_sub">Masukkan ticker lalu pilih kelas aset.</div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <input class="tk-input" id="symbol" type="text" inputmode="text" autocomplete="off"
+               autocapitalize="characters" spellcheck="false"
+               placeholder="BBCA, AAPL, BTCUSD…" data-i18n-ph="symbol_ph" aria-label="Ticker symbol"/>
+      </div>
+
+      <div class="chips" id="assetChips" role="group" aria-label="Asset class">
+        <button class="chip active" type="button" data-asset="stock"     data-i18n="asset_stock">Saham</button>
+        <button class="chip"        type="button" data-asset="forex"     data-i18n="asset_forex">Forex</button>
+        <button class="chip"        type="button" data-asset="commodity" data-i18n="asset_commodity">Komoditas</button>
+        <button class="chip"        type="button" data-asset="index"     data-i18n="asset_index">Indeks</button>
+        <button class="chip"        type="button" data-asset="crypto"    data-i18n="asset_crypto">Kripto</button>
+      </div>
+
+      <button class="btn btn-primary btn-lg full" id="analyzeBtn" type="button" data-i18n="analyze_btn">Analisa</button>
+
+      <div class="note" id="analyzeNote">
+        <span class="ni">ℹ️</span>
+        <span data-i18n="open_in_tg">Buka lewat bot Telegram untuk hasil live.</span>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="glass" aria-labelledby="t-qa">
+      <div class="card-head">
+        <div class="ic">⌗</div>
+        <div style="flex:1">
+          <div class="sec-label" data-i18n="qa_label">Quick Actions</div>
+          <div class="sec-title" id="t-qa" data-i18n="qa_title">Aksi cepat</div>
+        </div>
+      </div>
+      <div class="qa-grid" id="qaGrid">
+        <button class="qa" type="button" data-action="chart">     <span class="qa-ic">📈</span><span class="qa-l" data-i18n="qa_chart">Chart</span></button>
+        <button class="qa" type="button" data-action="forecast">  <span class="qa-ic">🔮</span><span class="qa-l" data-i18n="qa_forecast">Forecast</span></button>
+        <button class="qa" type="button" data-action="backtest">  <span class="qa-ic">⏮️</span><span class="qa-l" data-i18n="qa_backtest">Backtest</span></button>
+        <button class="qa" type="button" data-action="screener">  <span class="qa-ic">🔎</span><span class="qa-l" data-i18n="qa_screener">Screener</span></button>
+        <button class="qa" type="button" data-action="portfolio"> <span class="qa-ic">📊</span><span class="qa-l" data-i18n="qa_portfolio">Portfolio</span></button>
+        <button class="qa" type="button" data-action="capacity">  <span class="qa-ic">🧮</span><span class="qa-l" data-i18n="qa_capacity">Capacity</span></button>
+      </div>
+      <div class="note" id="qaNote">
+        <span class="ni">ℹ️</span>
+        <span data-i18n="open_in_tg">Buka lewat bot Telegram untuk hasil live.</span>
+      </div>
+    </section>
+
+    <!-- Watchlist -->
+    <section class="glass" aria-labelledby="t-wl">
+      <div class="card-head">
+        <div class="ic">★</div>
+        <div style="flex:1">
+          <div class="sec-label" data-i18n="wl_label">Watchlist</div>
+          <div class="sec-title" id="t-wl" data-i18n="wl_title">Pantauan</div>
+          <div class="sec-sub" data-i18n="wl_sub">Contoh data, dekoratif.</div>
+        </div>
+      </div>
+      <div class="wl" id="watchlist"></div>
+    </section>
+
+    <!-- Akun / Account -->
+    <section class="glass" aria-labelledby="t-acct">
+      <div class="card-head">
+        <div class="ic">◈</div>
+        <div style="flex:1">
+          <div class="sec-label" data-i18n="acct_label">Akun</div>
+          <div class="sec-title" id="t-acct" data-i18n="acct_title">Akun saya</div>
+        </div>
+      </div>
+      <div class="acct">
+        <div class="acct-left">
+          <div class="acct-ring" id="acctEmoji">🆓</div>
+          <div>
+            <div class="acct-name" id="acctName" data-i18n="acct_guest">Tamu</div>
+            <div class="acct-tier"><span data-i18n="acct_plan">Paket</span>: <span id="acctTier">FREE</span></div>
+          </div>
+        </div>
+        <button class="btn" id="upgradeBtn" type="button" data-i18n="acct_upgrade">Upgrade</button>
+      </div>
+      <div class="note" id="upgradeNote">
+        <span class="ni">ℹ️</span>
+        <span data-i18n="open_in_tg">Buka lewat bot Telegram untuk hasil live.</span>
+      </div>
+    </section>
+
+    <!-- Market ticker strip -->
+    <div class="ticker" aria-hidden="true">
+      <div class="track" id="tickerTrack"></div>
+    </div>
+
+    <div class="foot-mini">
+      <div data-i18n="foot_note">profitoath · alat analisa, bukan saran finansial.</div>
+      <a href="../index.html" data-i18n="foot_link">Kembali ke situs</a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     Telegram WebApp handle — guarded everywhere.
+     `tg` is undefined in a normal browser; the page must still work.
+     ============================================================ */
+  var tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+  var inTelegram = !!(tg && tg.initData && tg.initData.length > 0);
+
+  /* ---------- helpers ---------- */
+  function $(sel, root){ return (root||document).querySelector(sel); }
+  function $all(sel, root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+  function haptic(style){
+    try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(style||'light'); }catch(e){}
+  }
+  function qsParam(name){
+    try{ return new URLSearchParams(window.location.search).get(name); }catch(e){ return null; }
+  }
+
+  /* ============================================================
+     i18n dictionary (ID / EN)
+     ============================================================ */
+  var I18N = {
+    id:{
+      analyze_label:"Analisa Cepat", analyze_title:"Analisa instan",
+      analyze_sub:"Masukkan ticker lalu pilih kelas aset.", symbol_ph:"BBCA, AAPL, BTCUSD…",
+      asset_stock:"Saham", asset_forex:"Forex", asset_commodity:"Komoditas", asset_index:"Indeks", asset_crypto:"Kripto",
+      analyze_btn:"Analisa",
+      qa_label:"Quick Actions", qa_title:"Aksi cepat",
+      qa_chart:"Chart", qa_forecast:"Forecast", qa_backtest:"Backtest",
+      qa_screener:"Screener", qa_portfolio:"Portfolio", qa_capacity:"Kapasitas",
+      wl_label:"Watchlist", wl_title:"Pantauan", wl_sub:"Contoh data, dekoratif.",
+      acct_label:"Akun", acct_title:"Akun saya", acct_guest:"Tamu", acct_plan:"Paket", acct_upgrade:"Upgrade",
+      open_in_tg:"Buka lewat bot Telegram untuk hasil live.",
+      foot_note:"profitoath · alat analisa, bukan saran finansial.", foot_link:"Kembali ke situs",
+      mb_analyze:"⚡ Analisa", need_symbol:"Masukkan ticker dulu."
+    },
+    en:{
+      analyze_label:"Quick Analysis", analyze_title:"Instant analysis",
+      analyze_sub:"Enter a ticker then pick an asset class.", symbol_ph:"BBCA, AAPL, BTCUSD…",
+      asset_stock:"Stocks", asset_forex:"Forex", asset_commodity:"Commodities", asset_index:"Indices", asset_crypto:"Crypto",
+      analyze_btn:"Analyze",
+      qa_label:"Quick Actions", qa_title:"Quick actions",
+      qa_chart:"Chart", qa_forecast:"Forecast", qa_backtest:"Backtest",
+      qa_screener:"Screener", qa_portfolio:"Portfolio", qa_capacity:"Capacity",
+      wl_label:"Watchlist", wl_title:"Watchlist", wl_sub:"Sample data, decorative.",
+      acct_label:"Account", acct_title:"My account", acct_guest:"Guest", acct_plan:"Plan", acct_upgrade:"Upgrade",
+      open_in_tg:"Open via the Telegram bot for live results.",
+      foot_note:"profitoath · an analysis tool, not financial advice.", foot_link:"Back to site",
+      mb_analyze:"⚡ Analyze", need_symbol:"Enter a ticker first."
+    }
+  };
+
+  /* ---------- language resolve: localStorage > Telegram > default(id) ---------- */
+  function detectLang(){
+    var saved = null;
+    try{ saved = localStorage.getItem('po_lang'); }catch(e){}
+    if(saved === 'id' || saved === 'en') return saved;
+    var code = '';
+    try{
+      if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code){
+        code = String(tg.initDataUnsafe.user.language_code).toLowerCase();
+      }
+    }catch(e){}
+    if(!code && navigator.language) code = String(navigator.language).toLowerCase();
+    return code.indexOf('id') === 0 ? 'id' : 'en';
+  }
+
+  var lang = detectLang();
+
+  function t(key){ return (I18N[lang] && I18N[lang][key]) || (I18N.id[key]) || key; }
+
+  function applyLang(){
+    document.documentElement.lang = lang;
+    $all('[data-i18n]').forEach(function(el){
+      var k = el.getAttribute('data-i18n');
+      if(I18N[lang][k] != null) el.textContent = I18N[lang][k];
+    });
+    $all('[data-i18n-ph]').forEach(function(el){
+      var k = el.getAttribute('data-i18n-ph');
+      if(I18N[lang][k] != null) el.setAttribute('placeholder', I18N[lang][k]);
+    });
+    var chip = $('#langChip');
+    if(chip) chip.textContent = (lang === 'id') ? 'ID' : 'EN';
+    // keep Telegram MainButton label in sync
+    if(tg && tg.MainButton){
+      try{ tg.MainButton.setText(t('mb_analyze')); }catch(e){}
+    }
+  }
+
+  $('#langChip').addEventListener('click', function(){
+    haptic('light');
+    lang = (lang === 'id') ? 'en' : 'id';
+    try{ localStorage.setItem('po_lang', lang); }catch(e){}
+    applyLang();
+  });
+
+  /* ============================================================
+     Tier badge from ?tier= (FREE|PRO|VIP|ADMIN)
+     ============================================================ */
+  var TIER_EMOJI = { FREE:"🆓", PRO:"⭐", VIP:"💎", ADMIN:"👑" };
+  function applyTier(){
+    var raw = (qsParam('tier') || 'FREE').toUpperCase();
+    var tier = TIER_EMOJI[raw] ? raw : 'FREE';
+    var emoji = TIER_EMOJI[tier];
+    var badge = $('#tierBadge');
+    badge.setAttribute('data-tier', tier);
+    $('#tierText').textContent = tier;
+    badge.querySelector('.em').textContent = emoji;
+    $('#acctTier').textContent = tier;
+    $('#acctEmoji').textContent = emoji;
+    // pull a display name from Telegram if present
+    try{
+      if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user){
+        var u = tg.initDataUnsafe.user;
+        var nm = (u.first_name || '') + (u.last_name ? (' ' + u.last_name) : '');
+        if(nm.trim()) $('#acctName').textContent = nm.trim();
+      }
+    }catch(e){}
+  }
+
+  /* ============================================================
+     Asset-class chip selection
+     ============================================================ */
+  var currentAsset = 'stock';
+  $all('#assetChips .chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      haptic('light');
+      $all('#assetChips .chip').forEach(function(x){ x.classList.remove('active'); });
+      c.classList.add('active');
+      currentAsset = c.getAttribute('data-asset');
+    });
+  });
+
+  /* ============================================================
+     send() — emit to bot when inside Telegram, else show note.
+     payload is a plain object; we JSON.stringify before sendData.
+     ============================================================ */
+  function send(payload, noteId){
+    haptic('light');
+    if(inTelegram && typeof tg.sendData === 'function'){
+      tg.sendData(JSON.stringify(payload));
+      if(typeof tg.close === 'function') tg.close();
+    }else{
+      var note = noteId ? $(noteId) : null;
+      if(note){
+        note.classList.add('show');
+        note.scrollIntoView({behavior:'smooth', block:'nearest'});
+      }
+    }
+  }
+
+  function doAnalyze(){
+    var sym = ($('#symbol').value || '').trim().toUpperCase();
+    if(!sym){
+      var note = $('#analyzeNote');
+      note.querySelector('span:last-child').textContent = t('need_symbol');
+      note.classList.add('show');
+      try{ $('#symbol').focus(); }catch(e){}
+      // restore the standard note text shortly after, so future browser taps read correctly
+      setTimeout(function(){ if(note.classList.contains('show')) note.querySelector('span:last-child').textContent = t('open_in_tg'); }, 2200);
+      return;
+    }
+    send({ action:'analyze', symbol:sym, asset:currentAsset }, '#analyzeNote');
+  }
+
+  $('#analyzeBtn').addEventListener('click', doAnalyze);
+
+  /* Quick actions */
+  $all('#qaGrid .qa').forEach(function(b){
+    b.addEventListener('click', function(){
+      send({ action: b.getAttribute('data-action') }, '#qaNote');
+    });
+  });
+
+  /* Upgrade */
+  $('#upgradeBtn').addEventListener('click', function(){
+    send({ action:'upgrade' }, '#upgradeNote');
+  });
+
+  /* ============================================================
+     Watchlist sparklines (decorative, JS-generated)
+     ============================================================ */
+  (function buildWatchlist(){
+    var rows = [
+      { sym:'BBCA',   up:true,  chg:'+1.24%', bars:[5,7,6,9,8,11,10,13,12,15] },
+      { sym:'TLKM',   up:false, chg:'-0.62%', bars:[12,11,12,9,10,8,9,7,6,7] },
+      { sym:'AAPL',   up:true,  chg:'+0.88%', bars:[8,8,9,10,9,11,12,12,14,15] },
+      { sym:'BTCUSD', up:true,  chg:'+2.41%', bars:[6,8,7,9,11,10,12,14,13,16] }
+    ];
+    var host = $('#watchlist');
+    rows.forEach(function(r){
+      var row = document.createElement('div'); row.className = 'wl-row';
+
+      var sym = document.createElement('div'); sym.className = 'wl-sym'; sym.textContent = r.sym;
+
+      var spark = document.createElement('div'); spark.className = 'spark' + (r.up ? '' : ' dn');
+      var max = Math.max.apply(null, r.bars) || 1;
+      r.bars.forEach(function(v){
+        var b = document.createElement('span');
+        b.style.height = Math.round((v / max) * 100) + '%';
+        spark.appendChild(b);
+      });
+
+      var chg = document.createElement('div'); chg.className = 'wl-chg ' + (r.up ? 'up' : 'dn'); chg.textContent = r.chg;
+
+      row.appendChild(sym); row.appendChild(spark); row.appendChild(chg);
+      host.appendChild(row);
+    });
+  })();
+
+  /* ============================================================
+     Market ticker strip (built in JS, duplicated for seamless loop)
+     ============================================================ */
+  (function buildTicker(){
+    var items = [
+      { s:'IHSG',   v:'7.314,2', d:'+0.42%', up:true },
+      { s:'BBCA',   v:'10.275',  d:'+1.24%', up:true },
+      { s:'TLKM',   v:'2.810',   d:'-0.62%', up:false },
+      { s:'BMRI',   v:'6.450',   d:'+0.78%', up:true },
+      { s:'AAPL',   v:'214.80',  d:'+0.88%', up:true },
+      { s:'BTCUSD', v:'68.940',  d:'+2.41%', up:true },
+      { s:'XAUUSD', v:'2.342',   d:'-0.18%', up:false },
+      { s:'EURUSD', v:'1.0842',  d:'+0.11%', up:true }
+    ];
+    var track = $('#tickerTrack');
+    function frag(){
+      var f = document.createDocumentFragment();
+      items.forEach(function(it){
+        var el = document.createElement('span'); el.className = 'it';
+        var b = document.createElement('b'); b.textContent = it.s;
+        var d = document.createElement('span'); d.className = it.up ? 'up' : 'dn'; d.textContent = ' ' + it.d;
+        el.appendChild(b);
+        el.appendChild(document.createTextNode(' ' + it.v));
+        el.appendChild(d);
+        f.appendChild(el);
+      });
+      return f;
+    }
+    track.appendChild(frag());
+    track.appendChild(frag()); // second copy -> -50% keyframe loops seamlessly
+  })();
+
+  /* ============================================================
+     Telegram integration — all guarded; safe when tg is null.
+     ============================================================ */
+  if(tg){
+    try{ tg.ready(); }catch(e){}
+    try{ tg.expand(); }catch(e){}
+
+    // keep our dark theme as the base; set chrome to our bg color
+    try{ if(typeof tg.setHeaderColor === 'function') tg.setHeaderColor('#05080c'); }catch(e){}
+    try{ if(typeof tg.setBackgroundColor === 'function') tg.setBackgroundColor('#05080c'); }catch(e){}
+
+    // only adapt the accent if Telegram provides a button color
+    try{
+      var tp = tg.themeParams || {};
+      if(tp.button_color){
+        document.documentElement.style.setProperty('--emerald', tp.button_color);
+        if(tp.button_text_color){
+          // keep primary button readable against the adapted accent
+          document.documentElement.style.setProperty('--txt', document.documentElement.style.getPropertyValue('--txt') || '#e9f2f5');
+        }
+      }
+    }catch(e){}
+
+    // BackButton hidden on root
+    try{ if(tg.BackButton && typeof tg.BackButton.hide === 'function') tg.BackButton.hide(); }catch(e){}
+
+    // MainButton drives the primary "Analisa" action
+    try{
+      if(tg.MainButton){
+        tg.MainButton.setText(t('mb_analyze'));
+        tg.MainButton.show();
+        if(typeof tg.MainButton.onClick === 'function') tg.MainButton.onClick(doAnalyze);
+      }
+    }catch(e){}
+  }
+
+  /* ---------- first paint ---------- */
+  applyTier();
+  applyLang();
+})();
+</script>
+</body>
+</html>

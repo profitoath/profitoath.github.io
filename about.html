@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tentang profitoath — Mendemokratisasi Alat Kuantitatif Institusi</title><meta name="description" content="Kisah, misi, dan prinsip di balik profitoath — mesin analisa saham AI & quant kelas institusional yang kami bawa ke investor ritel Indonesia, langsung di Telegram."/>
+<link rel="icon" type="image/svg+xml" href="./assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/style.css"/>
+<style>
+  /* page-specific layout — about.html only */
+  .mission-quote{font-size:clamp(24px,3.4vw,38px);font-weight:700;letter-spacing:-.02em;line-height:1.28;max-width:22ch}
+  .mission-quote .g-text{display:inline}
+  .val-list{display:flex;flex-direction:column;gap:18px;margin-top:8px}
+  .val-list .v{display:flex;gap:14px;align-items:flex-start}
+  .val-list .v .k{font-family:var(--mono);font-size:11px;color:var(--cyan);border:1px solid var(--line2);border-radius:7px;padding:5px 9px;white-space:nowrap;margin-top:2px}
+  .val-list .v h4{font-size:16px;font-weight:700}
+  .val-list .v p{color:var(--mut);font-size:14.5px;line-height:1.6;margin-top:4px}
+
+  /* timeline */
+  .timeline{position:relative;margin-top:54px;padding-left:34px}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;
+    background:linear-gradient(var(--emerald),var(--cyan),transparent)}
+  .tl-item{position:relative;padding-bottom:38px}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-item::before{content:"";position:absolute;left:-34px;top:4px;width:20px;height:20px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--emerald);box-shadow:0 0 14px rgba(22,224,168,.5)}
+  .tl-item .yr{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--emerald2)}
+  .tl-item h3{font-size:20px;font-weight:700;letter-spacing:-.01em;margin-top:6px}
+  .tl-item p{color:var(--mut);font-size:14.5px;line-height:1.65;margin-top:8px;max-width:62ch}
+  .tl-item .stack{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .tl-item .stack span{font-family:var(--mono);font-size:10.5px;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:4px 9px}
+</style></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="./pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb reveal"><a href="./index.html" data-i18n="crumb_home">Beranda</a><span class="sep">/</span><span data-i18n="footer_about_link">Tentang</span></div>
+      <div class="eyebrow reveal" style="margin-top:22px" data-i18n="about_page_eyebrow">Tentang kami</div>
+      <h1 class="h1 reveal" style="max-width:16ch;margin-top:4px" data-i18n-html="about_page_h1_html">Alat kuantitatif institusi, untuk <span class="g-text">setiap investor.</span></h1>
+      <p class="lead reveal" style="margin-top:24px" data-i18n="about_page_lead">profitoath lahir dari satu keyakinan sederhana: matematika yang dipakai meja kuantitatif hedge-fund tidak seharusnya jadi hak istimewa segelintir institusi. Kami mengemasnya ke dalam bot Telegram yang berbicara bahasamu — transparan, jujur soal risiko, dan tanpa janji ajaib.</p>
+    </div>
+  </section>
+
+  <!-- MISI -->
+  <section class="block">
+    <div class="wrap split">
+      <div>
+        <div class="eyebrow reveal" data-i18n="ab_mission_eyebrow">Misi</div>
+        <p class="mission-quote reveal" data-i18n-html="ab_mission_quote_html">Mendemokratisasi <span class="g-text">analisa kuantitatif kelas institusi</span> untuk investor ritel Indonesia.</p>
+        <p class="lead reveal" style="margin-top:24px" data-i18n="ab_mission_lead">Selama puluhan tahun, backtest bebas look-ahead bias, optimasi portofolio Markowitz, dan estimasi VaR dalam Rupiah hanya hidup di terminal mahal dan tim kuant berbayar tinggi. Investor ritel ditinggalkan dengan grup sinyal, rumor, dan tebakan. Kami membangun profitoath untuk menutup jurang itu — memberi alat yang sama akuratnya, dengan bahasa yang sama mudahnya, langsung di aplikasi chat yang sudah kamu pakai setiap hari.</p>
+      </div>
+      <div>
+        <div class="eyebrow reveal" data-i18n="ab_approach_eyebrow">Pendekatan</div>
+        <h2 class="h3 reveal" style="margin-bottom:24px" data-i18n="ab_approach_h">Matematika jujur, bukan sinyal ajaib.</h2>
+        <div class="val-list">
+          <div class="v reveal"><span class="k">01</span><div><h4 data-i18n="ab_val1_h">Transparan</h4><p data-i18n="ab_val1_p">Setiap angka bisa ditelusuri ke metodologinya. Backtest kami mensimulasikan realita IDX — lot 100, fee beli/jual asimetris, slippage, dan auto-rejection ARA/ARB — tanpa menyembunyikan asumsi.</p></div></div>
+          <div class="v reveal"><span class="k">02</span><div><h4 data-i18n="ab_val2_h">Edukatif</h4><p data-i18n-html="ab_val2_p_html">Bot tidak sekadar memberi verdict; ia menjelaskan RSI, MACD, regime, dan VaR lewat <a href="./glossary/index.html" style="color:var(--emerald2)">glosarium</a> dan <a href="./blog/index.html" style="color:var(--emerald2)">artikel</a> agar kamu paham, bukan sekadar ikut.</p></div></div>
+          <div class="v reveal"><span class="k">03</span><div><h4 data-i18n="ab_val3_h">Berbasis data realtime</h4><p data-i18n="ab_val3_p">Harga ditarik langsung dari jaringan data realtime, dengan 69.221 instrumen tersimpan offline untuk pencarian instan di 43 negara dan bursa.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="block">
+    <div class="wrap-sm">
+      <div class="eyebrow reveal" data-i18n="ab_journey_eyebrow">Perjalanan</div>
+      <h2 class="h2 reveal" data-i18n="ab_journey_h">Dari prototipe chat ke platform multi-aset.</h2>
+      <p class="lead reveal" style="margin-top:18px" data-i18n="ab_journey_lead">profitoath tumbuh bertahap — setiap lapisan diuji di pasar sungguhan sebelum kami menambah yang berikutnya.</p>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <div class="yr" data-i18n="ab_tl1_yr">Tahap 01 · Prototipe</div>
+          <h3 data-i18n="ab_tl1_h">Bot Telegram pertama</h3>
+          <p data-i18n="ab_tl1_p">Berawal dari satu skrip sederhana: ketik kode emiten, dapatkan chart candlestick dengan RSI dan MACD. Telegram dipilih karena nol-instalasi dan akrab bagi investor Indonesia. Respons cepat dari pengguna awal membuktikan satu hal — orang ingin analisa serius, asalkan mudah diakses.</p>
+          <div class="stack"><span>Telegram Bot API</span><span>Python</span><span>RSI · MACD</span></div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="yr" data-i18n="ab_tl2_yr">Tahap 02 · Quant Engine</div>
+          <h3 data-i18n="ab_tl2_h">Mesin kuantitatif Python</h3>
+          <p data-i18n="ab_tl2_p">Kami membangun fondasi pandas/scipy yang sama dengan meja kuant profesional: backtest realistis IDX bebas look-ahead bias, screener faktor lintas universe, deteksi regime pasar, hingga forecast ensemble dengan pita keyakinan kuantil. Setiap strategi divalidasi secara time-series, bukan dioptimasi berlebih ke masa lalu.</p>
+          <div class="stack"><span data-i18n="ab_tl2_tag1">Backtest IDX</span><span data-i18n="ab_tl2_tag2">Screener faktor</span><span>Regime · Forecast</span></div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="yr" data-i18n="ab_tl3_yr">Tahap 03 · SaaS multi-aset</div>
+          <h3 data-i18n="ab_tl3_h">Platform untuk 43 negara</h3>
+          <p data-i18n="ab_tl3_p">Hari ini profitoath mencakup saham 43 negara, forex, komoditas, indeks, dan kripto — 69.221 instrumen offline dengan harga realtime. Optimasi portofolio MV/RP/HRP, VaR/CVaR dalam Rupiah, dan analisa kapasitas untuk dana miliaran kini tersedia dalam tiga tier (FREE, PRO, VIP), dibayar lewat Telegram Stars atau QRIS.</p>
+          <div class="stack"><span>MV · RP · HRP</span><span>VaR/CVaR Rupiah</span><span>Telegram Stars · QRIS</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINSIP -->
+  <section class="block">
+    <div class="wrap">
+      <div class="eyebrow reveal" style="text-align:center" data-i18n="ab_principles_eyebrow">Nilai inti</div>
+      <h2 class="h2 reveal center" style="margin:0 auto" data-i18n="ab_principles_h">Prinsip kami.</h2>
+      <div class="grid-3" style="margin-top:54px">
+        <div class="card reveal">
+          <div class="ic">🎯</div><h3 data-i18n="ab_pr1_h">Akurasi</h3>
+          <p data-i18n="ab_pr1_p">Angka yang salah lebih berbahaya daripada tidak ada angka. Backtest kami memperhitungkan lot 100, fee asimetris, slippage, dan ARA/ARB — supaya hasil simulasi mendekati realita meja perdagangan, bukan dunia ideal.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic">⚖️</div><h3 data-i18n="ab_pr2_h">Kepatuhan</h3>
+          <p data-i18n="ab_pr2_p">Kami alat analisis dan edukasi — bukan sekuritas, bukan manajer investasi. profitoath tidak pernah mengeksekusi order dan tidak memberi rekomendasi beli/jual. Watchlist dan alert bersifat paper-trading sepenuhnya.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic">🤲</div><h3 data-i18n="ab_pr3_h">Kerendahan hati soal risiko</h3>
+          <p data-i18n="ab_pr3_p">Tidak ada model yang meramal masa depan. Itu sebabnya kami menyajikan keyakinan dalam bentuk pita kuantil dan risiko dalam Rupiah lewat VaR/CVaR — agar kamu melihat ketidakpastian, bukan ilusi kepastian.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEPATUHAN / FILOSOFI DISCLAIMER -->
+  <section class="block">
+    <div class="wrap-sm">
+      <div class="glass" style="padding:34px 32px;border-color:var(--line2)">
+        <div class="eyebrow reveal" data-i18n="ab_compliance_eyebrow">Filosofi kepatuhan</div>
+        <h2 class="h3 reveal" style="margin-bottom:14px" data-i18n="ab_compliance_h">Mengapa kami menulis disclaimer dengan serius.</h2>
+        <p class="lead reveal" style="max-width:none" data-i18n="ab_compliance_p">Disclaimer di kaki setiap halaman bukan formalitas hukum yang kami sembunyikan dengan font kecil. Itu inti dari cara kami beroperasi. profitoath adalah alat analisis dan edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Kami tidak berafiliasi dan tidak berizin OJK/BEI. Kinerja masa lalu dan hasil backtest tidak menjamin hasil masa depan. Keputusan akhir selalu ada di tangan kamu — lakukan riset sendiri (DYOR). Kami percaya investor yang teredukasi dan sadar risiko adalah investor terbaik, dan seluruh produk kami dirancang untuk mendukung keputusan itu, bukan menggantikannya.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="block">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <h2 data-i18n="ab_cta_h">Lihat caranya bekerja.</h2>
+        <p data-i18n="ab_cta_p">Telusuri kemampuan inti dan mesin kuantitatif di balik profitoath.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+          <a class="btn btn-primary btn-lg" href="./features.html" data-i18n="ab_cta_btn1">Jelajahi Fitur →</a>
+          <a class="btn btn-lg" href="./quant.html" data-i18n="ab_cta_btn2">Lihat Quant Engine</a>
+          <a class="btn btn-lg btn-ghost" href="./pricing.html" data-i18n="ab_cta_btn3">Lihat Harga</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site"><div class="wrap"><div class="foot-top">
+    <div><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+      <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+    <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a><a href="./docs.html" data-i18n="nav_docs">Docs</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="./about.html" data-i18n="footer_about_link">Tentang</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a><a href="./glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+    <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+    <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="./assets/site.js"></script>
+<script>window.PO_I18N_PAGE = {
+  ab_mission_eyebrow:{id:"Misi",en:"Mission"},
+  ab_mission_quote_html:{id:"Mendemokratisasi <span class=\"g-text\">analisa kuantitatif kelas institusi</span> untuk investor ritel Indonesia.",en:"Democratizing <span class=\"g-text\">institutional-grade quantitative analysis</span> for Indonesian retail investors."},
+  ab_mission_lead:{id:"Selama puluhan tahun, backtest bebas look-ahead bias, optimasi portofolio Markowitz, dan estimasi VaR dalam Rupiah hanya hidup di terminal mahal dan tim kuant berbayar tinggi. Investor ritel ditinggalkan dengan grup sinyal, rumor, dan tebakan. Kami membangun profitoath untuk menutup jurang itu — memberi alat yang sama akuratnya, dengan bahasa yang sama mudahnya, langsung di aplikasi chat yang sudah kamu pakai setiap hari.",en:"For decades, look-ahead-bias-free backtests, Markowitz portfolio optimization, and Rupiah-denominated VaR estimates lived only on expensive terminals and inside highly paid quant teams. Retail investors were left with signal groups, rumors, and guesswork. We built profitoath to close that gap — delivering tools that are just as accurate, in language that is just as accessible, right inside the chat app you already use every day."},
+  ab_approach_eyebrow:{id:"Pendekatan",en:"Approach"},
+  ab_approach_h:{id:"Matematika jujur, bukan sinyal ajaib.",en:"Honest math, not magic signals."},
+  ab_val1_h:{id:"Transparan",en:"Transparent"},
+  ab_val1_p:{id:"Setiap angka bisa ditelusuri ke metodologinya. Backtest kami mensimulasikan realita IDX — lot 100, fee beli/jual asimetris, slippage, dan auto-rejection ARA/ARB — tanpa menyembunyikan asumsi.",en:"Every number can be traced back to its methodology. Our backtests simulate IDX reality — 100-share lots, asymmetric buy/sell fees, slippage, and ARA/ARB auto-rejection — without hiding any assumptions."},
+  ab_val2_h:{id:"Edukatif",en:"Educational"},
+  ab_val2_p_html:{id:"Bot tidak sekadar memberi verdict; ia menjelaskan RSI, MACD, regime, dan VaR lewat <a href=\"./glossary/index.html\" style=\"color:var(--emerald2)\">glosarium</a> dan <a href=\"./blog/index.html\" style=\"color:var(--emerald2)\">artikel</a> agar kamu paham, bukan sekadar ikut.",en:"The bot does not just hand you a verdict; it explains RSI, MACD, regime, and VaR through a <a href=\"./glossary/index.html\" style=\"color:var(--emerald2)\">glossary</a> and <a href=\"./blog/index.html\" style=\"color:var(--emerald2)\">articles</a> so you understand, rather than just follow."},
+  ab_val3_h:{id:"Berbasis data realtime",en:"Powered by realtime data"},
+  ab_val3_p:{id:"Harga ditarik langsung dari jaringan data realtime, dengan 69.221 instrumen tersimpan offline untuk pencarian instan di 43 negara dan bursa.",en:"Prices are pulled directly from the realtime data network, with 69,221 instruments stored offline for instant search across 43 countries and exchanges."},
+  ab_journey_eyebrow:{id:"Perjalanan",en:"Journey"},
+  ab_journey_h:{id:"Dari prototipe chat ke platform multi-aset.",en:"From a chat prototype to a multi-asset platform."},
+  ab_journey_lead:{id:"profitoath tumbuh bertahap — setiap lapisan diuji di pasar sungguhan sebelum kami menambah yang berikutnya.",en:"profitoath grew step by step — each layer tested in real markets before we added the next."},
+  ab_tl1_yr:{id:"Tahap 01 · Prototipe",en:"Stage 01 · Prototype"},
+  ab_tl1_h:{id:"Bot Telegram pertama",en:"The first Telegram bot"},
+  ab_tl1_p:{id:"Berawal dari satu skrip sederhana: ketik kode emiten, dapatkan chart candlestick dengan RSI dan MACD. Telegram dipilih karena nol-instalasi dan akrab bagi investor Indonesia. Respons cepat dari pengguna awal membuktikan satu hal — orang ingin analisa serius, asalkan mudah diakses.",en:"It started as one simple script: type a ticker, get a candlestick chart with RSI and MACD. Telegram was chosen for being zero-install and familiar to Indonesian investors. The quick response from early users proved one thing — people want serious analysis, as long as it is easy to access."},
+  ab_tl2_yr:{id:"Tahap 02 · Quant Engine",en:"Stage 02 · Quant Engine"},
+  ab_tl2_h:{id:"Mesin kuantitatif Python",en:"A Python quantitative engine"},
+  ab_tl2_p:{id:"Kami membangun fondasi pandas/scipy yang sama dengan meja kuant profesional: backtest realistis IDX bebas look-ahead bias, screener faktor lintas universe, deteksi regime pasar, hingga forecast ensemble dengan pita keyakinan kuantil. Setiap strategi divalidasi secara time-series, bukan dioptimasi berlebih ke masa lalu.",en:"We built the same pandas/scipy foundation used by professional quant desks: realistic look-ahead-bias-free IDX backtests, cross-universe factor screeners, market regime detection, and ensemble forecasts with quantile confidence bands. Every strategy is validated time-series style, not overfitted to the past."},
+  ab_tl2_tag1:{id:"Backtest IDX",en:"IDX backtest"},
+  ab_tl2_tag2:{id:"Screener faktor",en:"Factor screener"},
+  ab_tl3_yr:{id:"Tahap 03 · SaaS multi-aset",en:"Stage 03 · Multi-asset SaaS"},
+  ab_tl3_h:{id:"Platform untuk 43 negara",en:"A platform for 43 countries"},
+  ab_tl3_p:{id:"Hari ini profitoath mencakup saham 43 negara, forex, komoditas, indeks, dan kripto — 69.221 instrumen offline dengan harga realtime. Optimasi portofolio MV/RP/HRP, VaR/CVaR dalam Rupiah, dan analisa kapasitas untuk dana miliaran kini tersedia dalam tiga tier (FREE, PRO, VIP), dibayar lewat Telegram Stars atau QRIS.",en:"Today profitoath covers stocks across 43 countries, forex, commodities, indices, and crypto — 69,221 offline instruments with realtime prices. MV/RP/HRP portfolio optimization, Rupiah-denominated VaR/CVaR, and capacity analysis for billion-Rupiah funds are now available across three tiers (FREE, PRO, VIP), paid via Telegram Stars or QRIS."},
+  ab_principles_eyebrow:{id:"Nilai inti",en:"Core values"},
+  ab_principles_h:{id:"Prinsip kami.",en:"Our principles."},
+  ab_pr1_h:{id:"Akurasi",en:"Accuracy"},
+  ab_pr1_p:{id:"Angka yang salah lebih berbahaya daripada tidak ada angka. Backtest kami memperhitungkan lot 100, fee asimetris, slippage, dan ARA/ARB — supaya hasil simulasi mendekati realita meja perdagangan, bukan dunia ideal.",en:"A wrong number is more dangerous than no number at all. Our backtests account for 100-share lots, asymmetric fees, slippage, and ARA/ARB — so simulated results approximate the reality of the trading desk, not an idealized world."},
+  ab_pr2_h:{id:"Kepatuhan",en:"Compliance"},
+  ab_pr2_p:{id:"Kami alat analisis dan edukasi — bukan sekuritas, bukan manajer investasi. profitoath tidak pernah mengeksekusi order dan tidak memberi rekomendasi beli/jual. Watchlist dan alert bersifat paper-trading sepenuhnya.",en:"We are an analysis and education tool — not a brokerage, not an investment manager. profitoath never executes orders and never gives buy/sell recommendations. Watchlists and alerts are entirely paper-trading."},
+  ab_pr3_h:{id:"Kerendahan hati soal risiko",en:"Humility about risk"},
+  ab_pr3_p:{id:"Tidak ada model yang meramal masa depan. Itu sebabnya kami menyajikan keyakinan dalam bentuk pita kuantil dan risiko dalam Rupiah lewat VaR/CVaR — agar kamu melihat ketidakpastian, bukan ilusi kepastian.",en:"No model can foretell the future. That is why we present confidence as quantile bands and risk in Rupiah through VaR/CVaR — so you see the uncertainty, not the illusion of certainty."},
+  ab_compliance_eyebrow:{id:"Filosofi kepatuhan",en:"Compliance philosophy"},
+  ab_compliance_h:{id:"Mengapa kami menulis disclaimer dengan serius.",en:"Why we take our disclaimer seriously."},
+  ab_compliance_p:{id:"Disclaimer di kaki setiap halaman bukan formalitas hukum yang kami sembunyikan dengan font kecil. Itu inti dari cara kami beroperasi. profitoath adalah alat analisis dan edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Kami tidak berafiliasi dan tidak berizin OJK/BEI. Kinerja masa lalu dan hasil backtest tidak menjamin hasil masa depan. Keputusan akhir selalu ada di tangan kamu — lakukan riset sendiri (DYOR). Kami percaya investor yang teredukasi dan sadar risiko adalah investor terbaik, dan seluruh produk kami dirancang untuk mendukung keputusan itu, bukan menggantikannya.",en:"The disclaimer at the foot of every page is not a legal formality we bury in tiny font. It is the core of how we operate. profitoath is an analysis and education tool, NOT investment advice, a recommendation, or a solicitation to transact. We are not affiliated with and not licensed by OJK/BEI. Past performance and backtest results do not guarantee future results. The final decision is always yours — do your own research (DYOR). We believe an educated, risk-aware investor is the best investor, and every product we build is designed to support that decision, not replace it."},
+  ab_cta_h:{id:"Lihat caranya bekerja.",en:"See how it works."},
+  ab_cta_p:{id:"Telusuri kemampuan inti dan mesin kuantitatif di balik profitoath.",en:"Explore the core capabilities and the quantitative engine behind profitoath."},
+  ab_cta_btn1:{id:"Jelajahi Fitur →",en:"Explore Features →"},
+  ab_cta_btn2:{id:"Lihat Quant Engine",en:"View Quant Engine"},
+  ab_cta_btn3:{id:"Lihat Harga",en:"View Pricing"}
+};</script>
+<script src="./assets/i18n.js"></script></body></html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Momentum vs Mean Reversion: Dua Filosofi Trading Kuantitatif — profitoath</title><meta name="description" content="Bedah tuntas dua filosofi trading kuantitatif yang berlawanan: momentum (ikut tren, breakout) vs mean reversion (kembali ke rata-rata, RSI-reversion). Kapan masing-masing bekerja, dan bagaimana deteksi regime pasar membantu memilih strategi yang tepat."/>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+<style>
+  /* page-specific layout — momentum-vs-mean-reversion.html only */
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;
+    background:linear-gradient(90deg,var(--emerald),var(--cyan));box-shadow:0 0 12px rgba(22,224,168,.6);transition:width .1s linear}
+  .art-head{max-width:74ch;margin:0 auto}
+  .tag-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;padding:7px 13px;border-radius:8px;background:rgba(22,224,168,.07);
+    border:1px solid var(--line2);color:var(--emerald2)}
+  .byline{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:22px;font-family:var(--mono);
+    font-size:12.5px;color:var(--dim)}
+  .byline .au{color:var(--mut)}
+  .byline .sep{opacity:.4}
+  .related{max-width:74ch;margin:46px auto 0;border-top:1px solid var(--line);padding-top:32px}
+  .related h3{font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:16px}
+  .related ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+  .related li{display:flex;gap:10px;align-items:flex-start}
+  .related li .ar{color:var(--emerald);font-family:var(--mono);margin-top:2px}
+  .related a{color:var(--emerald2);border-bottom:1px solid rgba(91,255,208,.3)}
+  .related a:hover{border-color:var(--emerald2)}
+</style></head><body>
+<div id="progress"></div>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="../blog/index.html" aria-current="page" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="../pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <!-- HERO / ARTICLE HEADER -->
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb reveal"><a href="../index.html">Beranda</a><span class="sep">/</span><a href="../blog/index.html">Blog</a><span class="sep">/</span><span>Momentum vs Mean Reversion</span></div>
+      <div class="art-head" style="margin-top:30px">
+        <span class="tag-pill reveal">Analisa Teknikal</span>
+        <h1 class="h1 reveal" style="font-size:clamp(32px,5.2vw,58px);margin-top:20px;letter-spacing:-.03em">Momentum vs Mean Reversion: Dua Filosofi Trading Kuantitatif</h1>
+        <div class="byline reveal">
+          <span class="au">Tim profitoath</span><span class="sep">·</span>
+          <span>16 Mei 2026</span><span class="sep">·</span>
+          <span>10 menit baca</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARTICLE BODY -->
+  <section class="block" style="padding-top:10px">
+    <article class="prose reveal">
+      <p>Hampir semua strategi trading kuantitatif, kalau dikupas sampai intinya, berdiri di atas salah satu dari dua keyakinan yang saling bertolak belakang tentang bagaimana harga bergerak. Keyakinan pertama: harga yang sudah bergerak akan cenderung melanjutkan arahnya — yang naik akan terus naik, yang turun akan terus turun. Inilah <strong>momentum</strong>. Keyakinan kedua: harga yang menyimpang terlalu jauh dari nilai wajarnya akan tertarik kembali ke rata-rata — yang naik terlalu tinggi akan turun, yang jatuh terlalu dalam akan memantul. Inilah <strong>mean reversion</strong>.</p>
+
+      <p>Keduanya benar — tetapi tidak di waktu yang sama. Memahami kapan pasar sedang "berkepribadian momentum" dan kapan sedang "berkepribadian mean-reversion" adalah salah satu pembeda paling tajam antara trader yang konsisten dan yang sekadar beruntung. Artikel ini membedah dua filosofi itu, strategi turunannya, kondisi pasar (regime) tempat masing-masing unggul, dan bagaimana deteksi regime membantu Anda memilih senjata yang tepat.</p>
+
+      <h2>Momentum: bertaruh pada kelanjutan tren</h2>
+      <p>Filosofi momentum berangkat dari pengamatan empiris yang sudah didokumentasikan sejak penelitian Jegadeesh & Titman (1993): aset yang berkinerja baik dalam 3–12 bulan terakhir cenderung melanjutkan kinerjanya dalam beberapa bulan ke depan. Secara perilaku, ini didorong oleh <em>underreaction</em> investor terhadap informasi baru, efek <em>herding</em>, dan arus dana yang mengejar pemenang. Tren, sekali terbentuk, punya inersia.</p>
+
+      <h3>Strategi turunan momentum</h3>
+      <ul>
+        <li><strong>Breakout:</strong> masuk posisi saat harga menembus level resistance atau membuat <em>high</em> baru (misalnya tertinggi 20 atau 55 hari, ala sistem Turtle). Logikanya, penembusan menandakan dorongan beli yang cukup kuat untuk melanjutkan.</li>
+        <li><strong>Moving average crossover:</strong> beli saat MA cepat memotong MA lambat ke atas (mis. MA20 &gt; MA50), keluar saat sebaliknya. Sederhana, dan menangkap tren menengah dengan baik.</li>
+        <li><strong>Time-series momentum:</strong> ikuti tanda return periode sebelumnya — jika 12 bulan terakhir positif, ambil posisi <em>long</em>; jika negatif, hindari atau <em>short</em>.</li>
+        <li><strong>Relative strength ranking:</strong> dari sekeranjang saham, beli kuintil dengan return terkuat, hindari yang terlemah. Ini momentum lintas-aset (cross-sectional).</li>
+      </ul>
+
+      <p>Indikator yang akrab dengan kubu momentum: MACD untuk arah tren, ADX untuk kekuatan tren, dan RSI yang dibaca secara <em>pro-tren</em> (RSI bertahan di atas 50–60 sebagai konfirmasi, bukan sinyal jual). Ciri khas profil hasil momentum: <strong>banyak kekalahan kecil, sedikit kemenangan besar</strong>. Tren besar yang sesekali muncul menutupi serangkaian sinyal palsu di antaranya.</p>
+
+      <h2>Mean reversion: bertaruh pada kembali ke rata-rata</h2>
+      <p>Filosofi mean reversion berangkat dari asumsi bahwa harga berosilasi di sekitar nilai keseimbangan, dan deviasi ekstrem bersifat sementara. Ketika harga melonjak jauh di atas rata-ratanya tanpa alasan fundamental, ada tekanan statistik untuk kembali; begitu pula saat jatuh terlalu dalam. Secara perilaku, ini didorong oleh <em>overreaction</em> — panik dan euforia jangka pendek yang akhinya dikoreksi.</p>
+
+      <h3>Strategi turunan mean reversion</h3>
+      <ul>
+        <li><strong>RSI-reversion:</strong> beli saat RSI menyentuh zona oversold (mis. &lt;30) di pasar yang menyamping, jual saat kembali ke 50–70. Kebalikan total dari cara momentum membaca RSI.</li>
+        <li><strong>Bollinger Bands fade:</strong> jual saat harga menyentuh band atas (2 standar deviasi di atas MA), beli saat menyentuh band bawah — bertaruh harga kembali ke garis tengah.</li>
+        <li><strong>Z-score / Ornstein-Uhlenbeck:</strong> ukur seberapa jauh (dalam standar deviasi) harga menyimpang dari rata-rata bergeraknya; masuk lawan arah saat z-score ekstrem.</li>
+        <li><strong>Pairs trading / statistical arbitrage:</strong> dua saham yang historisnya bergerak seiring (kointegrasi) sesekali melebar; <em>long</em> yang tertinggal, <em>short</em> yang memimpin, lalu tutup saat spread menyempit kembali.</li>
+      </ul>
+
+      <p>Profil hasil mean reversion adalah cermin dari momentum: <strong>banyak kemenangan kecil yang konsisten, sesekali kekalahan besar</strong>. Strategi ini terlihat mulus dan menyenangkan — sampai datang tren kuat yang menggilas posisi "lawan arah" karena harga ekstrem ternyata makin ekstrem. Inilah mengapa mean reversion tanpa stop yang disiplin bisa berakhir bencana.</p>
+
+      <blockquote>"Markets can remain irrational longer than you can remain solvent." Peringatan klasik ini ditujukan tepat pada trader mean-reversion yang melawan tren kuat. Oversold bisa menjadi lebih oversold; overbought bisa terus mengganas. Tanpa batas kerugian, taruhan "pasti balik" adalah jalan tercepat menuju margin call.</blockquote>
+
+      <h2>Membandingkan keduanya berdampingan</h2>
+      <table>
+        <thead><tr><th>Aspek</th><th>Momentum</th><th>Mean Reversion</th></tr></thead>
+        <tbody>
+          <tr><td>Keyakinan inti</td><td>Tren berlanjut</td><td>Harga kembali ke rata-rata</td></tr>
+          <tr><td>Arah entry</td><td>Searah pergerakan</td><td>Melawan pergerakan</td></tr>
+          <tr><td>Cara baca RSI</td><td>Konfirmasi (RSI tinggi = kuat)</td><td>Kontra (RSI rendah = beli)</td></tr>
+          <tr><td>Win rate khas</td><td>Rendah (35–45%)</td><td>Tinggi (60–75%)</td></tr>
+          <tr><td>Rasio menang/kalah</td><td>Besar (3:1+)</td><td>Kecil (&lt;1:1)</td></tr>
+          <tr><td>Regime favorit</td><td>Tren kuat, volatilitas trending</td><td>Sideways, range, volatilitas tinggi acak</td></tr>
+          <tr><td>Musuh utama</td><td>Pasar choppy / sideways</td><td>Tren kuat berkepanjangan</td></tr>
+        </tbody>
+      </table>
+
+      <p>Perhatikan baris terakhir: musuh dari yang satu adalah teman dari yang lain. Itu bukan kebetulan — keduanya secara matematis hampir merupakan kebalikan. Strategi yang sama, kalau Anda balik tanda sinyalnya, berubah dari momentum menjadi mean reversion. Karena itu menjalankan keduanya secara membabi buta sepanjang waktu hanya akan saling meniadakan dan menggerus modal lewat biaya transaksi.</p>
+
+      <h2>Regime pasar: kunci memilih strategi</h2>
+      <p><em>Regime</em> adalah karakter pasar yang relatif stabil dalam suatu periode — apakah sedang <strong>trending</strong> (bergerak terarah), <strong>ranging/sideways</strong> (terombang-ambing dalam kisaran), tenang (volatilitas rendah), atau bergejolak (volatilitas tinggi). Momentum bersinar di regime trending; mean reversion bersinar di regime ranging. Salah membaca regime berarti memakai strategi yang benar di pasar yang salah.</p>
+
+      <p>Realita Bursa Efek Indonesia menambah satu lapisan penting: banyak saham IDX, terutama di luar lapis pertama, sering kali bergerak menyamping dengan likuiditas tipis dan diselingi lompatan tajam (kadang sampai menyentuh batas ARA/ARB). Pasar yang dominan ranging cenderung menghukum strategi momentum naif dengan <em>whipsaw</em> — penembusan palsu yang langsung berbalik.</p>
+
+      <h3>Cara mendeteksi regime</h3>
+      <ol>
+        <li><strong>ADX (Average Directional Index):</strong> ADX &gt; 25 mengindikasikan tren yang berarti (giliran momentum); ADX &lt; 20 menandakan pasar tanpa arah (giliran mean reversion).</li>
+        <li><strong>Hurst exponent (H):</strong> H &gt; 0,5 berarti deret harga <em>persistent</em> (trending, cocok momentum); H &lt; 0,5 berarti <em>anti-persistent</em> (mean-reverting); H ≈ 0,5 menyerupai random walk.</li>
+        <li><strong>Volatilitas & rezim statistik:</strong> rasio volatilitas jangka pendek vs panjang, atau model seperti <em>Markov regime-switching</em> dan deteksi berbasis Hidden Markov Model, untuk mengklasifikasi state pasar secara probabilistik.</li>
+        <li><strong>Lebar Bollinger Band (bandwidth):</strong> band yang menyempit ekstrem (squeeze) sering mendahului ekspansi tren — sinyal beralih ke mode momentum.</li>
+      </ol>
+
+      <div class="callout">
+        <span class="ci">💡</span>
+        <p><strong>FYI —</strong> profitoath menjalankan deteksi regime otomatis pada 69.221 instrumen dengan harga realtime. Mesin mengklasifikasi apakah sebuah saham sedang trending atau ranging, menghitung ADX, lebar Bollinger, dan indikator persistensi, lalu menandai strategi mana yang secara historis lebih cocok untuk kondisi saat itu. Backtest IDX-realistis kami (lot 100, fee asimetris, batas ARA/ARB) bahkan bisa membandingkan kinerja varian momentum dan mean-reversion pada emiten yang sama — cukup lewat satu perintah di Telegram.</p>
+      </div>
+
+      <h2>Menggabungkan keduanya: pendekatan adaptif</h2>
+      <p>Trader kuantitatif yang matang jarang fanatik pada satu kubu. Pendekatan yang lebih tangguh adalah <strong>regime-aware</strong>: jalankan modul momentum saat detektor regime menunjukkan tren, dan modul mean-reversion saat menunjukkan range. Beberapa kerangka yang umum dipakai:</p>
+      <ul>
+        <li><strong>Switching:</strong> hanya satu strategi aktif pada satu waktu, ditentukan oleh sinyal regime (mis. ADX sebagai sakelar).</li>
+        <li><strong>Blending berbobot:</strong> alokasikan modal ke kedua strategi dengan bobot yang menyesuaikan keyakinan regime — bukan hitam-putih.</li>
+        <li><strong>Filter timeframe ganda:</strong> tentukan tren besar di timeframe tinggi (momentum), lalu cari titik masuk mean-reversion di timeframe rendah <em>searah</em> tren besar — menggabungkan kekuatan keduanya.</li>
+      </ul>
+
+      <p>Apa pun kerangkanya, dua prinsip tetap mengikat. Pertama, <strong>manajemen risiko menentukan kelangsungan hidup</strong>, bukan akurasi sinyal. Strategi mean-reversion wajib punya stop yang tegas karena ekor kerugiannya gemuk; strategi momentum wajib menerima banyak kekalahan kecil tanpa membesar-besarkannya. Ukur eksposur dalam Rupiah lewat <a href="../glossary/index.html#var">VaR</a>/CVaR, bukan sekadar persen. Kedua, <strong>validasi lewat backtest yang jujur</strong>. Strategi yang terlihat indah di kurva masa lalu sering kali hasil <em>overfitting</em> regime tertentu; uji di periode trending <em>dan</em> ranging sebelum mempercayakan modal nyata.</p>
+
+      <p>Intinya: momentum dan mean reversion bukan soal mana yang "benar", melainkan kapan masing-masing relevan. Tren dihormati oleh momentum; ekstrem dihukum oleh mean reversion. Yang menentukan bukan strateginya, tetapi kemampuan Anda membaca regime tempat strategi itu dijalankan — lalu disiplin mengelola risiko ketika, mau tak mau, regime berubah tanpa pemberitahuan.</p>
+    </article>
+
+    <!-- BACAAN TERKAIT -->
+    <div class="related reveal">
+      <h3>Bacaan terkait</h3>
+      <ul>
+        <li><span class="ar">→</span><a href="../blog/cara-membaca-rsi-macd.html">Cara Membaca RSI dan MACD untuk Sinyal Saham</a></li>
+        <li><span class="ar">→</span><a href="../blog/apa-itu-backtesting-saham.html">Apa Itu Backtesting Saham? Menguji Strategi Secara Jujur</a></li>
+        <li><span class="ar">→</span><a href="../blog/value-at-risk-manajemen-risiko.html">Value at Risk: Mengukur Kerugian Portofolio dalam Rupiah</a></li>
+        <li><span class="ar">→</span>Glosarium: <a href="../glossary/index.html#momentum">Momentum</a> · <a href="../glossary/index.html#mean-reversion">Mean Reversion</a> · <a href="../glossary/index.html#regime">Regime Pasar</a> · <a href="../glossary/index.html#momentum">Breakout</a> · <a href="../glossary/index.html#bollinger">Bollinger Bands</a></li>
+        <li><span class="ar">→</span>Coba langsung: <a href="../pricing.html">mulai gratis di profitoath</a> dan dapatkan deteksi regime serta backtest IDX-realistis di Telegram.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="block" style="padding-top:30px">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <h2>Strategi yang benar di regime yang salah tetap rugi.</h2>
+        <p>Biarkan profitoath mendeteksi regime pasar otomatis dan membandingkan kinerja momentum vs mean reversion lewat backtest realistis IDX — lot 100, fee asimetris, batas ARA/ARB — langsung di Telegram.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+          <a class="btn btn-primary btn-lg" href="../pricing.html">Mulai Gratis →</a>
+          <a class="btn btn-lg" href="../features.html">Jelajahi Fitur</a>
+          <a class="btn btn-lg btn-ghost" href="../quant.html">Lihat Quant Engine</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site"><div class="wrap"><div class="foot-top">
+    <div><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+      <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+    <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a><a href="../docs.html" data-i18n="nav_docs">Docs</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="../blog/index.html" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="../about.html" data-i18n="footer_about_link">Tentang</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a><a href="../glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+    <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+    <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/i18n.js"></script>
+<script>
+  // reading-progress bar
+  (function(){
+    var bar=document.getElementById('progress');
+    function upd(){
+      var h=document.documentElement;
+      var max=h.scrollHeight-h.clientHeight;
+      var p=max>0?(h.scrollTop||document.body.scrollTop)/max*100:0;
+      bar.style.width=p+'%';
+    }
+    document.addEventListener('scroll',upd,{passive:true});
+    window.addEventListener('resize',upd);upd();
+  })();
+</script></body></html>

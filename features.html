@@ -1,0 +1,599 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fitur — profitoath · Terminal Quant Institusional di Telegram</title><meta name="description" content="Katalog lengkap fitur profitoath: chart & analisa teknikal, forecast AI, backtest realistis IDX (lot 100, ARA/ARB), screener faktor, deteksi regime, optimasi portofolio MV/RP/HRP, VaR/CVaR Rupiah, analisa kapasitas, dan pasar global 43 negara."/>
+<link rel="icon" type="image/svg+xml" href="./assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/style.css"/>
+<style>
+  /* ---- features page: visual mocks only ---- */
+  .viz{border:1px solid var(--line2);border-radius:var(--r);background:var(--panel2);backdrop-filter:blur(14px);
+    padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative;overflow:hidden}
+  .viz .vh{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11.5px;
+    color:var(--mut);margin-bottom:16px;letter-spacing:.04em}
+  .viz .vh b{color:var(--txt)}
+  .verdict{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;padding:4px 10px;
+    border-radius:7px;border:1px solid rgba(22,224,168,.4);background:rgba(22,224,168,.08);color:var(--emerald2)}
+  .verdict.dn{border-color:rgba(255,93,108,.4);background:rgba(255,93,108,.08);color:var(--red)}
+  .candles{display:flex;align-items:flex-end;gap:4px;height:140px;padding-top:6px}
+  .candles i{flex:1;position:relative;display:block;border-radius:2px}
+  .gline{display:flex;align-items:center;gap:10px;margin-top:11px;font-size:12px;color:var(--mut);font-family:var(--mono)}
+  .gline b{color:var(--txt);width:62px;flex-shrink:0}
+  .meter{flex:1;height:7px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden}
+  .meter i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--emerald));border-radius:6px}
+  .meter.warn i{background:linear-gradient(90deg,var(--gold),var(--red))}
+  .band{position:relative;height:130px;border-radius:12px;border:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(22,224,168,.05),transparent);overflow:hidden}
+  .band .fan{position:absolute;inset:14px 0;background:
+    linear-gradient(90deg,transparent,rgba(22,224,168,.16) 60%,rgba(11,208,255,.22));
+    clip-path:polygon(0 48%,100% 8%,100% 92%,0 52%);opacity:.8}
+  .band .mid{position:absolute;left:0;right:0;top:50%;height:2px;
+    background:linear-gradient(90deg,transparent,var(--emerald2));transform:rotate(-9deg);transform-origin:left}
+  .tear{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:12px;overflow:hidden}
+  .tear div{background:var(--bg3);padding:14px 14px}
+  .tear .n{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-.02em}
+  .tear .n.g{color:var(--emerald2)}.tear .n.r{color:var(--red)}
+  .tear .l{font-size:10.5px;color:var(--dim);margin-top:4px;letter-spacing:.03em}
+  .frow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .frow:last-child{border-bottom:none}
+  .frow .rk{font-family:var(--mono);font-size:11px;color:var(--dim);width:20px}
+  .frow .tk{font-family:var(--mono);font-weight:700;color:var(--txt);width:58px}
+  .frow .sc{margin-left:auto;font-family:var(--mono);color:var(--emerald2);font-weight:700}
+  .frow .mt{flex:1;max-width:120px;height:6px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden}
+  .frow .mt i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--emerald))}
+  .regimes{display:flex;flex-direction:column;gap:9px}
+  .reg{display:flex;align-items:center;gap:11px;font-size:12.5px;color:var(--mut);font-family:var(--mono)}
+  .reg .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .reg.on{color:var(--txt)}
+  .reg.on .lab{border-color:var(--line3)}
+  .reg .lab{margin-left:auto;font-size:10.5px;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  .wbar{display:flex;align-items:center;gap:12px;margin-top:11px;font-size:12.5px;color:var(--mut);font-family:var(--mono)}
+  .wbar b{color:var(--txt);width:58px}
+  .wbar .pc{width:42px;text-align:right;color:var(--emerald2)}
+  .chips-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .geo{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .geo span{font-family:var(--mono);font-size:11.5px;color:var(--mut);border:1px solid var(--line);
+    border-radius:8px;padding:8px 11px;background:rgba(255,255,255,.02)}
+  .geo span b{color:var(--emerald2)}
+  .bub{max-width:90%;padding:11px 14px;border-radius:14px;font-size:12.5px;line-height:1.45}
+  .bub.in{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .bub.out{align-self:flex-end;background:linear-gradient(135deg,rgba(22,224,168,.22),rgba(11,208,255,.14));
+    border:1px solid rgba(22,224,168,.3);border-bottom-right-radius:5px}
+  .bub .mono{font-size:11px;color:var(--emerald2)}
+  .chatcol{display:flex;flex-direction:column;gap:9px}
+  .sec-tag{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);
+    border:1px solid var(--line2);border-radius:7px;padding:5px 11px;display:inline-block;margin-bottom:16px}
+  .feat-list{list-style:none;margin:22px 0 0;display:flex;flex-direction:column;gap:11px}
+  .feat-list li{display:flex;gap:11px;font-size:14.5px;color:var(--mut);line-height:1.5;align-items:flex-start}
+  .feat-list li svg{flex-shrink:0;margin-top:3px;color:var(--emerald)}
+  .feat-list li b{color:var(--txt);font-weight:600}
+  @media(max-width:920px){.split .viz-side{order:2}}
+</style>
+</head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="./features.html" aria-current="page" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="./pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb reveal"><a href="./index.html" data-i18n="crumb_home">Beranda</a><span class="sep">/</span><span data-i18n="nav_features">Fitur</span></div>
+      <div class="eyebrow reveal" style="margin-top:22px" data-i18n="feat_page_eyebrow">Katalog fitur lengkap</div>
+      <h2 class="h2 reveal" style="max-width:20ch" data-i18n="feat_page_h2">Satu bot, kelengkapan terminal kuantitatif.</h2>
+      <p class="lead reveal" style="margin-top:20px" data-i18n-html="feat_page_lead_html">Dari candlestick neon sampai optimasi portofolio HRP — setiap fitur profitoath dibangun di atas mesin Python yang sama dengan meja kuantitatif profesional, lalu dikemas dalam antarmuka chat Telegram. Berikut isi mesinnya, fitur demi fitur. Selami matematikanya di <a href="./quant.html" style="color:var(--emerald2)">Quant Engine</a>, atau cek paket di <a href="./pricing.html" style="color:var(--emerald2)">Harga</a>.</p>
+    </div>
+  </section>
+
+  <!-- 1. CHART & ANALISA TEKNIKAL -->
+  <section class="block reveal" id="chart">
+    <div class="wrap split">
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span><b>BBCA</b> · Bank Central Asia · 1D</span><span class="verdict">▲ BULLISH</span></div>
+          <div class="candles" id="candles"></div>
+          <div class="gline"><b>RSI 14</b><div class="meter"><i style="width:58%"></i></div><span>58.4</span></div>
+          <div class="gline"><b>MACD</b><div class="meter"><i style="width:64%"></i></div><span>+1.24</span></div>
+          <div class="gline"><b>ADX 14</b><div class="meter"><i style="width:41%"></i></div><span>27.6</span></div>
+          <div class="gline"><b>Stoch %K</b><div class="meter warn"><i style="width:78%"></i></div><span>78.1</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-tag" data-i18n="ft_s1_tag">01 · Teknikal</span>
+        <h3 class="h3" data-i18n="ft_s1_h3">Chart &amp; analisa teknikal, dirender instan.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s1_lead">Ketik kode emiten dan terima candlestick neon lengkap dengan tumpukan indikator klasik plus verdict otomatis — agar kamu langsung tahu posisi tren tanpa membuka platform terpisah.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s1_li1"><b>EMA, RSI, MACD, Bollinger Bands, ADX, dan Stochastic</b> dihitung dari data harga realtime, bukan snapshot basi.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s1_li2"><b>Verdict komposit</b> menggabungkan sinyal lintas-indikator menjadi satu kesimpulan ringkas: bullish, bearish, atau netral.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="ft_s1_li3">Bandingkan kerangka waktu intraday hingga harian, dengan level support/resistance otomatis.</span></li>
+        </ul>
+        <p style="margin-top:18px;font-size:14px;color:var(--mut)" data-i18n-html="ft_s1_note">Belum paham RSI atau MACD? Buka penjelasannya di <a href="./glossary/index.html" style="color:var(--emerald2)">Glosarium</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. FORECAST AI -->
+  <section class="block reveal" id="forecast">
+    <div class="wrap split">
+      <div>
+        <span class="sec-tag" data-i18n="ft_s2_tag">02 · Prediktif</span>
+        <h3 class="h3" data-i18n="ft_s2_h3">Forecast AI dengan pita keyakinan, bukan tebakan garis lurus.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s2_lead">Model ensemble gradient-boosting dilatih pada puluhan fitur teknikal dan musiman, lalu mengeluarkan proyeksi probabilistik — bukan satu angka tunggal yang menyesatkan.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s2_li1"><b>Ensemble gradient-boosting</b> menangkap pola non-linear yang luput dari regresi sederhana.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s2_li2"><b>Pita kuantil</b> (mis. P10–P90) menunjukkan rentang skenario, bukan ilusi kepastian.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s2_li3"><b>Time-series cross-validation</b> menghormati urutan waktu sehingga model tidak pernah "mengintip" masa depan saat dilatih.</span></li>
+        </ul>
+      </div>
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span data-i18n-html="ft_s2_vh"><b>Forecast</b> · 5 hari · BBCA</span><span class="verdict" data-i18n="ft_s2_verdict">71% keyakinan</span></div>
+          <div class="band"><div class="fan"></div><div class="mid"></div></div>
+          <div class="gline" style="margin-top:14px"><b>Median</b><div class="meter"><i style="width:62%"></i></div><span>+2.4%</span></div>
+          <div class="gline"><b>P90</b><div class="meter"><i style="width:84%"></i></div><span>+5.1%</span></div>
+          <div class="gline"><b>P10</b><div class="meter warn"><i style="width:26%"></i></div><span>-1.3%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. BACKTEST REALISTIS IDX -->
+  <section class="block reveal" id="backtest">
+    <div class="wrap split">
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span data-i18n-html="ft_s3_vh"><b>Tearsheet</b> · Walk-forward · 2019–2025</span><span class="verdict">PASS</span></div>
+          <div class="tear">
+            <div><div class="n g">+18,4%</div><div class="l">CAGR</div></div>
+            <div><div class="n g">1,42</div><div class="l">Sharpe</div></div>
+            <div><div class="n r">-12,8%</div><div class="l">Max DD</div></div>
+            <div><div class="n">54,1%</div><div class="l" data-i18n="ft_s3_winrate">Win rate</div></div>
+            <div><div class="n">1,9</div><div class="l" data-i18n="ft_s3_pf">Profit factor</div></div>
+            <div><div class="n">312</div><div class="l" data-i18n="ft_s3_trade">Trade</div></div>
+          </div>
+          <div class="gline" style="margin-top:16px"><b data-i18n="ft_s3_feebuy">Fee beli</b><div class="meter"><i style="width:18%"></i></div><span>0,15%</span></div>
+          <div class="gline"><b data-i18n="ft_s3_feesell">Fee jual</b><div class="meter"><i style="width:28%"></i></div><span>0,25%</span></div>
+          <div class="gline"><b>Slippage</b><div class="meter warn"><i style="width:22%"></i></div><span data-i18n="ft_s3_tick">1 tick</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-tag" data-i18n="ft_s3_tag">03 · Validasi</span>
+        <h3 class="h3" data-i18n="ft_s3_h3">Backtest realistis IDX — sesuai aturan main bursa Indonesia.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s3_lead">Backtest yang mengabaikan friksi pasar hanya menghasilkan fantasi. Mesin profitoath mensimulasikan kondisi nyata IDX agar angka yang kamu lihat bisa dipercaya.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s3_li1"><b>Lot 100 saham</b>, fee beli/jual asimetris, dan slippage diperhitungkan di setiap eksekusi.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s3_li2"><b>Auto-rejection ARA/ARB</b> — order ditolak saat harga menyentuh batas atas/bawah harian, persis seperti di pasar.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s3_li3"><b>Tanpa look-ahead bias</b> — sinyal hanya memakai data yang tersedia pada saat itu.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s3_li4"><b>Walk-forward &amp; Monte Carlo</b> menguji ketahanan strategi di luar sampel dan ribuan urutan acak — anti-overfit.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s3_li5"><b>Tearsheet profesional</b>: CAGR, Sharpe, max drawdown, profit factor, dan kurva ekuitas dalam satu gambar.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. SCREENER FAKTOR -->
+  <section class="block reveal" id="screener">
+    <div class="wrap split">
+      <div>
+        <span class="sec-tag" data-i18n="ft_s4_tag">04 · Seleksi</span>
+        <h3 class="h3" data-i18n="ft_s4_h3">Screener faktor — pindai seluruh universe dalam hitungan detik.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s4_lead">Daripada menatap ratusan chart satu per satu, biarkan screener memberi skor dan peringkat setiap emiten berdasarkan kombinasi faktor kuantitatif yang terbukti.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s4_li1">Skor komposit dari faktor <b>momentum, tren, volume, mean-reversion,</b> dan <b>volatilitas</b>.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s4_li2"><b>Ranking otomatis</b> menampilkan kandidat terkuat di puncak daftar, lengkap dengan kontribusi tiap faktor.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="ft_s4_li3">Saring per bursa atau sektor, lalu kirim hasil terbaik langsung ke watchlist.</span></li>
+        </ul>
+      </div>
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span data-i18n-html="ft_s4_vh"><b>Screener</b> · Komposit faktor</span><span class="verdict">Top 6 / 842</span></div>
+          <div class="frow"><span class="rk">1</span><span class="tk">BBRI</span><div class="mt"><i style="width:94%"></i></div><span class="sc">94</span></div>
+          <div class="frow"><span class="rk">2</span><span class="tk">ASII</span><div class="mt"><i style="width:89%"></i></div><span class="sc">89</span></div>
+          <div class="frow"><span class="rk">3</span><span class="tk">TLKM</span><div class="mt"><i style="width:82%"></i></div><span class="sc">82</span></div>
+          <div class="frow"><span class="rk">4</span><span class="tk">BMRI</span><div class="mt"><i style="width:77%"></i></div><span class="sc">77</span></div>
+          <div class="frow"><span class="rk">5</span><span class="tk">ANTM</span><div class="mt"><i style="width:71%"></i></div><span class="sc">71</span></div>
+          <div class="frow"><span class="rk">6</span><span class="tk">ICBP</span><div class="mt"><i style="width:68%"></i></div><span class="sc">68</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. REGIME DETECTION -->
+  <section class="block reveal" id="regime">
+    <div class="wrap split">
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span data-i18n-html="ft_s5_vh"><b>Regime</b> · BBCA · saat ini</span><span class="verdict">BULL_TREND</span></div>
+          <div class="regimes">
+            <div class="reg on"><span class="dot" style="background:var(--emerald);box-shadow:0 0 8px var(--emerald)"></span><span data-i18n="ft_s5_bull">Bull trend</span><span class="lab" data-i18n="ft_s5_active">aktif</span></div>
+            <div class="reg"><span class="dot" style="background:var(--dim)"></span><span data-i18n="ft_s5_bear">Bear trend</span><span class="lab">—</span></div>
+            <div class="reg"><span class="dot" style="background:var(--dim)"></span><span data-i18n="ft_s5_range">Ranging / sideways</span><span class="lab">—</span></div>
+            <div class="reg"><span class="dot" style="background:var(--dim)"></span><span data-i18n="ft_s5_hivol">High volatility</span><span class="lab">—</span></div>
+          </div>
+          <div class="gline" style="margin-top:16px"><b>ADX</b><div class="meter"><i style="width:55%"></i></div><span data-i18n="ft_s5_strong">kuat</span></div>
+          <div class="gline"><b data-i18n="ft_s5_volat">Volatilitas</b><div class="meter"><i style="width:34%"></i></div><span data-i18n="ft_s5_low">rendah</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-tag" data-i18n="ft_s5_tag">05 · Konteks</span>
+        <h3 class="h3" data-i18n="ft_s5_h3">Deteksi regime — strategi yang sadar kondisi pasar.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s5_lead">Strategi momentum bersinar di pasar tren, tetapi hancur saat sideways. profitoath mengklasifikasikan kondisi pasar lewat ADX dan volatilitas, sehingga sinyal yang kamu terima selalu sesuai konteks.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s5_li1">Empat kelas regime: <b>bull, bear, ranging,</b> dan <b>high-volatility</b>.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="ft_s5_li2">Backtest dapat difilter per regime untuk melihat performa strategi di tiap kondisi.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="ft_s5_li3">Hindari "whipsaw" — kurangi eksposur saat regime berubah ke high-volatility.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. OPTIMASI PORTOFOLIO -->
+  <section class="block reveal" id="portfolio">
+    <div class="wrap split">
+      <div>
+        <span class="sec-tag" data-i18n="ft_s6_tag">06 · Alokasi</span>
+        <h3 class="h3" data-i18n="ft_s6_h3">Optimasi portofolio kelas hedge-fund.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s6_lead">Memilih saham bagus hanya separuh pekerjaan; membobotinya dengan benar adalah separuh lainnya. profitoath membangun portofolio optimal dengan tiga pendekatan kuantitatif terkemuka.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s6_li1"><b>Markowitz (MVO)</b> — efficient frontier untuk rasio Sharpe maksimum.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s6_li2"><b>Risk-Parity</b> — setiap aset menyumbang risiko setara, bukan didominasi satu saham.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s6_li3"><b>Hierarchical Risk-Parity (HRP)</b> — clustering López de Prado untuk bobot yang stabil tanpa membalik matriks kovarians.</span></li>
+        </ul>
+        <p style="margin-top:18px;font-size:14px;color:var(--mut)" data-i18n-html="ft_s6_note">Detail rumus dan referensi ada di <a href="./quant.html" style="color:var(--emerald2)">Quant Engine</a>.</p>
+      </div>
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span><b>Portfolio</b> · HRP · Σ = 100%</span><span class="verdict">Sharpe 1,58</span></div>
+          <div class="wbar"><b>BBCA</b><div class="meter"><i style="width:28%"></i></div><span class="pc">28%</span></div>
+          <div class="wbar"><b>TLKM</b><div class="meter"><i style="width:22%"></i></div><span class="pc">22%</span></div>
+          <div class="wbar"><b>BMRI</b><div class="meter"><i style="width:19%"></i></div><span class="pc">19%</span></div>
+          <div class="wbar"><b>ASII</b><div class="meter"><i style="width:16%"></i></div><span class="pc">16%</span></div>
+          <div class="wbar"><b>ICBP</b><div class="meter"><i style="width:15%"></i></div><span class="pc">15%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. MANAJEMEN RISIKO -->
+  <section class="block reveal" id="risk">
+    <div class="wrap split">
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span data-i18n-html="ft_s7_vh"><b>Risiko</b> · Portofolio · Rp 5 miliar</span><span class="verdict dn">VaR 95%</span></div>
+          <div class="tear">
+            <div><div class="n r">Rp 88,4 jt</div><div class="l" data-i18n="ft_s7_var">VaR harian 95%</div></div>
+            <div><div class="n r">Rp 131 jt</div><div class="l" data-i18n="ft_s7_cvar">CVaR harian</div></div>
+            <div><div class="n">Rp 4,2 jt</div><div class="l">ATR / lot</div></div>
+          </div>
+          <div class="gline" style="margin-top:16px"><b>Kelly ½</b><div class="meter"><i style="width:24%"></i></div><span data-i18n="ft_s7_perpos">2,4% / posisi</span></div>
+          <div class="gline"><b data-i18n="ft_s7_exposure">Eksposur</b><div class="meter warn"><i style="width:62%"></i></div><span>62%</span></div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-tag" data-i18n="ft_s7_tag">07 · Proteksi</span>
+        <h3 class="h3" data-i18n="ft_s7_h3">Manajemen risiko dalam Rupiah — bukan persen abstrak.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s7_lead">Mengetahui potensi kerugian harian dalam angka Rupiah yang nyata mengubah cara kamu menentukan ukuran posisi. profitoath menerjemahkan teori risiko menjadi nominal yang langsung bisa ditindaklanjuti.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s7_li1"><b>VaR &amp; CVaR</b> harian dan bulanan, dihitung langsung dalam Rupiah untuk nilai portofolio apa pun.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s7_li2"><b>Position sizing berbasis ATR</b> — ukuran posisi menyesuaikan volatilitas, bukan tebakan.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s7_li3"><b>Kriteria Kelly</b> (dan fractional Kelly) untuk alokasi modal yang disiplin dan tidak overbet.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. ANALISA KAPASITAS -->
+  <section class="block reveal" id="capacity">
+    <div class="wrap split">
+      <div>
+        <span class="sec-tag" data-i18n="ft_s8_tag">08 · Likuiditas</span>
+        <h3 class="h3" data-i18n="ft_s8_h3">Analisa kapasitas untuk dana miliaran Rupiah.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s8_lead">Strategi yang mulus di backtest bisa gagal saat modalnya besar — order kamu sendiri menggerakkan harga. profitoath mengukur apakah sebuah emiten sanggup menyerap dana kamu tanpa slippage merusak.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s8_li1"><b>Likuiditas ADVT</b> (average daily value traded) dibandingkan dengan ukuran dana kamu.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s8_li2">Estimasi <b>market impact</b> dan berapa hari yang dibutuhkan untuk masuk/keluar posisi dengan aman.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s8_li3">Verdict likuiditas instan: <b>SANGAT LIKUID</b>, cukup, atau berisiko untuk nominal yang kamu masukkan.</span></li>
+        </ul>
+      </div>
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span><b>/capacity</b> BBCA · Rp 5 miliar</span><span class="verdict" data-i18n="ft_s8_verdict">SANGAT LIKUID</span></div>
+          <div class="gline" style="margin-top:6px"><b>ADVT</b><div class="meter"><i style="width:92%"></i></div><span>≈ Rp 1,1 T</span></div>
+          <div class="gline"><b data-i18n="ft_s8_fundadvt">% dana / ADVT</b><div class="meter"><i style="width:9%"></i></div><span>0,45%</span></div>
+          <div class="gline"><b>Market impact</b><div class="meter"><i style="width:12%"></i></div><span>~6 bps</span></div>
+          <div class="gline"><b data-i18n="ft_s8_estexit">Estimasi exit</b><div class="meter"><i style="width:14%"></i></div><span data-i18n="ft_s8_lt1day">&lt; 1 hari</span></div>
+          <div class="tear" style="margin-top:16px">
+            <div><div class="n g">✅</div><div class="l" data-i18n="ft_s8_absorb">Penyerapan dana</div></div>
+            <div><div class="n">6 bps</div><div class="l" data-i18n="ft_s8_impactcost">Biaya impact</div></div>
+            <div><div class="n" data-i18n="ft_s8_oneday">1 hari</div><div class="l" data-i18n="ft_s8_exechorizon">Horizon eksekusi</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. PASAR GLOBAL -->
+  <section class="block reveal" id="global">
+    <div class="wrap split">
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span data-i18n-html="ft_s9_vh"><b>Cakupan</b> · global</span><span class="verdict" data-i18n="ft_s9_verdict">43 negara</span></div>
+          <div class="geo">
+            <span>🇮🇩 IDX <b>· BBCA</b></span><span>🇺🇸 NASDAQ <b>· AAPL</b></span>
+            <span>🇭🇰 HKEX <b>· 0700</b></span><span>🇯🇵 TSE <b>· 7203</b></span>
+            <span>🇬🇧 LSE <b>· HSBA</b></span><span>🇸🇬 SGX <b>· D05</b></span>
+          </div>
+          <div class="chatcol" style="margin-top:16px">
+            <div class="bub out">BBRI</div>
+            <div class="bub in"><span class="mono" data-i18n="ft_s9_ambig">⚠️ Ticker ambigu</span><br><span data-i18n="ft_s9_pickmkt">Pilih pasar: 🇮🇩 BBRI (IDX) · 🇮🇳 BBRI (NSE)</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-tag" data-i18n="ft_s9_tag">09 · Cakupan</span>
+        <h3 class="h3" data-i18n="ft_s9_h3">Pasar global — 43 negara dalam satu bot.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s9_lead">Saham 43 negara, forex, komoditas, indeks, dan kripto. Seluruh kode emiten tersimpan dalam basis data offline, sementara harga ditarik realtime dari jaringan data realtime.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s9_li1"><b>69.221 instrumen</b> tersimpan offline untuk pencarian instan tanpa bergantung jaringan.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s9_li2"><b>Disambiguasi ticker</b> — saat kode sama dipakai di banyak bursa, bot menawarkan tombol pilihan negara agar kamu tak pernah salah instrumen.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s9_li3"><b>Data realtime</b> untuk harga, plus profil dan berita emiten.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. ALERT WATCHLIST -->
+  <section class="block reveal" id="alerts">
+    <div class="wrap split">
+      <div>
+        <span class="sec-tag" data-i18n="ft_s10_tag">10 · Otomasi</span>
+        <h3 class="h3" data-i18n-html="ft_s10_h3">Alert &amp; watchlist — biarkan bot yang berjaga.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s10_lead">Kamu tidak bisa menatap layar sepanjang hari, jadi profitoath memantau untukmu. Susun watchlist, tentukan kondisi, dan terima notifikasi Telegram saat strategimu memicu sinyal.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s10_li1"><b>Sinyal harian otomatis</b> terkirim langsung ke chat saat kondisi beli/jual terpenuhi.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s10_li2"><b>Watchlist multi-pasar</b> mencampur saham IDX, global, forex, dan kripto dalam satu daftar.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s10_li3"><b>Paper-trading</b> — profitoath memberi sinyal &amp; edukasi, tanpa pernah mengeksekusi order otomatis.</span></li>
+        </ul>
+      </div>
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span><b>Alert</b> · watchlist</span><span class="verdict" data-i18n="ft_s10_verdict">3 sinyal hari ini</span></div>
+          <div class="chatcol">
+            <div class="bub in"><span class="mono">🔔 ANTM · 09:14</span><br><span data-i18n-html="ft_s10_b1">RSI keluar oversold + MACD cross → <b style="color:var(--emerald2)">sinyal beli</b></span></div>
+            <div class="bub in"><span class="mono">🔔 TLKM · 11:02</span><br><span data-i18n="ft_s10_b2">Tembus resistance 20D dengan volume tinggi</span></div>
+            <div class="bub in"><span class="mono">🔔 ASII · 14:38</span><br><span data-i18n-html="ft_s10_b3">Stochastic overbought → <b style="color:var(--red)">waspada jual</b></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. NATIVE TELEGRAM UX -->
+  <section class="block reveal" id="telegram">
+    <div class="wrap split">
+      <div class="viz-side">
+        <div class="viz">
+          <div class="vh"><span><b>profitoath bot</b></span><span class="verdict" data-i18n="ft_s11_online">● online</span></div>
+          <div class="chatcol">
+            <div class="bub out">/chart BBCA</div>
+            <div class="bub in"><span class="mono">📊 BBCA · Bank Central Asia</span><br><span data-i18n-html="ft_s11_b1">Verdict: <b style="color:var(--emerald2)">Bullish ▲</b> · Regime: BULL_TREND</span></div>
+            <div class="bub out" data-i18n="ft_s11_b2">⭐ Upgrade Pro</div>
+            <div class="bub in"><span class="mono" data-i18n="ft_s11_pay">💳 Pembayaran</span><br><span data-i18n="ft_s11_b3">Telegram Stars (instan) atau QRIS / transfer</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="sec-tag" data-i18n="ft_s11_tag">11 · Antarmuka</span>
+        <h3 class="h3" data-i18n="ft_s11_h3">Native Telegram — tanpa instalasi, tanpa dashboard rumit.</h3>
+        <p class="lead" style="margin-top:16px" data-i18n="ft_s11_lead">Tidak ada aplikasi untuk diunduh. Buka Telegram, ketik kode emiten, dan terima analisa lengkap sebagai chart dan ringkasan yang langsung terbaca. Sederhana di permukaan, institusional di belakangnya.</p>
+        <ul class="feat-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s11_li1"><b>Alur "pilih pasar dulu"</b> — Saham / Forex / Komoditas / Indeks / Kripto, lalu ketik kodenya.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s11_li2"><b>Pembayaran terintegrasi</b>: Telegram Stars instan, atau QRIS / transfer dengan konfirmasi admin.</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n-html="ft_s11_li3"><b>Tiga tier</b> — Free, Pro, dan VIP — yang membuka fitur secara bertahap sesuai kebutuhanmu.</span></li>
+        </ul>
+        <p style="margin-top:18px;font-size:14px;color:var(--mut)" data-i18n-html="ft_s11_note">Pelajari batas tiap tier di <a href="./pricing.html" style="color:var(--emerald2)">halaman Harga</a> atau baca panduan teknis di <a href="./docs.html" style="color:var(--emerald2)">Docs</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="block reveal">
+    <div class="wrap">
+      <div class="cta-band">
+        <h2 data-i18n="ft_cta_h2">Pakai seluruh mesin ini hari ini.</h2>
+        <p data-i18n="ft_cta_p">Mulai gratis di Telegram. Tingkatkan ke Pro atau VIP saat kamu siap menganalisa seperti institusi.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+          <a class="btn btn-primary btn-lg" href="./pricing.html" data-i18n="ft_cta_btn1">Lihat harga &amp; mulai →</a>
+          <a class="btn btn-lg" href="./quant.html" data-i18n="ft_cta_btn2">Jelajahi Quant Engine</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+    <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a><a href="./docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="./about.html" data-i18n="footer_about_link">Tentang</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a><a href="./glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="./assets/site.js"></script>
+<script>
+window.PO_I18N_PAGE = {
+  /* 01 · Teknikal */
+  ft_s1_tag: { id: "01 · Teknikal", en: "01 · Technical" },
+  ft_s1_h3: { id: "Chart &amp; analisa teknikal, dirender instan.", en: "Charts &amp; technical analysis, rendered instantly." },
+  ft_s1_lead: { id: "Ketik kode emiten dan terima candlestick neon lengkap dengan tumpukan indikator klasik plus verdict otomatis — agar kamu langsung tahu posisi tren tanpa membuka platform terpisah.", en: "Type a ticker and receive a neon candlestick chart complete with a stack of classic indicators plus an automatic verdict — so you instantly know where the trend stands without opening a separate platform." },
+  ft_s1_li1: { id: "<b>EMA, RSI, MACD, Bollinger Bands, ADX, dan Stochastic</b> dihitung dari data harga realtime, bukan snapshot basi.", en: "<b>EMA, RSI, MACD, Bollinger Bands, ADX, and Stochastic</b> are computed from realtime price data, not a stale snapshot." },
+  ft_s1_li2: { id: "<b>Verdict komposit</b> menggabungkan sinyal lintas-indikator menjadi satu kesimpulan ringkas: bullish, bearish, atau netral.", en: "<b>A composite verdict</b> combines signals across indicators into one concise conclusion: bullish, bearish, or neutral." },
+  ft_s1_li3: { id: "Bandingkan kerangka waktu intraday hingga harian, dengan level support/resistance otomatis.", en: "Compare timeframes from intraday to daily, with automatic support/resistance levels." },
+  ft_s1_note: { id: "Belum paham RSI atau MACD? Buka penjelasannya di <a href=\"./glossary/index.html\" style=\"color:var(--emerald2)\">Glosarium</a>.", en: "New to RSI or MACD? Find the explanations in the <a href=\"./glossary/index.html\" style=\"color:var(--emerald2)\">Glossary</a>." },
+
+  /* 02 · Prediktif */
+  ft_s2_tag: { id: "02 · Prediktif", en: "02 · Predictive" },
+  ft_s2_h3: { id: "Forecast AI dengan pita keyakinan, bukan tebakan garis lurus.", en: "AI forecasts with confidence bands, not a straight-line guess." },
+  ft_s2_lead: { id: "Model ensemble gradient-boosting dilatih pada puluhan fitur teknikal dan musiman, lalu mengeluarkan proyeksi probabilistik — bukan satu angka tunggal yang menyesatkan.", en: "A gradient-boosting ensemble model is trained on dozens of technical and seasonal features, then produces a probabilistic projection — not a single misleading number." },
+  ft_s2_li1: { id: "<b>Ensemble gradient-boosting</b> menangkap pola non-linear yang luput dari regresi sederhana.", en: "<b>A gradient-boosting ensemble</b> captures non-linear patterns that simple regression misses." },
+  ft_s2_li2: { id: "<b>Pita kuantil</b> (mis. P10–P90) menunjukkan rentang skenario, bukan ilusi kepastian.", en: "<b>Quantile bands</b> (e.g. P10–P90) show the range of scenarios, not the illusion of certainty." },
+  ft_s2_li3: { id: "<b>Time-series cross-validation</b> menghormati urutan waktu sehingga model tidak pernah \"mengintip\" masa depan saat dilatih.", en: "<b>Time-series cross-validation</b> respects chronological order so the model never \"peeks\" at the future during training." },
+  ft_s2_vh: { id: "<b>Forecast</b> · 5 hari · BBCA", en: "<b>Forecast</b> · 5 days · BBCA" },
+  ft_s2_verdict: { id: "71% keyakinan", en: "71% confidence" },
+
+  /* 03 · Validasi */
+  ft_s3_vh: { id: "<b>Tearsheet</b> · Walk-forward · 2019–2025", en: "<b>Tearsheet</b> · Walk-forward · 2019–2025" },
+  ft_s3_winrate: { id: "Win rate", en: "Win rate" },
+  ft_s3_pf: { id: "Profit factor", en: "Profit factor" },
+  ft_s3_trade: { id: "Trade", en: "Trades" },
+  ft_s3_feebuy: { id: "Fee beli", en: "Buy fee" },
+  ft_s3_feesell: { id: "Fee jual", en: "Sell fee" },
+  ft_s3_tick: { id: "1 tick", en: "1 tick" },
+  ft_s3_tag: { id: "03 · Validasi", en: "03 · Validation" },
+  ft_s3_h3: { id: "Backtest realistis IDX — sesuai aturan main bursa Indonesia.", en: "Realistic IDX backtests — true to the rules of the Indonesian exchange." },
+  ft_s3_lead: { id: "Backtest yang mengabaikan friksi pasar hanya menghasilkan fantasi. Mesin profitoath mensimulasikan kondisi nyata IDX agar angka yang kamu lihat bisa dipercaya.", en: "A backtest that ignores market friction is pure fantasy. The profitoath engine simulates real IDX conditions so the numbers you see can be trusted." },
+  ft_s3_li1: { id: "<b>Lot 100 saham</b>, fee beli/jual asimetris, dan slippage diperhitungkan di setiap eksekusi.", en: "<b>Lots of 100 shares</b>, asymmetric buy/sell fees, and slippage are factored into every execution." },
+  ft_s3_li2: { id: "<b>Auto-rejection ARA/ARB</b> — order ditolak saat harga menyentuh batas atas/bawah harian, persis seperti di pasar.", en: "<b>ARA/ARB auto-rejection</b> — orders are rejected when price hits the daily upper/lower limit, exactly as in the market." },
+  ft_s3_li3: { id: "<b>Tanpa look-ahead bias</b> — sinyal hanya memakai data yang tersedia pada saat itu.", en: "<b>No look-ahead bias</b> — signals only use data available at that point in time." },
+  ft_s3_li4: { id: "<b>Walk-forward &amp; Monte Carlo</b> menguji ketahanan strategi di luar sampel dan ribuan urutan acak — anti-overfit.", en: "<b>Walk-forward &amp; Monte Carlo</b> test strategy robustness out of sample and across thousands of random sequences — anti-overfit." },
+  ft_s3_li5: { id: "<b>Tearsheet profesional</b>: CAGR, Sharpe, max drawdown, profit factor, dan kurva ekuitas dalam satu gambar.", en: "<b>A professional tearsheet</b>: CAGR, Sharpe, max drawdown, profit factor, and the equity curve in a single image." },
+
+  /* 04 · Seleksi */
+  ft_s4_tag: { id: "04 · Seleksi", en: "04 · Selection" },
+  ft_s4_h3: { id: "Screener faktor — pindai seluruh universe dalam hitungan detik.", en: "Factor screener — scan the entire universe in seconds." },
+  ft_s4_lead: { id: "Daripada menatap ratusan chart satu per satu, biarkan screener memberi skor dan peringkat setiap emiten berdasarkan kombinasi faktor kuantitatif yang terbukti.", en: "Instead of staring at hundreds of charts one by one, let the screener score and rank every ticker based on a proven combination of quantitative factors." },
+  ft_s4_li1: { id: "Skor komposit dari faktor <b>momentum, tren, volume, mean-reversion,</b> dan <b>volatilitas</b>.", en: "A composite score from <b>momentum, trend, volume, mean-reversion,</b> and <b>volatility</b> factors." },
+  ft_s4_li2: { id: "<b>Ranking otomatis</b> menampilkan kandidat terkuat di puncak daftar, lengkap dengan kontribusi tiap faktor.", en: "<b>Automatic ranking</b> surfaces the strongest candidates at the top of the list, complete with each factor's contribution." },
+  ft_s4_li3: { id: "Saring per bursa atau sektor, lalu kirim hasil terbaik langsung ke watchlist.", en: "Filter by exchange or sector, then send the best results straight to your watchlist." },
+  ft_s4_vh: { id: "<b>Screener</b> · Komposit faktor", en: "<b>Screener</b> · Factor composite" },
+
+  /* 05 · Konteks */
+  ft_s5_vh: { id: "<b>Regime</b> · BBCA · saat ini", en: "<b>Regime</b> · BBCA · current" },
+  ft_s5_bull: { id: "Bull trend", en: "Bull trend" },
+  ft_s5_active: { id: "aktif", en: "active" },
+  ft_s5_bear: { id: "Bear trend", en: "Bear trend" },
+  ft_s5_range: { id: "Ranging / sideways", en: "Ranging / sideways" },
+  ft_s5_hivol: { id: "High volatility", en: "High volatility" },
+  ft_s5_strong: { id: "kuat", en: "strong" },
+  ft_s5_volat: { id: "Volatilitas", en: "Volatility" },
+  ft_s5_low: { id: "rendah", en: "low" },
+  ft_s5_tag: { id: "05 · Konteks", en: "05 · Context" },
+  ft_s5_h3: { id: "Deteksi regime — strategi yang sadar kondisi pasar.", en: "Regime detection — strategies aware of market conditions." },
+  ft_s5_lead: { id: "Strategi momentum bersinar di pasar tren, tetapi hancur saat sideways. profitoath mengklasifikasikan kondisi pasar lewat ADX dan volatilitas, sehingga sinyal yang kamu terima selalu sesuai konteks.", en: "Momentum strategies shine in trending markets but break down when sideways. profitoath classifies market conditions via ADX and volatility, so the signals you receive always fit the context." },
+  ft_s5_li1: { id: "Empat kelas regime: <b>bull, bear, ranging,</b> dan <b>high-volatility</b>.", en: "Four regime classes: <b>bull, bear, ranging,</b> and <b>high-volatility</b>." },
+  ft_s5_li2: { id: "Backtest dapat difilter per regime untuk melihat performa strategi di tiap kondisi.", en: "Backtests can be filtered per regime to see strategy performance in each condition." },
+  ft_s5_li3: { id: "Hindari \"whipsaw\" — kurangi eksposur saat regime berubah ke high-volatility.", en: "Avoid \"whipsaw\" — reduce exposure when the regime shifts to high-volatility." },
+
+  /* 06 · Alokasi */
+  ft_s6_tag: { id: "06 · Alokasi", en: "06 · Allocation" },
+  ft_s6_h3: { id: "Optimasi portofolio kelas hedge-fund.", en: "Hedge-fund-grade portfolio optimization." },
+  ft_s6_lead: { id: "Memilih saham bagus hanya separuh pekerjaan; membobotinya dengan benar adalah separuh lainnya. profitoath membangun portofolio optimal dengan tiga pendekatan kuantitatif terkemuka.", en: "Picking good stocks is only half the job; weighting them correctly is the other half. profitoath builds an optimal portfolio using three leading quantitative approaches." },
+  ft_s6_li1: { id: "<b>Markowitz (MVO)</b> — efficient frontier untuk rasio Sharpe maksimum.", en: "<b>Markowitz (MVO)</b> — the efficient frontier for a maximum Sharpe ratio." },
+  ft_s6_li2: { id: "<b>Risk-Parity</b> — setiap aset menyumbang risiko setara, bukan didominasi satu saham.", en: "<b>Risk-Parity</b> — each asset contributes equal risk, rather than being dominated by one stock." },
+  ft_s6_li3: { id: "<b>Hierarchical Risk-Parity (HRP)</b> — clustering López de Prado untuk bobot yang stabil tanpa membalik matriks kovarians.", en: "<b>Hierarchical Risk-Parity (HRP)</b> — López de Prado clustering for stable weights without inverting the covariance matrix." },
+  ft_s6_note: { id: "Detail rumus dan referensi ada di <a href=\"./quant.html\" style=\"color:var(--emerald2)\">Quant Engine</a>.", en: "Formula details and references are in the <a href=\"./quant.html\" style=\"color:var(--emerald2)\">Quant Engine</a>." },
+
+  /* 07 · Proteksi */
+  ft_s7_vh: { id: "<b>Risiko</b> · Portofolio · Rp 5 miliar", en: "<b>Risk</b> · Portfolio · Rp 5 billion" },
+  ft_s7_var: { id: "VaR harian 95%", en: "Daily VaR 95%" },
+  ft_s7_cvar: { id: "CVaR harian", en: "Daily CVaR" },
+  ft_s7_perpos: { id: "2,4% / posisi", en: "2.4% / position" },
+  ft_s7_exposure: { id: "Eksposur", en: "Exposure" },
+  ft_s7_tag: { id: "07 · Proteksi", en: "07 · Protection" },
+  ft_s7_h3: { id: "Manajemen risiko dalam Rupiah — bukan persen abstrak.", en: "Risk management in Rupiah — not abstract percentages." },
+  ft_s7_lead: { id: "Mengetahui potensi kerugian harian dalam angka Rupiah yang nyata mengubah cara kamu menentukan ukuran posisi. profitoath menerjemahkan teori risiko menjadi nominal yang langsung bisa ditindaklanjuti.", en: "Knowing your potential daily loss in real Rupiah figures changes how you size positions. profitoath translates risk theory into actionable nominal amounts." },
+  ft_s7_li1: { id: "<b>VaR &amp; CVaR</b> harian dan bulanan, dihitung langsung dalam Rupiah untuk nilai portofolio apa pun.", en: "<b>VaR &amp; CVaR</b>, daily and monthly, computed directly in Rupiah for any portfolio value." },
+  ft_s7_li2: { id: "<b>Position sizing berbasis ATR</b> — ukuran posisi menyesuaikan volatilitas, bukan tebakan.", en: "<b>ATR-based position sizing</b> — position size adapts to volatility, not guesswork." },
+  ft_s7_li3: { id: "<b>Kriteria Kelly</b> (dan fractional Kelly) untuk alokasi modal yang disiplin dan tidak overbet.", en: "<b>The Kelly criterion</b> (and fractional Kelly) for disciplined capital allocation that never overbets." },
+
+  /* 08 · Likuiditas */
+  ft_s8_tag: { id: "08 · Likuiditas", en: "08 · Liquidity" },
+  ft_s8_h3: { id: "Analisa kapasitas untuk dana miliaran Rupiah.", en: "Capacity analysis for billion-Rupiah funds." },
+  ft_s8_lead: { id: "Strategi yang mulus di backtest bisa gagal saat modalnya besar — order kamu sendiri menggerakkan harga. profitoath mengukur apakah sebuah emiten sanggup menyerap dana kamu tanpa slippage merusak.", en: "A strategy that runs smoothly in a backtest can fail at scale — your own orders move the price. profitoath measures whether a ticker can absorb your capital without damaging slippage." },
+  ft_s8_li1: { id: "<b>Likuiditas ADVT</b> (average daily value traded) dibandingkan dengan ukuran dana kamu.", en: "<b>ADVT liquidity</b> (average daily value traded) compared against the size of your fund." },
+  ft_s8_li2: { id: "Estimasi <b>market impact</b> dan berapa hari yang dibutuhkan untuk masuk/keluar posisi dengan aman.", en: "An estimate of <b>market impact</b> and how many days it takes to enter/exit a position safely." },
+  ft_s8_li3: { id: "Verdict likuiditas instan: <b>SANGAT LIKUID</b>, cukup, atau berisiko untuk nominal yang kamu masukkan.", en: "An instant liquidity verdict: <b>HIGHLY LIQUID</b>, adequate, or risky for the amount you enter." },
+  ft_s8_verdict: { id: "SANGAT LIKUID", en: "HIGHLY LIQUID" },
+  ft_s8_fundadvt: { id: "% dana / ADVT", en: "% fund / ADVT" },
+  ft_s8_estexit: { id: "Estimasi exit", en: "Est. exit" },
+  ft_s8_lt1day: { id: "&lt; 1 hari", en: "&lt; 1 day" },
+  ft_s8_absorb: { id: "Penyerapan dana", en: "Fund absorption" },
+  ft_s8_impactcost: { id: "Biaya impact", en: "Impact cost" },
+  ft_s8_oneday: { id: "1 hari", en: "1 day" },
+  ft_s8_exechorizon: { id: "Horizon eksekusi", en: "Execution horizon" },
+
+  /* 09 · Cakupan */
+  ft_s9_vh: { id: "<b>Cakupan</b> · global", en: "<b>Coverage</b> · global" },
+  ft_s9_verdict: { id: "43 negara", en: "43 countries" },
+  ft_s9_ambig: { id: "⚠️ Ticker ambigu", en: "⚠️ Ambiguous ticker" },
+  ft_s9_pickmkt: { id: "Pilih pasar: 🇮🇩 BBRI (IDX) · 🇮🇳 BBRI (NSE)", en: "Pick a market: 🇮🇩 BBRI (IDX) · 🇮🇳 BBRI (NSE)" },
+  ft_s9_tag: { id: "09 · Cakupan", en: "09 · Coverage" },
+  ft_s9_h3: { id: "Pasar global — 43 negara dalam satu bot.", en: "Global markets — 43 countries in one bot." },
+  ft_s9_lead: { id: "Saham 43 negara, forex, komoditas, indeks, dan kripto. Seluruh kode emiten tersimpan dalam basis data offline, sementara harga ditarik realtime dari jaringan data realtime.", en: "Stocks from 43 countries, forex, commodities, indices, and crypto. Every ticker is stored in an offline database, while prices are pulled realtime from the realtime data network." },
+  ft_s9_li1: { id: "<b>69.221 instrumen</b> tersimpan offline untuk pencarian instan tanpa bergantung jaringan.", en: "<b>69,221 instruments</b> stored offline for instant search without relying on the network." },
+  ft_s9_li2: { id: "<b>Disambiguasi ticker</b> — saat kode sama dipakai di banyak bursa, bot menawarkan tombol pilihan negara agar kamu tak pernah salah instrumen.", en: "<b>Ticker disambiguation</b> — when the same code is used across multiple exchanges, the bot offers country-selection buttons so you never pick the wrong instrument." },
+  ft_s9_li3: { id: "<b>Data realtime</b> untuk harga, plus profil dan berita emiten.", en: "<b>Realtime data</b> for prices, plus company profiles and news." },
+
+  /* 10 · Otomasi */
+  ft_s10_tag: { id: "10 · Otomasi", en: "10 · Automation" },
+  ft_s10_h3: { id: "Alert &amp; watchlist — biarkan bot yang berjaga.", en: "Alerts &amp; watchlists — let the bot keep watch." },
+  ft_s10_lead: { id: "Kamu tidak bisa menatap layar sepanjang hari, jadi profitoath memantau untukmu. Susun watchlist, tentukan kondisi, dan terima notifikasi Telegram saat strategimu memicu sinyal.", en: "You can't stare at a screen all day, so profitoath monitors for you. Build a watchlist, set your conditions, and receive a Telegram notification when your strategy triggers a signal." },
+  ft_s10_li1: { id: "<b>Sinyal harian otomatis</b> terkirim langsung ke chat saat kondisi beli/jual terpenuhi.", en: "<b>Automatic daily signals</b> are sent straight to your chat when buy/sell conditions are met." },
+  ft_s10_li2: { id: "<b>Watchlist multi-pasar</b> mencampur saham IDX, global, forex, dan kripto dalam satu daftar.", en: "<b>A multi-market watchlist</b> mixes IDX stocks, global equities, forex, and crypto in a single list." },
+  ft_s10_li3: { id: "<b>Paper-trading</b> — profitoath memberi sinyal &amp; edukasi, tanpa pernah mengeksekusi order otomatis.", en: "<b>Paper-trading</b> — profitoath provides signals &amp; education, without ever executing orders automatically." },
+  ft_s10_verdict: { id: "3 sinyal hari ini", en: "3 signals today" },
+  ft_s10_b1: { id: "RSI keluar oversold + MACD cross → <b style=\"color:var(--emerald2)\">sinyal beli</b>", en: "RSI exits oversold + MACD cross → <b style=\"color:var(--emerald2)\">buy signal</b>" },
+  ft_s10_b2: { id: "Tembus resistance 20D dengan volume tinggi", en: "Breaks 20D resistance on high volume" },
+  ft_s10_b3: { id: "Stochastic overbought → <b style=\"color:var(--red)\">waspada jual</b>", en: "Stochastic overbought → <b style=\"color:var(--red)\">sell watch</b>" },
+
+  /* 11 · Antarmuka */
+  ft_s11_online: { id: "● online", en: "● online" },
+  ft_s11_b1: { id: "Verdict: <b style=\"color:var(--emerald2)\">Bullish ▲</b> · Regime: BULL_TREND", en: "Verdict: <b style=\"color:var(--emerald2)\">Bullish ▲</b> · Regime: BULL_TREND" },
+  ft_s11_b2: { id: "⭐ Upgrade Pro", en: "⭐ Upgrade to Pro" },
+  ft_s11_pay: { id: "💳 Pembayaran", en: "💳 Payment" },
+  ft_s11_b3: { id: "Telegram Stars (instan) atau QRIS / transfer", en: "Telegram Stars (instant) or QRIS / bank transfer" },
+  ft_s11_tag: { id: "11 · Antarmuka", en: "11 · Interface" },
+  ft_s11_h3: { id: "Native Telegram — tanpa instalasi, tanpa dashboard rumit.", en: "Native Telegram — no installation, no complicated dashboard." },
+  ft_s11_lead: { id: "Tidak ada aplikasi untuk diunduh. Buka Telegram, ketik kode emiten, dan terima analisa lengkap sebagai chart dan ringkasan yang langsung terbaca. Sederhana di permukaan, institusional di belakangnya.", en: "No app to download. Open Telegram, type a ticker, and receive a full analysis as a chart and an instantly readable summary. Simple on the surface, institutional underneath." },
+  ft_s11_li1: { id: "<b>Alur \"pilih pasar dulu\"</b> — Saham / Forex / Komoditas / Indeks / Kripto, lalu ketik kodenya.", en: "<b>A \"pick the market first\" flow</b> — Stocks / Forex / Commodities / Indices / Crypto, then type the code." },
+  ft_s11_li2: { id: "<b>Pembayaran terintegrasi</b>: Telegram Stars instan, atau QRIS / transfer dengan konfirmasi admin.", en: "<b>Integrated payments</b>: instant Telegram Stars, or QRIS / bank transfer with admin confirmation." },
+  ft_s11_li3: { id: "<b>Tiga tier</b> — Free, Pro, dan VIP — yang membuka fitur secara bertahap sesuai kebutuhanmu.", en: "<b>Three tiers</b> — Free, Pro, and VIP — that unlock features progressively as you need them." },
+  ft_s11_note: { id: "Pelajari batas tiap tier di <a href=\"./pricing.html\" style=\"color:var(--emerald2)\">halaman Harga</a> atau baca panduan teknis di <a href=\"./docs.html\" style=\"color:var(--emerald2)\">Docs</a>.", en: "Learn the limits of each tier on the <a href=\"./pricing.html\" style=\"color:var(--emerald2)\">Pricing page</a> or read the technical guide in the <a href=\"./docs.html\" style=\"color:var(--emerald2)\">Docs</a>." },
+
+  /* CTA */
+  ft_cta_h2: { id: "Pakai seluruh mesin ini hari ini.", en: "Put this entire engine to work today." },
+  ft_cta_p: { id: "Mulai gratis di Telegram. Tingkatkan ke Pro atau VIP saat kamu siap menganalisa seperti institusi.", en: "Start free on Telegram. Upgrade to Pro or VIP when you are ready to analyze like an institution." },
+  ft_cta_btn1: { id: "Lihat harga &amp; mulai →", en: "See pricing &amp; start →" },
+  ft_cta_btn2: { id: "Jelajahi Quant Engine", en: "Explore the Quant Engine" }
+};
+</script>
+<script src="./assets/i18n.js"></script>
+<script>
+/* page-specific: render neon candlesticks in the technical-analysis viz */
+(function(){
+  var el=document.getElementById('candles'); if(!el) return;
+  var h='';
+  for(var i=0;i<28;i++){
+    var up=Math.random()>.42;
+    var tall=24+Math.random()*86;
+    var col=up?'linear-gradient(180deg,var(--emerald2),rgba(22,224,168,.25))'
+             :'linear-gradient(180deg,#ff8a95,rgba(255,93,108,.25))';
+    h+='<i style="height:'+tall+'%;background:'+col+'"></i>';
+  }
+  el.innerHTML=h;
+})();
+</script>
+</body></html>

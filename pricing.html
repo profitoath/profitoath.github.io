@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Harga — profitoath · FREE, PRO & VIP Quant Analysis</title><meta name="description" content="Pilih paket profitoath: FREE Rp0, PRO Rp49rb/bln, atau VIP Rp149rb/bln. Forecast, backtest IDX, screener, optimasi portofolio & kuota tak terbatas. Bayar via Telegram Stars atau QRIS."/>
+<link rel="icon" type="image/svg+xml" href="./assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/style.css"/>
+<style>
+  /* page-specific: pricing tiers + faq */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+  @media(max-width:920px){.price-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+  .tier{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r);
+    padding:32px 28px;background:var(--panel);backdrop-filter:blur(12px);transition:border-color .5s var(--ease),transform .5s var(--ease)}
+  .tier:hover{border-color:var(--line2);transform:translateY(-5px)}
+  .tier .tname{font-family:var(--mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+  .tier .tprice{font-size:clamp(34px,4vw,46px);font-weight:800;letter-spacing:-.03em;margin:14px 0 2px;line-height:1}
+  .tier .tprice span{font-size:16px;font-weight:500;color:var(--mut);letter-spacing:0}
+  .tier .talt{font-family:var(--mono);font-size:12px;color:var(--dim);min-height:18px}
+  .tier .tdesc{color:var(--mut);font-size:14px;line-height:1.55;margin:16px 0 22px}
+  .tier ul{list-style:none;display:flex;flex-direction:column;gap:11px;margin:0 0 26px;flex:1}
+  .tier li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#cdd9de;line-height:1.45}
+  .tier li svg{flex:none;margin-top:2px}
+  .tier li.off{color:var(--dim)}
+  .tier .btn{width:100%;justify-content:center}
+  .tier.pop{border-color:var(--emerald);box-shadow:0 0 40px rgba(22,224,168,.16)}
+  .tier.pop::after{content:"";position:absolute;inset:0;border-radius:var(--r);pointer-events:none;
+    background:radial-gradient(ellipse at 50% 0%,rgba(22,224,168,.10),transparent 60%)}
+  .tier .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.14em;text-transform:uppercase;padding:6px 14px;border-radius:100px;font-weight:700;white-space:nowrap;
+    background:linear-gradient(135deg,var(--emerald),var(--cyan));color:#04130e}
+  .tier.vip{border-color:rgba(245,200,122,.42)}
+  .tier.vip .tname{color:var(--gold)}
+  .tier.vip .tprice{background:linear-gradient(120deg,var(--gold),#fff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .tier.vip .badge{background:linear-gradient(135deg,var(--gold),#fff);color:#2a1d05}
+  .tier.vip li svg path{stroke:var(--gold)}
+  .tier.vip .btn-primary{background:linear-gradient(135deg,var(--gold),#ffe6b0);color:#2a1d05}
+  .pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:700px){.pay-grid{grid-template-columns:1fr}.price-cell{font-size:13px}}
+  .faq details{border:1px solid var(--line);border-radius:14px;background:var(--panel);backdrop-filter:blur(10px);
+    margin-bottom:12px;overflow:hidden;transition:border-color .4s}
+  .faq details[open]{border-color:var(--line2)}
+  .faq summary{list-style:none;cursor:pointer;padding:20px 24px;font-weight:600;font-size:16px;color:var(--txt);
+    display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary .pm{font-family:var(--mono);color:var(--emerald2);font-size:22px;transition:transform .3s;flex:none}
+  .faq details[open] summary .pm{transform:rotate(45deg)}
+  .faq details p{padding:0 24px 22px;color:var(--mut);font-size:14.5px;line-height:1.7;margin:0}
+  .yes{color:var(--emerald2);font-weight:600}.no{color:var(--dim)}
+  .price-cell{font-family:var(--mono)}
+</style></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" aria-current="page" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="./pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="page-hero">
+    <div class="wrap center" style="max-width:760px">
+      <div class="crumb center" style="justify-content:center;margin-bottom:22px">
+        <a href="./index.html" data-i18n="crumb_home">Beranda</a><span class="sep">/</span><span data-i18n="nav_pricing">Harga</span>
+      </div>
+      <div class="eyebrow" data-i18n-html="pricing_page_eyebrow">PAKET &amp; HARGA</div>
+      <h1 class="h2" data-i18n-html="pricing_page_h1_html">Mulai gratis. <span class="g-text">Naik level</span> saat siap.</h1>
+      <p class="lead center" style="margin-top:20px" data-i18n-html="pricing_page_lead">Akses analisa saham AI &amp; quantitative finance kelas institusional langsung dari Telegram. Tanpa kartu kredit untuk mulai, tanpa kontrak, batalkan kapan saja. Harga dalam Rupiah, sudah final.</p>
+      <div class="chips center" style="justify-content:center;margin-top:24px">
+        <span class="pill" data-i18n-html="pr_chip1"><span class="dot"></span>69.221 instrumen offline</span>
+        <span class="pill" data-i18n="pr_chip2">43 negara &amp; bursa</span>
+        <span class="pill" data-i18n="pr_chip3">Data realtime</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICE GRID ============ -->
+  <section class="block reveal" style="padding-top:24px">
+    <div class="wrap">
+      <div class="price-grid">
+
+        <!-- FREE -->
+        <div class="tier">
+          <div class="tname" data-i18n="pr_tname_free">FREE</div>
+          <div class="tprice">Rp0<span data-i18n="pr_free_period"> /selamanya</span></div>
+          <div class="talt" data-i18n="pr_free_alt">Tanpa kartu kredit</div>
+          <p class="tdesc" data-i18n="pr_free_desc">Coba mesin analisa profitoath dan kuasai dasar membaca chart sebelum naik ke fitur kuantitatif.</p>
+          <ul>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_free_li1">Chart teknikal: candlestick, RSI, MACD, MA</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_free_li2">Technical power score &amp; deteksi rezim pasar</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_free_li3">Profil emiten &amp; berita pasar terkini</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_free_li4">Akses 69.221 instrumen offline</span></li>
+            <li class="off"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="#5d7280" stroke-width="2.2" stroke-linecap="round"/></svg><span data-i18n-html="pr_free_li5">Forecast, screener &amp; backtest</span></li>
+            <li class="off"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="#5d7280" stroke-width="2.2" stroke-linecap="round"/></svg><span data-i18n-html="pr_free_li6">Optimasi portofolio &amp; analisis AI</span></li>
+          </ul>
+          <a class="btn btn-ghost" href="https://t.me/profitoath_bot" target="_blank" rel="noopener" data-i18n="pr_free_cta">Mulai di Telegram</a>
+        </div>
+
+        <!-- PRO -->
+        <div class="tier pop">
+          <span class="badge" data-i18n="pr_badge_pro">★ Paling Laris</span>
+          <div class="tname" data-i18n="pr_tname_pro">PRO</div>
+          <div class="tprice">Rp49rb<span data-i18n="pr_pro_period"> /bln</span></div>
+          <div class="talt" data-i18n="pr_pro_alt">atau Rp129rb / 3 bln · hemat 12%</div>
+          <p class="tdesc" data-i18n="pr_pro_desc">Untuk trader aktif yang butuh forecast, screening, dan backtest realistis bursa Indonesia setiap hari.</p>
+          <ul>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_pro_li1"><b style="color:#fff">Semua di FREE</b>, plus:</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_pro_li2">Forecast harga multi-horizon</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_pro_li3">Screener faktor &amp; momentum lintas bursa</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_pro_li4">Backtest IDX-realistis: lot 100, ARA/ARB</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_pro_li5">Watchlist &amp; alert harga personal</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#16e0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_pro_li6">Asisten analisis AI percakapan</span></li>
+          </ul>
+          <a class="btn btn-primary" href="https://t.me/profitoath_bot" target="_blank" rel="noopener" data-i18n="pr_pro_cta">Pilih PRO →</a>
+        </div>
+
+        <!-- VIP -->
+        <div class="tier vip">
+          <span class="badge" data-i18n="pr_badge_vip">Institusional</span>
+          <div class="tname" data-i18n="pr_tname_vip">VIP</div>
+          <div class="tprice">Rp149rb<span data-i18n="pr_vip_period"> /bln</span></div>
+          <div class="talt" data-i18n="pr_vip_alt">Rp399rb / 3 bln · Rp1,29jt / thn</div>
+          <p class="tdesc" data-i18n="pr_vip_desc">Persenjataan kuant lengkap: walk-forward, optimasi portofolio, dan kuota tak terbatas untuk modal besar.</p>
+          <ul>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#f5c87a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_vip_li1"><b style="color:#fff">Semua di PRO</b>, plus:</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#f5c87a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_vip_li2">Backtest walk-forward anti-overfit</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#f5c87a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_vip_li3">Optimasi portofolio MV / Risk-Parity / HRP</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#f5c87a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_vip_li4">VaR &amp; CVaR dalam nominal Rupiah</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#f5c87a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="pr_vip_li5">Analisis kapasitas hingga miliaran Rupiah</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="#f5c87a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n-html="pr_vip_li6">Kuota perintah tak terbatas &amp; prioritas</span></li>
+          </ul>
+          <a class="btn btn-primary" href="https://t.me/profitoath_bot" target="_blank" rel="noopener" data-i18n="pr_vip_cta">Pilih VIP →</a>
+        </div>
+
+      </div>
+      <p class="lead center" style="margin-top:28px;font-size:14px" data-i18n-html="pr_grid_foot">Belum yakin tier mana yang cocok? Pelajari dulu <a href="./features.html" style="color:var(--emerald2)">semua fitur</a> atau cara kerja <a href="./quant.html" style="color:var(--emerald2)">Quant Engine</a> kami.</p>
+    </div>
+  </section>
+
+  <!-- ============ COMPARISON TABLE ============ -->
+  <section class="block reveal" style="padding-top:24px">
+    <div class="wrap-sm center" style="margin-bottom:40px">
+      <div class="eyebrow" data-i18n="pr_cmp_eyebrow">PERBANDINGAN LENGKAP</div>
+      <h2 class="h2" data-i18n-html="pr_cmp_h2">Setiap fitur, <span class="g-text">per tier</span></h2>
+      <p class="lead center" style="margin-top:14px" data-i18n="pr_cmp_lead">Semua paket berbagi mesin data yang sama. Yang membedakan adalah kedalaman analisa kuantitatif dan kuota perintah harian.</p>
+    </div>
+    <div class="prose">
+      <table>
+        <thead>
+          <tr><th data-i18n="pr_cmp_th_feat">Fitur</th><th>FREE</th><th>PRO</th><th>VIP</th></tr>
+        </thead>
+        <tbody>
+          <tr><td data-i18n="pr_cmp_r1">Chart teknikal (RSI, MACD, MA)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r2">Technical power score</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r3">Deteksi rezim pasar</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r4">Profil emiten</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r5">Berita pasar terkini</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r6">Forecast harga multi-horizon</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n-html="pr_cmp_r7">Screener faktor &amp; momentum</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r8">Backtest IDX (lot 100, ARA/ARB)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n-html="pr_cmp_r9">Watchlist &amp; alert harga</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r10">Asisten analisis AI</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r11">Backtest walk-forward</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r12">Optimasi portofolio (MV / RP / HRP)</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n-html="pr_cmp_r13">VaR &amp; CVaR Rupiah</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r14">Analisis kapasitas (miliaran Rp)</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td data-i18n="pr_cmp_r15">Kuota perintah harian</td><td class="price-cell" data-i18n="pr_cmp_q_free">Terbatas</td><td class="price-cell" data-i18n="pr_cmp_q_pro">Tinggi</td><td class="yes" data-i18n="pr_cmp_q_vip">Tak terbatas</td></tr>
+          <tr><td><strong data-i18n="pr_cmp_price_label">Harga</strong></td><td class="price-cell">Rp0</td><td class="price-cell">Rp49rb/bln</td><td class="price-cell">Rp149rb/bln</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ CARA BAYAR ============ -->
+  <section class="block reveal">
+    <div class="wrap-sm center" style="margin-bottom:40px">
+      <div class="eyebrow" data-i18n="pr_pay_eyebrow">CARA BAYAR</div>
+      <h2 class="h2" data-i18n-html="pr_pay_h2">Dua metode, <span class="g-text">aktivasi cepat</span></h2>
+      <p class="lead center" style="margin-top:14px" data-i18n="pr_pay_lead">Semua transaksi diproses di dalam Telegram. Tidak ada formulir panjang dan tidak perlu data kartu kredit.</p>
+    </div>
+    <div class="wrap">
+      <div class="pay-grid">
+        <div class="card">
+          <div class="ic">⭐</div>
+          <h3 data-i18n="pr_pay1_h">Telegram Stars</h3>
+          <p data-i18n-html="pr_pay1_p">Bayar langsung dengan saldo Telegram Stars di dalam chat. Pembayaran terverifikasi otomatis dan paket aktif <strong style="color:var(--txt)">instan</strong> tanpa konfirmasi manual. Cocok untuk yang ingin upgrade dalam hitungan detik.</p>
+        </div>
+        <div class="card">
+          <div class="ic">🇮🇩</div>
+          <h3 data-i18n-html="pr_pay2_h">QRIS &amp; Transfer Bank</h3>
+          <p data-i18n-html="pr_pay2_p">Scan QRIS atau transfer ke rekening lokal, lalu kirim bukti ke admin. Setelah diverifikasi, paket diaktifkan dengan perintah <code class="mono" style="color:var(--emerald2)">/grant</code>. Ideal bila Anda lebih nyaman membayar dalam Rupiah.</p>
+        </div>
+      </div>
+      <div class="callout" style="max-width:760px;margin:26px auto 0">
+        <span class="ci">🔁</span>
+        <p data-i18n-html="pr_pay_callout">Perpanjangan tidak otomatis menarik dana. Anda hanya membayar saat memilih memperpanjang, jadi tidak ada biaya tak terduga. Butuh bantuan? Hubungi tim lewat halaman <a href="./contact.html" style="color:var(--emerald2)">Kontak</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="block reveal faq" style="padding-top:24px">
+    <div class="wrap-sm center" style="margin-bottom:36px">
+      <div class="eyebrow" data-i18n="pr_faq_eyebrow">FAQ</div>
+      <h2 class="h2" data-i18n="pr_faq_h2">Pertanyaan umum</h2>
+    </div>
+    <div class="wrap-sm">
+      <details><summary><span data-i18n="pr_faq_q1">Apakah profitoath memberi rekomendasi beli/jual?</span><span class="pm">+</span></summary>
+        <p data-i18n-html="pr_faq_a1">Tidak. profitoath adalah alat analisis &amp; edukasi kuantitatif, bukan nasihat investasi maupun ajakan transaksi. Semua output bersifat informatif; keputusan sepenuhnya ada di tangan Anda (DYOR). Pelajari lebih lanjut di <a href="./glossary/index.html">Glosarium</a>.</p>
+      </details>
+      <details><summary><span data-i18n="pr_faq_q2">Bisakah saya mulai gratis tanpa bayar?</span><span class="pm">+</span></summary>
+        <p data-i18n="pr_faq_a2">Bisa. Paket FREE seharga Rp0 selamanya memberi akses chart teknikal, technical power score, deteksi rezim, profil emiten, dan berita pasar tanpa kartu kredit. Upgrade ke PRO atau VIP kapan pun Anda butuh fitur kuantitatif lanjutan.</p>
+      </details>
+      <details><summary><span data-i18n="pr_faq_q3">Apa beda backtest PRO dan walk-forward VIP?</span><span class="pm">+</span></summary>
+        <p data-i18n-html="pr_faq_a3">Backtest PRO menjalankan simulasi IDX-realistis dengan ukuran lot 100 saham serta batas ARA/ARB. VIP menambahkan walk-forward — pengujian out-of-sample bertahap yang menekan risiko overfitting agar strategi lebih dekat ke kondisi nyata. Detail teknis ada di <a href="./quant.html">Quant Engine</a>.</p>
+      </details>
+      <details><summary><span data-i18n="pr_faq_q4">Seberapa besar modal yang bisa dianalisis?</span><span class="pm">+</span></summary>
+        <p data-i18n-html="pr_faq_a4">Fitur analisis kapasitas VIP memodelkan dampak likuiditas hingga modal miliaran Rupiah, lengkap dengan estimasi VaR &amp; CVaR dalam nominal Rupiah, sehingga relevan untuk portofolio serius dan pengelola dana.</p>
+      </details>
+      <details><summary><span data-i18n="pr_faq_q5">Bagaimana cara membayar dan kapan paket aktif?</span><span class="pm">+</span></summary>
+        <p data-i18n-html="pr_faq_a5">Lewat Telegram Stars paket aktif otomatis dan instan. Lewat QRIS atau transfer bank, admin mengaktifkan paket Anda dengan perintah <code class="mono" style="color:var(--emerald2)">/grant</code> setelah bukti diverifikasi — umumnya sangat cepat pada jam kerja.</p>
+      </details>
+      <details><summary><span data-i18n="pr_faq_q6">Apakah ada kontrak atau auto-renewal?</span><span class="pm">+</span></summary>
+        <p data-i18n="pr_faq_a6">Tidak ada kontrak. Pembayaran bersifat satu kali per periode (bulanan, 3 bulan, atau tahunan untuk VIP) dan tidak menarik dana otomatis. Anda berhenti hanya dengan tidak memperpanjang.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CTA BAND ============ -->
+  <section class="block reveal">
+    <div class="wrap">
+      <div class="cta-band">
+        <div class="eyebrow center" data-i18n="pr_cta_eyebrow">SIAP MULAI?</div>
+        <h2 data-i18n-html="pr_cta_h2_html">Analisa saham kelas kuant, <span class="g-text">di saku Anda</span></h2>
+        <p data-i18n="pr_cta_p">Buka bot, ketik ticker pertama Anda, dan rasakan mesin yang sama yang dipakai untuk forecast, backtest, dan optimasi portofolio. Gratis untuk memulai.</p>
+        <div class="chips center" style="justify-content:center;margin-top:30px">
+          <a class="btn btn-primary btn-lg" href="https://t.me/profitoath_bot" target="_blank" rel="noopener" data-i18n="pr_cta_btn1">Mulai Gratis di Telegram →</a>
+          <a class="btn btn-lg" href="./features.html" data-i18n="pr_cta_btn2">Lihat Semua Fitur</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+    <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI &amp; quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a><a href="./docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="./about.html" data-i18n="footer_about_link">Tentang</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a><a href="./glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis &amp; edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu &amp; hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="./assets/site.js"></script>
+<script>window.PO_I18N_PAGE = {
+  pricing_page_eyebrow:{id:"PAKET &amp; HARGA",en:"PLANS &amp; PRICING"},
+  pricing_page_h1_html:{id:"Mulai gratis. <span class=\"g-text\">Naik level</span> saat siap.",en:"Start free. <span class=\"g-text\">Level up</span> when you're ready."},
+  pricing_page_lead:{id:"Akses analisa saham AI &amp; quantitative finance kelas institusional langsung dari Telegram. Tanpa kartu kredit untuk mulai, tanpa kontrak, batalkan kapan saja. Harga dalam Rupiah, sudah final.",en:"Institutional-grade AI stock analysis &amp; quantitative finance, right from Telegram. No credit card to start, no contracts, cancel anytime. Prices in Rupiah, all-in."},
+  pr_chip1:{id:"<span class=\"dot\"></span>69.221 instrumen offline",en:"<span class=\"dot\"></span>69,221 offline instruments"},
+  pr_chip2:{id:"43 negara &amp; bursa",en:"43 countries &amp; exchanges"},
+  pr_chip3:{id:"Data realtime",en:"Realtime data"},
+
+  pr_tname_free:{id:"FREE",en:"FREE"},
+  pr_free_period:{id:" /selamanya",en:" /forever"},
+  pr_free_alt:{id:"Tanpa kartu kredit",en:"No credit card"},
+  pr_free_desc:{id:"Coba mesin analisa profitoath dan kuasai dasar membaca chart sebelum naik ke fitur kuantitatif.",en:"Try the profitoath analysis engine and master the basics of reading charts before moving up to the quantitative features."},
+  pr_free_li1:{id:"Chart teknikal: candlestick, RSI, MACD, MA",en:"Technical charts: candlestick, RSI, MACD, MA"},
+  pr_free_li2:{id:"Technical power score &amp; deteksi rezim pasar",en:"Technical power score &amp; market regime detection"},
+  pr_free_li3:{id:"Profil emiten &amp; berita pasar terkini",en:"Issuer profiles &amp; latest market news"},
+  pr_free_li4:{id:"Akses 69.221 instrumen offline",en:"Access to 69,221 offline instruments"},
+  pr_free_li5:{id:"Forecast, screener &amp; backtest",en:"Forecast, screener &amp; backtest"},
+  pr_free_li6:{id:"Optimasi portofolio &amp; analisis AI",en:"Portfolio optimization &amp; AI analysis"},
+  pr_free_cta:{id:"Mulai di Telegram",en:"Start on Telegram"},
+
+  pr_badge_pro:{id:"★ Paling Laris",en:"★ Most Popular"},
+  pr_tname_pro:{id:"PRO",en:"PRO"},
+  pr_pro_period:{id:" /bln",en:" /mo"},
+  pr_pro_alt:{id:"atau Rp129rb / 3 bln · hemat 12%",en:"or Rp129k / 3 mo · save 12%"},
+  pr_pro_desc:{id:"Untuk trader aktif yang butuh forecast, screening, dan backtest realistis bursa Indonesia setiap hari.",en:"For active traders who need realistic forecasts, screening, and backtests of the Indonesian market every day."},
+  pr_pro_li1:{id:"<b style=\"color:#fff\">Semua di FREE</b>, plus:",en:"<b style=\"color:#fff\">Everything in FREE</b>, plus:"},
+  pr_pro_li2:{id:"Forecast harga multi-horizon",en:"Multi-horizon price forecasts"},
+  pr_pro_li3:{id:"Screener faktor &amp; momentum lintas bursa",en:"Factor &amp; momentum screener across exchanges"},
+  pr_pro_li4:{id:"Backtest IDX-realistis: lot 100, ARA/ARB",en:"IDX-realistic backtest: lot 100, ARA/ARB"},
+  pr_pro_li5:{id:"Watchlist &amp; alert harga personal",en:"Personal watchlist &amp; price alerts"},
+  pr_pro_li6:{id:"Asisten analisis AI percakapan",en:"Conversational AI analysis assistant"},
+  pr_pro_cta:{id:"Pilih PRO →",en:"Choose PRO →"},
+
+  pr_badge_vip:{id:"Institusional",en:"Institutional"},
+  pr_tname_vip:{id:"VIP",en:"VIP"},
+  pr_vip_period:{id:" /bln",en:" /mo"},
+  pr_vip_alt:{id:"Rp399rb / 3 bln · Rp1,29jt / thn",en:"Rp399k / 3 mo · Rp1.29M / yr"},
+  pr_vip_desc:{id:"Persenjataan kuant lengkap: walk-forward, optimasi portofolio, dan kuota tak terbatas untuk modal besar.",en:"The complete quant arsenal: walk-forward, portfolio optimization, and unlimited quota for large capital."},
+  pr_vip_li1:{id:"<b style=\"color:#fff\">Semua di PRO</b>, plus:",en:"<b style=\"color:#fff\">Everything in PRO</b>, plus:"},
+  pr_vip_li2:{id:"Backtest walk-forward anti-overfit",en:"Anti-overfit walk-forward backtest"},
+  pr_vip_li3:{id:"Optimasi portofolio MV / Risk-Parity / HRP",en:"Portfolio optimization MV / Risk-Parity / HRP"},
+  pr_vip_li4:{id:"VaR &amp; CVaR dalam nominal Rupiah",en:"VaR &amp; CVaR in Rupiah terms"},
+  pr_vip_li5:{id:"Analisis kapasitas hingga miliaran Rupiah",en:"Capacity analysis up to billions of Rupiah"},
+  pr_vip_li6:{id:"Kuota perintah tak terbatas &amp; prioritas",en:"Unlimited command quota &amp; priority"},
+  pr_vip_cta:{id:"Pilih VIP →",en:"Choose VIP →"},
+
+  pr_grid_foot:{id:"Belum yakin tier mana yang cocok? Pelajari dulu <a href=\"./features.html\" style=\"color:var(--emerald2)\">semua fitur</a> atau cara kerja <a href=\"./quant.html\" style=\"color:var(--emerald2)\">Quant Engine</a> kami.",en:"Not sure which tier fits? First explore <a href=\"./features.html\" style=\"color:var(--emerald2)\">all features</a> or how our <a href=\"./quant.html\" style=\"color:var(--emerald2)\">Quant Engine</a> works."},
+
+  pr_cmp_eyebrow:{id:"PERBANDINGAN LENGKAP",en:"FULL COMPARISON"},
+  pr_cmp_h2:{id:"Setiap fitur, <span class=\"g-text\">per tier</span>",en:"Every feature, <span class=\"g-text\">by tier</span>"},
+  pr_cmp_lead:{id:"Semua paket berbagi mesin data yang sama. Yang membedakan adalah kedalaman analisa kuantitatif dan kuota perintah harian.",en:"All plans share the same data engine. What differs is the depth of quantitative analysis and the daily command quota."},
+  pr_cmp_th_feat:{id:"Fitur",en:"Feature"},
+  pr_cmp_r1:{id:"Chart teknikal (RSI, MACD, MA)",en:"Technical charts (RSI, MACD, MA)"},
+  pr_cmp_r2:{id:"Technical power score",en:"Technical power score"},
+  pr_cmp_r3:{id:"Deteksi rezim pasar",en:"Market regime detection"},
+  pr_cmp_r4:{id:"Profil emiten",en:"Issuer profile"},
+  pr_cmp_r5:{id:"Berita pasar terkini",en:"Latest market news"},
+  pr_cmp_r6:{id:"Forecast harga multi-horizon",en:"Multi-horizon price forecast"},
+  pr_cmp_r7:{id:"Screener faktor &amp; momentum",en:"Factor &amp; momentum screener"},
+  pr_cmp_r8:{id:"Backtest IDX (lot 100, ARA/ARB)",en:"IDX backtest (lot 100, ARA/ARB)"},
+  pr_cmp_r9:{id:"Watchlist &amp; alert harga",en:"Watchlist &amp; price alerts"},
+  pr_cmp_r10:{id:"Asisten analisis AI",en:"AI analysis assistant"},
+  pr_cmp_r11:{id:"Backtest walk-forward",en:"Walk-forward backtest"},
+  pr_cmp_r12:{id:"Optimasi portofolio (MV / RP / HRP)",en:"Portfolio optimization (MV / RP / HRP)"},
+  pr_cmp_r13:{id:"VaR &amp; CVaR Rupiah",en:"VaR &amp; CVaR in Rupiah"},
+  pr_cmp_r14:{id:"Analisis kapasitas (miliaran Rp)",en:"Capacity analysis (billions of Rp)"},
+  pr_cmp_r15:{id:"Kuota perintah harian",en:"Daily command quota"},
+  pr_cmp_q_free:{id:"Terbatas",en:"Limited"},
+  pr_cmp_q_pro:{id:"Tinggi",en:"High"},
+  pr_cmp_q_vip:{id:"Tak terbatas",en:"Unlimited"},
+  pr_cmp_price_label:{id:"Harga",en:"Price"},
+
+  pr_pay_eyebrow:{id:"CARA BAYAR",en:"HOW TO PAY"},
+  pr_pay_h2:{id:"Dua metode, <span class=\"g-text\">aktivasi cepat</span>",en:"Two methods, <span class=\"g-text\">fast activation</span>"},
+  pr_pay_lead:{id:"Semua transaksi diproses di dalam Telegram. Tidak ada formulir panjang dan tidak perlu data kartu kredit.",en:"All transactions are processed inside Telegram. No lengthy forms and no credit card details required."},
+  pr_pay1_h:{id:"Telegram Stars",en:"Telegram Stars"},
+  pr_pay1_p:{id:"Bayar langsung dengan saldo Telegram Stars di dalam chat. Pembayaran terverifikasi otomatis dan paket aktif <strong style=\"color:var(--txt)\">instan</strong> tanpa konfirmasi manual. Cocok untuk yang ingin upgrade dalam hitungan detik.",en:"Pay directly with your Telegram Stars balance inside the chat. Payments are verified automatically and your plan goes live <strong style=\"color:var(--txt)\">instantly</strong> with no manual confirmation. Ideal for upgrading in seconds."},
+  pr_pay2_h:{id:"QRIS &amp; Transfer Bank",en:"QRIS &amp; Bank Transfer"},
+  pr_pay2_p:{id:"Scan QRIS atau transfer ke rekening lokal, lalu kirim bukti ke admin. Setelah diverifikasi, paket diaktifkan dengan perintah <code class=\"mono\" style=\"color:var(--emerald2)\">/grant</code>. Ideal bila Anda lebih nyaman membayar dalam Rupiah.",en:"Scan a QRIS code or transfer to a local account, then send the proof to an admin. Once verified, your plan is activated with the <code class=\"mono\" style=\"color:var(--emerald2)\">/grant</code> command. Ideal if you prefer paying in Rupiah."},
+  pr_pay_callout:{id:"Perpanjangan tidak otomatis menarik dana. Anda hanya membayar saat memilih memperpanjang, jadi tidak ada biaya tak terduga. Butuh bantuan? Hubungi tim lewat halaman <a href=\"./contact.html\" style=\"color:var(--emerald2)\">Kontak</a>.",en:"Renewals do not auto-charge. You only pay when you choose to renew, so there are no surprise fees. Need help? Reach the team via the <a href=\"./contact.html\" style=\"color:var(--emerald2)\">Contact</a> page."},
+
+  pr_faq_eyebrow:{id:"FAQ",en:"FAQ"},
+  pr_faq_h2:{id:"Pertanyaan umum",en:"Frequently asked questions"},
+  pr_faq_q1:{id:"Apakah profitoath memberi rekomendasi beli/jual?",en:"Does profitoath give buy/sell recommendations?"},
+  pr_faq_a1:{id:"Tidak. profitoath adalah alat analisis &amp; edukasi kuantitatif, bukan nasihat investasi maupun ajakan transaksi. Semua output bersifat informatif; keputusan sepenuhnya ada di tangan Anda (DYOR). Pelajari lebih lanjut di <a href=\"./glossary/index.html\">Glosarium</a>.",en:"No. profitoath is a quantitative analysis &amp; education tool, not investment advice nor a solicitation to transact. All output is informational; the decision is entirely yours (DYOR). Learn more in the <a href=\"./glossary/index.html\">Glossary</a>."},
+  pr_faq_q2:{id:"Bisakah saya mulai gratis tanpa bayar?",en:"Can I start for free without paying?"},
+  pr_faq_a2:{id:"Bisa. Paket FREE seharga Rp0 selamanya memberi akses chart teknikal, technical power score, deteksi rezim, profil emiten, dan berita pasar tanpa kartu kredit. Upgrade ke PRO atau VIP kapan pun Anda butuh fitur kuantitatif lanjutan.",en:"Yes. The FREE plan at Rp0 forever gives you access to technical charts, the technical power score, regime detection, issuer profiles, and market news without a credit card. Upgrade to PRO or VIP whenever you need advanced quantitative features."},
+  pr_faq_q3:{id:"Apa beda backtest PRO dan walk-forward VIP?",en:"What's the difference between PRO backtest and VIP walk-forward?"},
+  pr_faq_a3:{id:"Backtest PRO menjalankan simulasi IDX-realistis dengan ukuran lot 100 saham serta batas ARA/ARB. VIP menambahkan walk-forward — pengujian out-of-sample bertahap yang menekan risiko overfitting agar strategi lebih dekat ke kondisi nyata. Detail teknis ada di <a href=\"./quant.html\">Quant Engine</a>.",en:"The PRO backtest runs IDX-realistic simulations with a 100-share lot size plus ARA/ARB limits. VIP adds walk-forward — staged out-of-sample testing that reduces overfitting risk so the strategy stays closer to real conditions. Technical details are in the <a href=\"./quant.html\">Quant Engine</a>."},
+  pr_faq_q4:{id:"Seberapa besar modal yang bisa dianalisis?",en:"How large a capital base can be analyzed?"},
+  pr_faq_a4:{id:"Fitur analisis kapasitas VIP memodelkan dampak likuiditas hingga modal miliaran Rupiah, lengkap dengan estimasi VaR &amp; CVaR dalam nominal Rupiah, sehingga relevan untuk portofolio serius dan pengelola dana.",en:"The VIP capacity analysis feature models liquidity impact for capital up to billions of Rupiah, complete with VaR &amp; CVaR estimates in Rupiah terms, making it relevant for serious portfolios and fund managers."},
+  pr_faq_q5:{id:"Bagaimana cara membayar dan kapan paket aktif?",en:"How do I pay and when does the plan activate?"},
+  pr_faq_a5:{id:"Lewat Telegram Stars paket aktif otomatis dan instan. Lewat QRIS atau transfer bank, admin mengaktifkan paket Anda dengan perintah <code class=\"mono\" style=\"color:var(--emerald2)\">/grant</code> setelah bukti diverifikasi — umumnya sangat cepat pada jam kerja.",en:"Via Telegram Stars the plan activates automatically and instantly. Via QRIS or bank transfer, an admin activates your plan with the <code class=\"mono\" style=\"color:var(--emerald2)\">/grant</code> command once the proof is verified — usually very fast during working hours."},
+  pr_faq_q6:{id:"Apakah ada kontrak atau auto-renewal?",en:"Is there a contract or auto-renewal?"},
+  pr_faq_a6:{id:"Tidak ada kontrak. Pembayaran bersifat satu kali per periode (bulanan, 3 bulan, atau tahunan untuk VIP) dan tidak menarik dana otomatis. Anda berhenti hanya dengan tidak memperpanjang.",en:"No contracts. Payment is one-time per period (monthly, 3 months, or yearly for VIP) and does not auto-charge. You stop simply by not renewing."},
+
+  pr_cta_eyebrow:{id:"SIAP MULAI?",en:"READY TO START?"},
+  pr_cta_h2_html:{id:"Analisa saham kelas kuant, <span class=\"g-text\">di saku Anda</span>",en:"Quant-grade stock analysis, <span class=\"g-text\">in your pocket</span>"},
+  pr_cta_p:{id:"Buka bot, ketik ticker pertama Anda, dan rasakan mesin yang sama yang dipakai untuk forecast, backtest, dan optimasi portofolio. Gratis untuk memulai.",en:"Open the bot, type your first ticker, and feel the same engine used for forecasts, backtests, and portfolio optimization. Free to start."},
+  pr_cta_btn1:{id:"Mulai Gratis di Telegram →",en:"Start Free on Telegram →"},
+  pr_cta_btn2:{id:"Lihat Semua Fitur",en:"See All Features"}
+};</script>
+<script src="./assets/i18n.js"></script></body></html>

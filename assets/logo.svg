@@ -1,0 +1,89 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="profitoath emblem">
+  <defs>
+    <linearGradient id="g-main" x1="120" y1="392" x2="392" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0BD0FF"/><stop offset=".45" stop-color="#16E0A8"/><stop offset="1" stop-color="#5BFFD0"/>
+    </linearGradient>
+    <linearGradient id="g-orbit" x1="120" y1="120" x2="392" y2="392" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C5CFF"/><stop offset=".5" stop-color="#0BD0FF"/><stop offset="1" stop-color="#16E0A8"/>
+    </linearGradient>
+    <linearGradient id="g-gold" x1="160" y1="160" x2="352" y2="352" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7D98B"/><stop offset="1" stop-color="#C9A14A"/>
+    </linearGradient>
+    <linearGradient id="g-crest" x1="256" y1="120" x2="256" y2="404" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0e2a26"/><stop offset="1" stop-color="#071512"/>
+    </linearGradient>
+    <radialGradient id="g-core" cx=".5" cy=".42" r=".6">
+      <stop stop-color="#FFFFFF"/><stop offset=".35" stop-color="#9BFFE4"/><stop offset="1" stop-color="#16E0A8"/>
+    </radialGradient>
+    <radialGradient id="g-amb" cx=".5" cy=".5" r=".55">
+      <stop stop-color="#16E0A8" stop-opacity=".34"/><stop offset="1" stop-color="#16E0A8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="f-soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+    <filter id="f-hard" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2"/></filter>
+  </defs>
+
+  <!-- ambient halo -->
+  <circle cx="256" cy="252" r="210" fill="url(#g-amb)"/>
+
+  <!-- precision bezel: 60 tick marks (market clock / instrument bezel) -->
+  <g stroke="url(#g-orbit)" stroke-width="2" opacity=".55">
+    <circle cx="256" cy="256" r="196" fill="none" stroke="rgba(120,150,170,.18)"/>
+    <g id="ticks"></g>
+  </g>
+  <!-- generated ticks (also drawn statically for safety) -->
+  <g stroke-linecap="round">
+    <!-- 12 major ticks -->
+    <g stroke="url(#g-orbit)" stroke-width="3" opacity=".75">
+      <line x1="256" y1="64" x2="256" y2="84"/>
+      <line x1="256" y1="428" x2="256" y2="448"/>
+      <line x1="64" y1="256" x2="84" y2="256"/>
+      <line x1="428" y1="256" x2="448" y2="256"/>
+      <line x1="120" y1="120" x2="134" y2="134"/>
+      <line x1="392" y1="120" x2="378" y2="134"/>
+      <line x1="120" y1="392" x2="134" y2="378"/>
+      <line x1="392" y1="392" x2="378" y2="378"/>
+    </g>
+  </g>
+
+  <!-- dual data-stream ring -->
+  <circle cx="256" cy="256" r="172" fill="none" stroke="url(#g-orbit)" stroke-width="7"
+          stroke-linecap="round" stroke-dasharray="2 22" transform="rotate(-12 256 256)" opacity=".8"/>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="url(#g-main)" stroke-width="9"
+          stroke-linecap="round" stroke-dasharray="210 870"/>
+
+  <!-- octagonal crest (OATH: shield / security / commitment) -->
+  <path d="M256 116 L340 150 L374 234 V288 L340 372 L256 406 L172 372 L138 288 V234 L172 150 Z"
+        fill="url(#g-crest)" stroke="url(#g-main)" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M256 142 L322 169 L350 236 V282 L322 349 L256 376 L190 349 L162 282 V236 L190 169 Z"
+        fill="none" stroke="url(#g-gold)" stroke-width="2" opacity=".5" stroke-linejoin="round"/>
+
+  <!-- candlestick bars rising along the base (PROFIT) -->
+  <g stroke-linecap="round">
+    <g stroke="#16E0A8"><line x1="196" y1="330" x2="196" y2="300" stroke-width="3"/></g>
+    <rect x="190" y="308" width="12" height="20" rx="3" fill="rgba(22,224,168,.25)" stroke="#16E0A8" stroke-width="2.5"/>
+    <g stroke="#0BD0FF"><line x1="228" y1="320" x2="228" y2="276" stroke-width="3"/></g>
+    <rect x="222" y="286" width="12" height="26" rx="3" fill="rgba(11,208,255,.25)" stroke="#0BD0FF" stroke-width="2.5"/>
+    <g stroke="#5BFFD0"><line x1="284" y1="300" x2="284" y2="244" stroke-width="3"/></g>
+    <rect x="278" y="252" width="12" height="34" rx="3" fill="rgba(91,255,208,.3)" stroke="#5BFFD0" stroke-width="2.5"/>
+    <g stroke="#5BFFD0"><line x1="316" y1="284" x2="316" y2="214" stroke-width="3"/></g>
+    <rect x="310" y="222" width="12" height="40" rx="3" fill="rgba(91,255,208,.35)" stroke="#5BFFD0" stroke-width="2.5"/>
+  </g>
+
+  <!-- Fibonacci / golden-ratio spiral doubling as the rising market line -->
+  <path d="M196 312 C214 312 224 300 224 282 C224 258 206 244 182 248
+           M224 282 C236 256 268 230 308 214 C336 202 356 188 372 162"
+        stroke="url(#g-gold)" stroke-width="6" fill="none" stroke-linecap="round" filter="url(#f-soft)" opacity=".5"/>
+  <path d="M224 282 C236 256 268 230 308 214 C336 202 356 188 372 162"
+        stroke="url(#g-main)" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+  <!-- arrowhead -->
+  <path d="M372 162 L344 160 M372 162 L368 190" stroke="#5BFFD0" stroke-width="6.5" stroke-linecap="round"/>
+
+  <!-- AI core + orbital electrons (neural intelligence) -->
+  <g filter="url(#f-hard)"><circle cx="256" cy="244" r="17" fill="url(#g-core)"/></g>
+  <circle cx="256" cy="244" r="17" fill="none" stroke="#EAFFF8" stroke-width="2" opacity=".7"/>
+  <ellipse cx="256" cy="244" rx="40" ry="16" fill="none" stroke="url(#g-orbit)" stroke-width="2" opacity=".6" transform="rotate(28 256 244)"/>
+  <ellipse cx="256" cy="244" rx="40" ry="16" fill="none" stroke="url(#g-orbit)" stroke-width="2" opacity=".45" transform="rotate(-34 256 244)"/>
+  <circle cx="294" cy="232" r="5" fill="#5BFFD0"/>
+  <circle cx="220" cy="258" r="4" fill="#0BD0FF"/>
+  <circle cx="256" cy="244" r="3.5" fill="#04130e"/>
+</svg>

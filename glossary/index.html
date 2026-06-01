@@ -1,0 +1,483 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Glosarium Quant & Trading — Kamus Istilah Analisa Saham | profitoath</title><meta name="description" content="Glosarium lengkap istilah quant & trading: RSI, MACD, Bollinger Bands, Sharpe Ratio, VaR, Markowitz, HRP, ARA/ARB, slippage, dan puluhan istilah lain dengan definisi akurat berbahasa Indonesia."/>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/style.css"/></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="../blog/index.html" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" aria-current="page" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="../pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<style>
+  .jump{margin:30px 0 8px}
+  .jump .chip{padding:9px 16px}
+  .gloss-section{padding:64px 0 0}
+  .gloss-section .sec-head{margin-bottom:26px}
+  .gloss-section .sec-head .eyebrow{margin-bottom:10px}
+  .gloss-section .sec-head h3{font-size:clamp(20px,2.6vw,28px);font-weight:800;letter-spacing:-.02em}
+  .gloss-section .sec-head p{color:var(--mut);font-size:14.5px;margin-top:8px;max-width:64ch}
+  .term a{color:var(--emerald2);border-bottom:1px solid rgba(91,255,208,.3)}
+  .term a:hover{border-color:var(--emerald2)}
+  .term{scroll-margin-top:110px}
+  .toc-note{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:18px}
+</style>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb reveal"><a href="../index.html" data-i18n="crumb_home">Beranda</a><span class="sep">/</span><span data-i18n="nav_glossary">Glosarium</span></div>
+      <div class="eyebrow reveal" style="margin-top:22px" data-i18n-html="gloss_page_eyebrow">KAMUS QUANT &amp; TRADING</div>
+      <h2 class="h2 reveal" data-i18n-html="gloss_page_h2_html">Glosarium istilah <span class="g-text">analisa kuantitatif</span> &amp; pasar saham.</h2>
+      <p class="lead reveal" style="margin-top:20px" data-i18n="gloss_page_lead">Lebih dari 40 istilah teknikal, statistik, dan mikrostruktur pasar — dari RSI hingga HRP — dijelaskan akurat dalam bahasa Indonesia. Setiap istilah punya tautan langsung; gunakan untuk memahami output bot profitoath, dari sinyal indikator sampai laporan risiko Rupiah.</p>
+      <div class="chips jump reveal" aria-label="Lompat ke kategori">
+        <a class="chip" href="#indikator" data-i18n="gl_jump_indikator">Indikator Teknikal</a>
+        <a class="chip" href="#pola" data-i18n="gl_jump_pola">Pola &amp; Sinyal</a>
+        <a class="chip" href="#backtest" data-i18n="gl_jump_backtest">Backtesting &amp; Eksekusi</a>
+        <a class="chip" href="#metrik" data-i18n="gl_jump_metrik">Metrik Risiko &amp; Kinerja</a>
+        <a class="chip" href="#portofolio" data-i18n="gl_jump_portofolio">Optimasi Portofolio</a>
+        <a class="chip" href="#idx" data-i18n="gl_jump_idx">Mikrostruktur IDX</a>
+      </div>
+      <p class="toc-note reveal" data-i18n="gl_toc_note">A–Z · 44 istilah · diperbarui untuk pasar Indonesia (BEI/IDX)</p>
+    </div>
+  </section>
+
+  <!-- ====================== INDIKATOR TEKNIKAL ====================== -->
+  <section class="block gloss-section" id="indikator" style="padding-top:20px">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="gl_s01_eyebrow">01 — INDIKATOR TEKNIKAL</div>
+        <h3 data-i18n="gl_s01_h3">Indikator harga &amp; momentum</h3>
+        <p data-i18n="gl_s01_p">Perhitungan matematis di atas data harga dan volume yang dipakai bot untuk membaca arah, kekuatan, dan kondisi jenuh sebuah saham. Bot profitoath menghitung semuanya dari data realtime dan 69.221 instrumen offline.</p>
+      </div>
+      <div class="gloss-grid">
+        <div class="term reveal" id="rsi">
+          <div class="t" data-i18n-html="gl_rsi_t">Relative Strength Index <span class="k">RSI</span></div>
+          <p data-i18n-html="gl_rsi_p">Oscillator momentum 0–100 yang membandingkan rata-rata kenaikan dan penurunan harga pada periode tertentu (lazimnya 14). Nilai di atas 70 menandakan <a href="#overbought">overbought</a> dan di bawah 30 oversold. Sering dipakai untuk mendeteksi divergensi terhadap harga. <a href="../blog/cara-membaca-rsi-macd.html">Baca panduan RSI &amp; MACD →</a></p>
+        </div>
+        <div class="term reveal" id="macd">
+          <div class="t" data-i18n-html="gl_macd_t">Moving Average Convergence Divergence <span class="k">MACD</span></div>
+          <p data-i18n-html="gl_macd_p">Selisih antara dua EMA (umumnya 12 dan 26) yang dibandingkan dengan garis sinyal (EMA 9). Persilangan garis MACD di atas garis sinyal dianggap bullish, di bawah bearish. Histogram MACD mengukur percepatan momentum. <a href="../blog/cara-membaca-rsi-macd.html">Pelajari interpretasinya →</a></p>
+        </div>
+        <div class="term reveal" id="ema">
+          <div class="t" data-i18n-html="gl_ema_t">Exponential / Simple Moving Average <span class="k">EMA · SMA</span></div>
+          <p data-i18n-html="gl_ema_p">Rata-rata harga periode tertentu untuk meratakan kebisingan (noise). SMA memberi bobot sama ke setiap titik, sementara EMA memberi bobot lebih besar pada harga terbaru sehingga lebih responsif terhadap perubahan tren. Dasar dari banyak strategi <a href="#momentum">momentum</a>.</p>
+        </div>
+        <div class="term reveal" id="bollinger">
+          <div class="t" data-i18n-html="gl_bollinger_t">Bollinger Bands <span class="k">BB</span></div>
+          <p data-i18n-html="gl_bollinger_p">Pita yang terdiri dari SMA tengah dan dua garis berjarak ±2 standar deviasi. Pita melebar saat <a href="#volatility">volatilitas</a> tinggi dan menyempit (squeeze) saat tenang. Harga menyentuh pita atas/bawah sering dipakai sebagai sinyal kondisi ekstrem, bukan sinyal beli/jual otomatis.</p>
+        </div>
+        <div class="term reveal" id="adx">
+          <div class="t" data-i18n-html="gl_adx_t">Average Directional Index <span class="k">ADX</span></div>
+          <p data-i18n-html="gl_adx_p">Mengukur kekuatan tren (bukan arahnya) dalam skala 0–100. Nilai di bawah 20 menandakan pasar menyamping (ranging), di atas 25 menandakan tren kuat. Dipadukan dengan +DI/–DI untuk menentukan arah. Berguna memfilter sinyal <a href="#mean-reversion">mean reversion</a> versus tren.</p>
+        </div>
+        <div class="term reveal" id="stochastic">
+          <div class="t" data-i18n-html="gl_stochastic_t">Stochastic Oscillator <span class="k">STOCH</span></div>
+          <p data-i18n-html="gl_stochastic_p">Membandingkan harga penutupan terhadap rentang tinggi–rendah pada periode tertentu, menghasilkan garis %K dan %D antara 0–100. Persilangan di area di bawah 20 (oversold) atau di atas 80 (overbought) dipakai sebagai sinyal pembalikan momentum.</p>
+        </div>
+        <div class="term reveal" id="obv">
+          <div class="t" data-i18n-html="gl_obv_t">On-Balance Volume <span class="k">OBV</span></div>
+          <p data-i18n-html="gl_obv_p">Indikator kumulatif yang menambah volume pada hari naik dan mengurangi pada hari turun. Tujuannya mengonfirmasi tren harga lewat aliran volume: OBV menanjak saat harga naik memperkuat tren, sementara divergensi OBV bisa mengisyaratkan pelemahan.</p>
+        </div>
+        <div class="term reveal" id="vwap">
+          <div class="t" data-i18n-html="gl_vwap_t">Volume-Weighted Average Price <span class="k">VWAP</span></div>
+          <p data-i18n-html="gl_vwap_p">Harga rata-rata tertimbang volume sepanjang sesi perdagangan. Menjadi acuan eksekusi institusi: harga di atas VWAP dianggap relatif mahal, di bawah relatif murah. Penting untuk menilai kualitas eksekusi dan <a href="#market-impact">market impact</a>.</p>
+        </div>
+        <div class="term reveal" id="atr">
+          <div class="t" data-i18n-html="gl_atr_t">Average True Range <span class="k">ATR</span></div>
+          <p data-i18n-html="gl_atr_p">Rata-rata rentang pergerakan harga sebenarnya (true range) dalam periode tertentu, mengukur <a href="#volatility">volatilitas</a> absolut dalam satuan harga. Dipakai untuk menetapkan jarak stop-loss adaptif dan ukuran posisi yang menyesuaikan kondisi pasar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== POLA & SINYAL ====================== -->
+  <section class="block gloss-section" id="pola">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="gl_s02_eyebrow">02 — POLA &amp; SINYAL</div>
+        <h3 data-i18n="gl_s02_h3">Pola harga &amp; kondisi pasar</h3>
+        <p data-i18n="gl_s02_p">Bentuk grafis dan kondisi yang sering jadi pemicu keputusan trader, dideteksi otomatis oleh modul chart bot.</p>
+      </div>
+      <div class="gloss-grid">
+        <div class="term reveal" id="candlestick">
+          <div class="t" data-i18n-html="gl_candlestick_t">Candlestick <span class="k">OHLC</span></div>
+          <p data-i18n-html="gl_candlestick_p">Representasi harga per periode yang menampilkan Open, High, Low, dan Close dalam satu batang. Badan (body) menunjukkan jarak buka–tutup, sumbu (wick) menunjukkan ekstrem. Pola seperti doji, hammer, atau engulfing dipakai membaca tekanan beli/jual.</p>
+        </div>
+        <div class="term reveal" id="sr">
+          <div class="t" data-i18n-html="gl_sr_t">Support &amp; Resistance <span class="k">S/R</span></div>
+          <p data-i18n-html="gl_sr_p">Support adalah area harga tempat permintaan cenderung menahan penurunan; resistance adalah area tempat penawaran menahan kenaikan. Penembusan (breakout) atau pemantulan (bounce) di level ini menjadi dasar banyak strategi entry dan exit.</p>
+        </div>
+        <div class="term reveal" id="golden-cross">
+          <div class="t" data-i18n-html="gl_goldencross_t">Golden Cross &amp; Death Cross <span class="k">MA-X</span></div>
+          <p data-i18n-html="gl_goldencross_p">Golden cross terjadi saat moving average jangka pendek (mis. MA50) memotong ke atas MA jangka panjang (mis. MA200), dianggap sinyal bullish struktural. Death cross adalah kebalikannya — MA pendek memotong ke bawah — dan ditafsirkan bearish.</p>
+        </div>
+        <div class="term reveal" id="overbought">
+          <div class="t" data-i18n-html="gl_overbought_t">Overbought &amp; Oversold <span class="k">OB/OS</span></div>
+          <p data-i18n-html="gl_overbought_p">Kondisi ketika harga dianggap telah naik (overbought) atau turun (oversold) terlalu cepat menurut oscillator seperti <a href="#rsi">RSI</a> atau <a href="#stochastic">Stochastic</a>. Bukan sinyal beli/jual otomatis — dalam tren kuat, kondisi ekstrem bisa bertahan lama.</p>
+        </div>
+        <div class="term reveal" id="momentum">
+          <div class="t" data-i18n-html="gl_momentum_t">Momentum <span class="k">MOM</span></div>
+          <p data-i18n-html="gl_momentum_p">Kecenderungan saham yang sedang naik untuk terus naik dan yang turun terus turun dalam jangka menengah. Strategi momentum membeli aset berkinerja terbaik dan menghindari yang terburuk, biasanya disaring dengan filter tren dan <a href="#volatility">volatilitas</a>.</p>
+        </div>
+        <div class="term reveal" id="mean-reversion">
+          <div class="t" data-i18n-html="gl_meanrev_t">Mean Reversion <span class="k">MR</span></div>
+          <p data-i18n-html="gl_meanrev_p">Premis bahwa harga cenderung kembali ke nilai rata-ratanya setelah menyimpang ekstrem. Strategi mean reversion membeli saat harga jauh di bawah rata-rata dan menjual saat jauh di atas. Bekerja paling baik di pasar menyamping, berisiko di pasar tren kuat.</p>
+        </div>
+        <div class="term reveal" id="regime">
+          <div class="t" data-i18n-html="gl_regime_t">Regime Pasar <span class="k">REGIME</span></div>
+          <p data-i18n-html="gl_regime_p">Kondisi struktural pasar pada suatu periode — misalnya bullish-tenang, bearish-bergejolak, atau menyamping. Bot profitoath mendeteksi regime untuk menyesuaikan strategi: pendekatan <a href="#momentum">momentum</a> di pasar tren, <a href="#mean-reversion">mean reversion</a> di pasar ranging. <a href="../quant.html">Lihat Quant Engine →</a></p>
+        </div>
+        <div class="term reveal" id="volatility">
+          <div class="t" data-i18n-html="gl_volatility_t">Volatilitas <span class="k">VOL · σ</span></div>
+          <p data-i18n-html="gl_volatility_p">Ukuran sebaran imbal hasil, biasanya dinyatakan sebagai standar deviasi (disetahunkan). Volatilitas tinggi berarti pergerakan harga lebar dan risiko lebih besar. Menjadi input utama untuk penentuan ukuran posisi, <a href="#var">VaR</a>, dan <a href="#risk-parity">risk parity</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== BACKTESTING & EKSEKUSI ====================== -->
+  <section class="block gloss-section" id="backtest">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="gl_s03_eyebrow">03 — BACKTESTING &amp; EKSEKUSI</div>
+        <h3 data-i18n="gl_s03_h3">Pengujian strategi &amp; realitas eksekusi</h3>
+        <p data-i18n-html="gl_s03_p">Cara menguji strategi pada data historis secara jujur — termasuk biaya nyata yang sering diabaikan. Bot profitoath menjalankan backtest IDX-realistis dengan lot 100 dan batas <a href="#ara-arb">ARA/ARB</a>.</p>
+      </div>
+      <div class="gloss-grid">
+        <div class="term reveal" id="backtesting">
+          <div class="t" data-i18n-html="gl_backtesting_t">Backtesting <span class="k">BT</span></div>
+          <p data-i18n-html="gl_backtesting_p">Simulasi sebuah strategi pada data historis untuk mengukur kinerjanya sebelum dipakai dengan uang nyata. Backtest yang baik memasukkan biaya transaksi, <a href="#slippage">slippage</a>, dan batasan likuiditas agar hasilnya realistis. <a href="../blog/apa-itu-backtesting-saham.html">Baca: Apa itu backtesting →</a></p>
+        </div>
+        <div class="term reveal" id="look-ahead">
+          <div class="t" data-i18n-html="gl_lookahead_t">Look-ahead Bias <span class="k">BIAS</span></div>
+          <p data-i18n-html="gl_lookahead_p">Kesalahan saat backtest tanpa sengaja memakai informasi yang belum tersedia pada saat keputusan dibuat — misalnya harga penutup hari ini untuk memutuskan beli pagi tadi. Bias ini membuat hasil tampak hebat namun tidak dapat direproduksi secara live.</p>
+        </div>
+        <div class="term reveal" id="walk-forward">
+          <div class="t" data-i18n-html="gl_walkforward_t">Walk-Forward Analysis <span class="k">WFA</span></div>
+          <p data-i18n-html="gl_walkforward_p">Metode validasi yang mengoptimasi strategi pada satu jendela data lalu mengujinya pada periode berikutnya yang belum terlihat, bergulir maju. Lebih tahan terhadap <a href="#look-ahead">overfitting</a> dibanding optimasi satu kali pada seluruh data historis.</p>
+        </div>
+        <div class="term reveal" id="monte-carlo">
+          <div class="t" data-i18n-html="gl_montecarlo_t">Simulasi Monte Carlo <span class="k">MC</span></div>
+          <p data-i18n-html="gl_montecarlo_p">Teknik yang menghasilkan ribuan skenario acak imbal hasil untuk mengestimasi sebaran kemungkinan hasil portofolio. Dipakai untuk menilai ketahanan strategi, distribusi <a href="#drawdown">drawdown</a>, dan probabilitas mencapai target dalam berbagai kondisi pasar.</p>
+        </div>
+        <div class="term reveal" id="slippage">
+          <div class="t" data-i18n-html="gl_slippage_t">Slippage <span class="k">SLIP</span></div>
+          <p data-i18n-html="gl_slippage_p">Selisih antara harga yang diharapkan saat order dibuat dan harga eksekusi sebenarnya. Disebabkan oleh pergerakan harga, spread bid-ask, dan likuiditas. Mengabaikan slippage adalah penyebab umum hasil backtest yang terlalu optimistis.</p>
+        </div>
+        <div class="term reveal" id="market-impact">
+          <div class="t" data-i18n-html="gl_marketimpact_t">Market Impact <span class="k">IMPACT</span></div>
+          <p data-i18n-html="gl_marketimpact_p">Pergerakan harga yang disebabkan oleh order kita sendiri ketika ukurannya besar relatif terhadap likuiditas pasar. Semakin besar posisi, semakin besar dampak harga. Faktor kritis dalam perhitungan <a href="#capacity">kapasitas</a> strategi di saham likuiditas tipis.</p>
+        </div>
+        <div class="term reveal" id="capacity">
+          <div class="t" data-i18n-html="gl_capacity_t">Capacity (Kapasitas Strategi) <span class="k">CAP</span></div>
+          <p data-i18n-html="gl_capacity_p">Jumlah modal maksimum yang dapat dijalankan sebuah strategi tanpa kinerjanya tergerus <a href="#market-impact">market impact</a> dan <a href="#liquidity">likuiditas</a>. Bot profitoath memodelkan kapasitas hingga skala miliaran Rupiah agar sinyal tetap dapat dieksekusi di pasar nyata.</p>
+        </div>
+        <div class="term reveal" id="kelly">
+          <div class="t" data-i18n-html="gl_kelly_t">Kelly Criterion <span class="k">KELLY</span></div>
+          <p data-i18n-html="gl_kelly_p">Rumus penentuan ukuran taruhan optimal yang memaksimalkan pertumbuhan modal jangka panjang berdasarkan peluang menang dan rasio imbal hasil. Karena Kelly penuh sangat agresif, praktisi umumnya memakai fractional Kelly (mis. setengah) untuk menekan <a href="#drawdown">drawdown</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== METRIK RISIKO & KINERJA ====================== -->
+  <section class="block gloss-section" id="metrik">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="gl_s04_eyebrow">04 — METRIK RISIKO &amp; KINERJA</div>
+        <h3 data-i18n="gl_s04_h3">Mengukur imbal hasil &amp; risiko</h3>
+        <p data-i18n="gl_s04_p">Angka-angka yang membedakan keberuntungan dari keterampilan. Laporan bot menyajikan metrik ini, termasuk risiko dalam satuan Rupiah.</p>
+      </div>
+      <div class="gloss-grid">
+        <div class="term reveal" id="cagr">
+          <div class="t" data-i18n-html="gl_cagr_t">Compound Annual Growth Rate <span class="k">CAGR</span></div>
+          <p data-i18n-html="gl_cagr_p">Tingkat pertumbuhan tahunan yang dimajemukkan, meratakan kinerja sebuah investasi menjadi satu angka per tahun seolah tumbuh konstan. Memungkinkan perbandingan adil antar strategi dengan jangka waktu berbeda.</p>
+        </div>
+        <div class="term reveal" id="sharpe">
+          <div class="t" data-i18n-html="gl_sharpe_t">Sharpe Ratio <span class="k">SHARPE</span></div>
+          <p data-i18n-html="gl_sharpe_p">Imbal hasil berlebih (di atas suku bunga bebas risiko) dibagi <a href="#volatility">volatilitas</a> total. Mengukur imbal hasil per unit risiko: semakin tinggi semakin baik. Nilai di atas 1 dianggap layak, di atas 2 sangat baik. Standar emas perbandingan strategi.</p>
+        </div>
+        <div class="term reveal" id="sortino">
+          <div class="t" data-i18n-html="gl_sortino_t">Sortino Ratio <span class="k">SORTINO</span></div>
+          <p data-i18n-html="gl_sortino_p">Varian Sharpe yang hanya menghukum volatilitas sisi negatif (downside deviation), bukan seluruh fluktuasi. Lebih relevan bagi investor yang tak keberatan dengan lonjakan ke atas dan hanya peduli pada risiko kerugian.</p>
+        </div>
+        <div class="term reveal" id="drawdown">
+          <div class="t" data-i18n-html="gl_drawdown_t">Maximum Drawdown <span class="k">MDD</span></div>
+          <p data-i18n-html="gl_drawdown_p">Penurunan terbesar dari puncak ke lembah ekuitas selama periode tertentu, dinyatakan dalam persen. Menggambarkan rasa sakit terburuk yang harus ditahan investor. Metrik psikologis penting — drawdown dalam bisa memaksa keluar di waktu terburuk.</p>
+        </div>
+        <div class="term reveal" id="calmar">
+          <div class="t" data-i18n-html="gl_calmar_t">Calmar Ratio <span class="k">CALMAR</span></div>
+          <p data-i18n-html="gl_calmar_p">Rasio <a href="#cagr">CAGR</a> terhadap <a href="#drawdown">maximum drawdown</a>. Menjawab pertanyaan "berapa imbal hasil tahunan per unit penderitaan terburuk?". Disukai untuk strategi yang harus bertahan menghadapi penurunan besar.</p>
+        </div>
+        <div class="term reveal" id="beta">
+          <div class="t" data-i18n-html="gl_beta_t">Beta <span class="k">β</span></div>
+          <p data-i18n-html="gl_beta_p">Sensitivitas imbal hasil sebuah saham terhadap pergerakan pasar (mis. IHSG). Beta 1 bergerak seirama pasar; di atas 1 lebih agresif, di bawah 1 lebih defensif. Mengukur risiko sistematis yang tak bisa didiversifikasi.</p>
+        </div>
+        <div class="term reveal" id="alpha">
+          <div class="t" data-i18n-html="gl_alpha_t">Alpha <span class="k">α</span></div>
+          <p data-i18n-html="gl_alpha_p">Imbal hasil berlebih yang dihasilkan di luar yang dijelaskan oleh eksposur pasar (<a href="#beta">beta</a>). Alpha positif menandakan keterampilan atau keunggulan strategi. Inilah nilai tambah yang dikejar manajer aktif dan model kuantitatif.</p>
+        </div>
+        <div class="term reveal" id="var">
+          <div class="t" data-i18n-html="gl_var_t">Value at Risk <span class="k">VaR</span></div>
+          <p data-i18n-html="gl_var_p">Estimasi kerugian maksimum portofolio pada tingkat kepercayaan tertentu (mis. 95%) dalam horizon waktu tertentu. "VaR 95% harian Rp 12 juta" berarti dalam 95% hari, kerugian tidak melebihi angka itu. Bot menyajikan VaR langsung dalam Rupiah.</p>
+        </div>
+        <div class="term reveal" id="cvar">
+          <div class="t" data-i18n-html="gl_cvar_t">Conditional VaR (Expected Shortfall) <span class="k">CVaR</span></div>
+          <p data-i18n-html="gl_cvar_p">Rata-rata kerugian pada skenario terburuk yang melampaui ambang <a href="#var">VaR</a>. Menjawab "kalau kerugian melebihi VaR, seberapa parah rata-ratanya?". Lebih sensitif terhadap risiko ekor (tail risk) dan kini jadi standar pengukuran risiko modern.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== OPTIMASI PORTOFOLIO ====================== -->
+  <section class="block gloss-section" id="portofolio">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="gl_s05_eyebrow">05 — OPTIMASI PORTOFOLIO</div>
+        <h3 data-i18n="gl_s05_h3">Alokasi bobot &amp; diversifikasi</h3>
+        <p data-i18n-html="gl_s05_p">Cara menyusun bobot aset agar imbal hasil dan risiko seimbang. profitoath menyediakan tiga metode: MVO, Risk Parity, dan HRP. <a href="../blog/optimasi-portofolio-markowitz.html">Baca artikel Markowitz →</a></p>
+      </div>
+      <div class="gloss-grid">
+        <div class="term reveal" id="markowitz">
+          <div class="t" data-i18n-html="gl_markowitz_t">Mean-Variance Optimization (Markowitz) <span class="k">MVO</span></div>
+          <p data-i18n-html="gl_markowitz_p">Kerangka peraih Nobel Harry Markowitz yang mencari bobot portofolio dengan imbal hasil tertinggi untuk tingkat risiko tertentu, berdasarkan ekspektasi imbal hasil, varians, dan korelasi antar aset. Fondasi teori portofolio modern. <a href="../blog/optimasi-portofolio-markowitz.html">Selengkapnya →</a></p>
+        </div>
+        <div class="term reveal" id="efficient-frontier">
+          <div class="t" data-i18n-html="gl_frontier_t">Efficient Frontier <span class="k">FRONTIER</span></div>
+          <p data-i18n-html="gl_frontier_p">Kurva himpunan portofolio optimal yang menawarkan imbal hasil tertinggi untuk setiap tingkat risiko. Portofolio di bawah kurva ini dianggap tidak efisien karena ada alternatif dengan imbal hasil lebih tinggi pada risiko sama. Hasil langsung dari <a href="#markowitz">MVO</a>.</p>
+        </div>
+        <div class="term reveal" id="risk-parity">
+          <div class="t" data-i18n-html="gl_riskparity_t">Risk Parity <span class="k">RP</span></div>
+          <p data-i18n-html="gl_riskparity_p">Pendekatan alokasi yang menyetarakan kontribusi risiko setiap aset, bukan kontribusi modalnya. Aset bervolatilitas rendah mendapat bobot lebih besar agar tak ada satu posisi pun yang mendominasi risiko portofolio. Lebih stabil saat estimasi imbal hasil tak pasti.</p>
+        </div>
+        <div class="term reveal" id="hrp">
+          <div class="t" data-i18n-html="gl_hrp_t">Hierarchical Risk Parity <span class="k">HRP</span></div>
+          <p data-i18n-html="gl_hrp_p">Metode modern (López de Prado) yang mengelompokkan aset lewat clustering hierarkis berdasar korelasi, lalu mengalokasikan bobot bertingkat. Menghindari kelemahan <a href="#markowitz">MVO</a> yang sensitif terhadap kesalahan estimasi matriks kovarians, sehingga lebih tahan di luar sampel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== MIKROSTRUKTUR IDX ====================== -->
+  <section class="block gloss-section" id="idx">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="gl_s06_eyebrow">06 — MIKROSTRUKTUR PASAR IDX</div>
+        <h3 data-i18n="gl_s06_h3">Aturan main Bursa Efek Indonesia</h3>
+        <p data-i18n="gl_s06_p">Detail teknis perdagangan di BEI yang wajib dimodelkan agar backtest dan sinyal benar-benar bisa dieksekusi di pasar lokal.</p>
+      </div>
+      <div class="gloss-grid">
+        <div class="term reveal" id="ara-arb">
+          <div class="t" data-i18n-html="gl_araarb_t">ARA &amp; ARB <span class="k">AUTO-REJECT</span></div>
+          <p data-i18n-html="gl_araarb_p">Auto Rejection Atas (ARA) dan Auto Rejection Bawah (ARB) adalah batas maksimum kenaikan dan penurunan harga harian yang dipaksakan BEI, bervariasi menurut rentang harga. Saat menyentuh batas, order di luar rentang ditolak otomatis — fakta penting yang dimodelkan backtest profitoath.</p>
+        </div>
+        <div class="term reveal" id="lot">
+          <div class="t" data-i18n-html="gl_lot_t">Lot <span class="k">×100</span></div>
+          <p data-i18n-html="gl_lot_p">Satuan minimum perdagangan saham di BEI, yaitu 1 lot = 100 lembar. Semua perhitungan posisi, modal, dan eksekusi harus dibulatkan ke kelipatan lot. Bot profitoath menghitung jumlah lot realistis, bukan pecahan lembar yang mustahil ditransaksikan.</p>
+        </div>
+        <div class="term reveal" id="liquidity">
+          <div class="t" data-i18n-html="gl_liquidity_t">Likuiditas &amp; ADVT <span class="k">ADVT</span></div>
+          <p data-i18n-html="gl_liquidity_p">Kemudahan membeli/menjual saham tanpa menggeser harga signifikan. Diukur dengan Average Daily Value Traded (ADVT) — nilai transaksi harian rata-rata. Saham ber-ADVT rendah membatasi ukuran posisi dan memperbesar <a href="#slippage">slippage</a> serta <a href="#market-impact">market impact</a>.</p>
+        </div>
+        <div class="term reveal" id="screener">
+          <div class="t" data-i18n-html="gl_screener_t">Screener <span class="k">SCREEN</span></div>
+          <p data-i18n-html="gl_screener_p">Mesin penyaring yang memindai ribuan saham dengan kriteria kuantitatif — momentum, valuasi, likuiditas, sinyal teknikal — untuk menyoroti kandidat yang relevan. Screener profitoath bekerja di 69.221 instrumen agar daftar pantau tetap ringkas dan terukur.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== CTA ====================== -->
+  <section class="block">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <div class="eyebrow center" data-i18n="gl_cta_eyebrow">SIAP MEMPRAKTIKKAN ISTILAH INI?</div>
+        <h2 data-i18n="gl_cta_h2">Dari teori ke sinyal nyata di Telegram.</h2>
+        <p data-i18n-html="gl_cta_p">Pahami istilahnya di sini, lalu lihat bot menghitungnya secara realtime — indikator, backtest IDX-realistis, hingga laporan <a href="#var" style="color:var(--emerald2)">VaR</a> dalam Rupiah.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+          <a class="btn btn-primary btn-lg" href="../pricing.html" data-i18n="gl_cta_btn1">Mulai Gratis →</a>
+          <a class="btn btn-lg btn-ghost" href="../quant.html" data-i18n="gl_cta_btn2">Jelajahi Quant Engine</a>
+          <a class="btn btn-lg btn-ghost" href="../blog/index.html" data-i18n="gl_cta_btn3">Baca Blog</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+    <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a><a href="../docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="../blog/index.html" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="../about.html" data-i18n="footer_about_link">Tentang</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a><a href="../glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="../assets/site.js"></script>
+<script>window.PO_I18N_PAGE = {
+  gloss_page_eyebrow:{id:'KAMUS QUANT &amp; TRADING',en:'QUANT &amp; TRADING DICTIONARY'},
+  gloss_page_h2_html:{id:'Glosarium istilah <span class="g-text">analisa kuantitatif</span> &amp; pasar saham.',en:'Glossary of <span class="g-text">quantitative analysis</span> &amp; stock market terms.'},
+  gloss_page_lead:{id:'Lebih dari 40 istilah teknikal, statistik, dan mikrostruktur pasar — dari RSI hingga HRP — dijelaskan akurat dalam bahasa Indonesia. Setiap istilah punya tautan langsung; gunakan untuk memahami output bot profitoath, dari sinyal indikator sampai laporan risiko Rupiah.',en:'More than 40 technical, statistical, and market-microstructure terms — from RSI to HRP — explained accurately. Each term has a direct link; use them to understand profitoath bot output, from indicator signals to Rupiah risk reports.'},
+
+  gl_jump_indikator:{id:'Indikator Teknikal',en:'Technical Indicators'},
+  gl_jump_pola:{id:'Pola &amp; Sinyal',en:'Patterns &amp; Signals'},
+  gl_jump_backtest:{id:'Backtesting &amp; Eksekusi',en:'Backtesting &amp; Execution'},
+  gl_jump_metrik:{id:'Metrik Risiko &amp; Kinerja',en:'Risk &amp; Performance Metrics'},
+  gl_jump_portofolio:{id:'Optimasi Portofolio',en:'Portfolio Optimization'},
+  gl_jump_idx:{id:'Mikrostruktur IDX',en:'IDX Microstructure'},
+  gl_toc_note:{id:'A–Z · 44 istilah · diperbarui untuk pasar Indonesia (BEI/IDX)',en:'A–Z · 44 terms · updated for the Indonesian market (BEI/IDX)'},
+
+  gl_s01_eyebrow:{id:'01 — INDIKATOR TEKNIKAL',en:'01 — TECHNICAL INDICATORS'},
+  gl_s01_h3:{id:'Indikator harga &amp; momentum',en:'Price &amp; momentum indicators'},
+  gl_s01_p:{id:'Perhitungan matematis di atas data harga dan volume yang dipakai bot untuk membaca arah, kekuatan, dan kondisi jenuh sebuah saham. Bot profitoath menghitung semuanya dari data realtime dan 69.221 instrumen offline.',en:'Mathematical calculations on price and volume data used by the bot to read the direction, strength, and overextended condition of a stock. The profitoath bot computes them all from realtime data and 69,221 offline instruments.'},
+
+  gl_rsi_t:{id:'Relative Strength Index <span class="k">RSI</span>',en:'Relative Strength Index <span class="k">RSI</span>'},
+  gl_rsi_p:{id:'Oscillator momentum 0–100 yang membandingkan rata-rata kenaikan dan penurunan harga pada periode tertentu (lazimnya 14). Nilai di atas 70 menandakan <a href="#overbought">overbought</a> dan di bawah 30 oversold. Sering dipakai untuk mendeteksi divergensi terhadap harga. <a href="../blog/cara-membaca-rsi-macd.html">Baca panduan RSI &amp; MACD →</a>',en:'A 0–100 momentum oscillator that compares the average price gains and losses over a given period (typically 14). Values above 70 indicate <a href="#overbought">overbought</a> and below 30 oversold. Often used to detect divergence against price. <a href="../blog/cara-membaca-rsi-macd.html">Read the RSI &amp; MACD guide →</a>'},
+  gl_macd_t:{id:'Moving Average Convergence Divergence <span class="k">MACD</span>',en:'Moving Average Convergence Divergence <span class="k">MACD</span>'},
+  gl_macd_p:{id:'Selisih antara dua EMA (umumnya 12 dan 26) yang dibandingkan dengan garis sinyal (EMA 9). Persilangan garis MACD di atas garis sinyal dianggap bullish, di bawah bearish. Histogram MACD mengukur percepatan momentum. <a href="../blog/cara-membaca-rsi-macd.html">Pelajari interpretasinya →</a>',en:'The difference between two EMAs (commonly 12 and 26) compared against a signal line (EMA 9). A MACD line crossing above the signal line is considered bullish, below it bearish. The MACD histogram measures momentum acceleration. <a href="../blog/cara-membaca-rsi-macd.html">Learn how to interpret it →</a>'},
+  gl_ema_t:{id:'Exponential / Simple Moving Average <span class="k">EMA · SMA</span>',en:'Exponential / Simple Moving Average <span class="k">EMA · SMA</span>'},
+  gl_ema_p:{id:'Rata-rata harga periode tertentu untuk meratakan kebisingan (noise). SMA memberi bobot sama ke setiap titik, sementara EMA memberi bobot lebih besar pada harga terbaru sehingga lebih responsif terhadap perubahan tren. Dasar dari banyak strategi <a href="#momentum">momentum</a>.',en:'The average price over a given period to smooth out noise. An SMA weights every data point equally, while an EMA gives greater weight to recent prices and is therefore more responsive to trend changes. The basis of many <a href="#momentum">momentum</a> strategies.'},
+  gl_bollinger_t:{id:'Bollinger Bands <span class="k">BB</span>',en:'Bollinger Bands <span class="k">BB</span>'},
+  gl_bollinger_p:{id:'Pita yang terdiri dari SMA tengah dan dua garis berjarak ±2 standar deviasi. Pita melebar saat <a href="#volatility">volatilitas</a> tinggi dan menyempit (squeeze) saat tenang. Harga menyentuh pita atas/bawah sering dipakai sebagai sinyal kondisi ekstrem, bukan sinyal beli/jual otomatis.',en:'Bands made up of a central SMA and two lines spaced ±2 standard deviations away. The bands widen when <a href="#volatility">volatility</a> is high and narrow (squeeze) when calm. Price touching the upper/lower band is often used as a signal of extreme conditions, not an automatic buy/sell signal.'},
+  gl_adx_t:{id:'Average Directional Index <span class="k">ADX</span>',en:'Average Directional Index <span class="k">ADX</span>'},
+  gl_adx_p:{id:'Mengukur kekuatan tren (bukan arahnya) dalam skala 0–100. Nilai di bawah 20 menandakan pasar menyamping (ranging), di atas 25 menandakan tren kuat. Dipadukan dengan +DI/–DI untuk menentukan arah. Berguna memfilter sinyal <a href="#mean-reversion">mean reversion</a> versus tren.',en:'Measures the strength of a trend (not its direction) on a 0–100 scale. Values below 20 indicate a ranging market, above 25 indicate a strong trend. Combined with +DI/–DI to determine direction. Useful for filtering <a href="#mean-reversion">mean reversion</a> versus trend signals.'},
+  gl_stochastic_t:{id:'Stochastic Oscillator <span class="k">STOCH</span>',en:'Stochastic Oscillator <span class="k">STOCH</span>'},
+  gl_stochastic_p:{id:'Membandingkan harga penutupan terhadap rentang tinggi–rendah pada periode tertentu, menghasilkan garis %K dan %D antara 0–100. Persilangan di area di bawah 20 (oversold) atau di atas 80 (overbought) dipakai sebagai sinyal pembalikan momentum.',en:'Compares the closing price against the high–low range over a given period, producing %K and %D lines between 0–100. Crossovers in the area below 20 (oversold) or above 80 (overbought) are used as momentum reversal signals.'},
+  gl_obv_t:{id:'On-Balance Volume <span class="k">OBV</span>',en:'On-Balance Volume <span class="k">OBV</span>'},
+  gl_obv_p:{id:'Indikator kumulatif yang menambah volume pada hari naik dan mengurangi pada hari turun. Tujuannya mengonfirmasi tren harga lewat aliran volume: OBV menanjak saat harga naik memperkuat tren, sementara divergensi OBV bisa mengisyaratkan pelemahan.',en:'A cumulative indicator that adds volume on up days and subtracts it on down days. Its purpose is to confirm price trends through volume flow: a rising OBV alongside rising prices reinforces the trend, while OBV divergence can hint at weakening.'},
+  gl_vwap_t:{id:'Volume-Weighted Average Price <span class="k">VWAP</span>',en:'Volume-Weighted Average Price <span class="k">VWAP</span>'},
+  gl_vwap_p:{id:'Harga rata-rata tertimbang volume sepanjang sesi perdagangan. Menjadi acuan eksekusi institusi: harga di atas VWAP dianggap relatif mahal, di bawah relatif murah. Penting untuk menilai kualitas eksekusi dan <a href="#market-impact">market impact</a>.',en:'The volume-weighted average price across a trading session. It serves as an institutional execution benchmark: a price above VWAP is considered relatively expensive, below it relatively cheap. Important for assessing execution quality and <a href="#market-impact">market impact</a>.'},
+  gl_atr_t:{id:'Average True Range <span class="k">ATR</span>',en:'Average True Range <span class="k">ATR</span>'},
+  gl_atr_p:{id:'Rata-rata rentang pergerakan harga sebenarnya (true range) dalam periode tertentu, mengukur <a href="#volatility">volatilitas</a> absolut dalam satuan harga. Dipakai untuk menetapkan jarak stop-loss adaptif dan ukuran posisi yang menyesuaikan kondisi pasar.',en:'The average of the true range of price movement over a given period, measuring absolute <a href="#volatility">volatility</a> in price units. Used to set adaptive stop-loss distances and position sizes that adjust to market conditions.'},
+
+  gl_s02_eyebrow:{id:'02 — POLA &amp; SINYAL',en:'02 — PATTERNS &amp; SIGNALS'},
+  gl_s02_h3:{id:'Pola harga &amp; kondisi pasar',en:'Price patterns &amp; market conditions'},
+  gl_s02_p:{id:'Bentuk grafis dan kondisi yang sering jadi pemicu keputusan trader, dideteksi otomatis oleh modul chart bot.',en:'Graphical shapes and conditions that often trigger trader decisions, detected automatically by the bot chart module.'},
+
+  gl_candlestick_t:{id:'Candlestick <span class="k">OHLC</span>',en:'Candlestick <span class="k">OHLC</span>'},
+  gl_candlestick_p:{id:'Representasi harga per periode yang menampilkan Open, High, Low, dan Close dalam satu batang. Badan (body) menunjukkan jarak buka–tutup, sumbu (wick) menunjukkan ekstrem. Pola seperti doji, hammer, atau engulfing dipakai membaca tekanan beli/jual.',en:'A per-period price representation showing the Open, High, Low, and Close in a single bar. The body shows the open–close range, the wick shows the extremes. Patterns such as doji, hammer, or engulfing are used to read buying/selling pressure.'},
+  gl_sr_t:{id:'Support &amp; Resistance <span class="k">S/R</span>',en:'Support &amp; Resistance <span class="k">S/R</span>'},
+  gl_sr_p:{id:'Support adalah area harga tempat permintaan cenderung menahan penurunan; resistance adalah area tempat penawaran menahan kenaikan. Penembusan (breakout) atau pemantulan (bounce) di level ini menjadi dasar banyak strategi entry dan exit.',en:'Support is a price area where demand tends to halt a decline; resistance is an area where supply halts a rise. A breakout or a bounce at these levels is the basis of many entry and exit strategies.'},
+  gl_goldencross_t:{id:'Golden Cross &amp; Death Cross <span class="k">MA-X</span>',en:'Golden Cross &amp; Death Cross <span class="k">MA-X</span>'},
+  gl_goldencross_p:{id:'Golden cross terjadi saat moving average jangka pendek (mis. MA50) memotong ke atas MA jangka panjang (mis. MA200), dianggap sinyal bullish struktural. Death cross adalah kebalikannya — MA pendek memotong ke bawah — dan ditafsirkan bearish.',en:'A golden cross occurs when a short-term moving average (e.g. MA50) crosses above a long-term MA (e.g. MA200), considered a structural bullish signal. A death cross is the opposite — the short MA crosses below — and is interpreted as bearish.'},
+  gl_overbought_t:{id:'Overbought &amp; Oversold <span class="k">OB/OS</span>',en:'Overbought &amp; Oversold <span class="k">OB/OS</span>'},
+  gl_overbought_p:{id:'Kondisi ketika harga dianggap telah naik (overbought) atau turun (oversold) terlalu cepat menurut oscillator seperti <a href="#rsi">RSI</a> atau <a href="#stochastic">Stochastic</a>. Bukan sinyal beli/jual otomatis — dalam tren kuat, kondisi ekstrem bisa bertahan lama.',en:'A condition where price is judged to have risen (overbought) or fallen (oversold) too quickly according to oscillators such as <a href="#rsi">RSI</a> or <a href="#stochastic">Stochastic</a>. Not an automatic buy/sell signal — in a strong trend, extreme conditions can persist for a long time.'},
+  gl_momentum_t:{id:'Momentum <span class="k">MOM</span>',en:'Momentum <span class="k">MOM</span>'},
+  gl_momentum_p:{id:'Kecenderungan saham yang sedang naik untuk terus naik dan yang turun terus turun dalam jangka menengah. Strategi momentum membeli aset berkinerja terbaik dan menghindari yang terburuk, biasanya disaring dengan filter tren dan <a href="#volatility">volatilitas</a>.',en:'The tendency of rising stocks to keep rising and falling ones to keep falling over the medium term. A momentum strategy buys the best-performing assets and avoids the worst, usually filtered by trend and <a href="#volatility">volatility</a> filters.'},
+  gl_meanrev_t:{id:'Mean Reversion <span class="k">MR</span>',en:'Mean Reversion <span class="k">MR</span>'},
+  gl_meanrev_p:{id:'Premis bahwa harga cenderung kembali ke nilai rata-ratanya setelah menyimpang ekstrem. Strategi mean reversion membeli saat harga jauh di bawah rata-rata dan menjual saat jauh di atas. Bekerja paling baik di pasar menyamping, berisiko di pasar tren kuat.',en:'The premise that price tends to return to its average value after an extreme deviation. A mean reversion strategy buys when price is far below the average and sells when far above. It works best in ranging markets and is risky in strongly trending ones.'},
+  gl_regime_t:{id:'Regime Pasar <span class="k">REGIME</span>',en:'Market Regime <span class="k">REGIME</span>'},
+  gl_regime_p:{id:'Kondisi struktural pasar pada suatu periode — misalnya bullish-tenang, bearish-bergejolak, atau menyamping. Bot profitoath mendeteksi regime untuk menyesuaikan strategi: pendekatan <a href="#momentum">momentum</a> di pasar tren, <a href="#mean-reversion">mean reversion</a> di pasar ranging. <a href="../quant.html">Lihat Quant Engine →</a>',en:'The structural condition of the market over a period — for example calm-bullish, volatile-bearish, or sideways. The profitoath bot detects the regime to adapt its strategy: a <a href="#momentum">momentum</a> approach in trending markets, <a href="#mean-reversion">mean reversion</a> in ranging markets. <a href="../quant.html">See the Quant Engine →</a>'},
+  gl_volatility_t:{id:'Volatilitas <span class="k">VOL · σ</span>',en:'Volatility <span class="k">VOL · σ</span>'},
+  gl_volatility_p:{id:'Ukuran sebaran imbal hasil, biasanya dinyatakan sebagai standar deviasi (disetahunkan). Volatilitas tinggi berarti pergerakan harga lebar dan risiko lebih besar. Menjadi input utama untuk penentuan ukuran posisi, <a href="#var">VaR</a>, dan <a href="#risk-parity">risk parity</a>.',en:'A measure of the dispersion of returns, usually expressed as a standard deviation (annualized). High volatility means wide price movements and greater risk. It is a key input for position sizing, <a href="#var">VaR</a>, and <a href="#risk-parity">risk parity</a>.'},
+
+  gl_s03_eyebrow:{id:'03 — BACKTESTING &amp; EKSEKUSI',en:'03 — BACKTESTING &amp; EXECUTION'},
+  gl_s03_h3:{id:'Pengujian strategi &amp; realitas eksekusi',en:'Strategy testing &amp; execution reality'},
+  gl_s03_p:{id:'Cara menguji strategi pada data historis secara jujur — termasuk biaya nyata yang sering diabaikan. Bot profitoath menjalankan backtest IDX-realistis dengan lot 100 dan batas <a href="#ara-arb">ARA/ARB</a>.',en:'How to test a strategy on historical data honestly — including the real costs that are often ignored. The profitoath bot runs IDX-realistic backtests with 100-share lots and <a href="#ara-arb">ARA/ARB</a> limits.'},
+
+  gl_backtesting_t:{id:'Backtesting <span class="k">BT</span>',en:'Backtesting <span class="k">BT</span>'},
+  gl_backtesting_p:{id:'Simulasi sebuah strategi pada data historis untuk mengukur kinerjanya sebelum dipakai dengan uang nyata. Backtest yang baik memasukkan biaya transaksi, <a href="#slippage">slippage</a>, dan batasan likuiditas agar hasilnya realistis. <a href="../blog/apa-itu-backtesting-saham.html">Baca: Apa itu backtesting →</a>',en:'Simulating a strategy on historical data to measure its performance before deploying it with real money. A good backtest includes transaction costs, <a href="#slippage">slippage</a>, and liquidity constraints so the results are realistic. <a href="../blog/apa-itu-backtesting-saham.html">Read: What is backtesting →</a>'},
+  gl_lookahead_t:{id:'Look-ahead Bias <span class="k">BIAS</span>',en:'Look-ahead Bias <span class="k">BIAS</span>'},
+  gl_lookahead_p:{id:'Kesalahan saat backtest tanpa sengaja memakai informasi yang belum tersedia pada saat keputusan dibuat — misalnya harga penutup hari ini untuk memutuskan beli pagi tadi. Bias ini membuat hasil tampak hebat namun tidak dapat direproduksi secara live.',en:'An error in which a backtest inadvertently uses information not yet available at the time a decision was made — for example using today closing price to decide a purchase this morning. This bias makes results look great but they cannot be reproduced live.'},
+  gl_walkforward_t:{id:'Walk-Forward Analysis <span class="k">WFA</span>',en:'Walk-Forward Analysis <span class="k">WFA</span>'},
+  gl_walkforward_p:{id:'Metode validasi yang mengoptimasi strategi pada satu jendela data lalu mengujinya pada periode berikutnya yang belum terlihat, bergulir maju. Lebih tahan terhadap <a href="#look-ahead">overfitting</a> dibanding optimasi satu kali pada seluruh data historis.',en:'A validation method that optimizes a strategy on one data window then tests it on the next unseen period, rolling forward. More resistant to <a href="#look-ahead">overfitting</a> than a single optimization over the entire historical dataset.'},
+  gl_montecarlo_t:{id:'Simulasi Monte Carlo <span class="k">MC</span>',en:'Monte Carlo Simulation <span class="k">MC</span>'},
+  gl_montecarlo_p:{id:'Teknik yang menghasilkan ribuan skenario acak imbal hasil untuk mengestimasi sebaran kemungkinan hasil portofolio. Dipakai untuk menilai ketahanan strategi, distribusi <a href="#drawdown">drawdown</a>, dan probabilitas mencapai target dalam berbagai kondisi pasar.',en:'A technique that generates thousands of random return scenarios to estimate the distribution of possible portfolio outcomes. Used to assess strategy robustness, the distribution of <a href="#drawdown">drawdown</a>, and the probability of reaching a target across various market conditions.'},
+  gl_slippage_t:{id:'Slippage <span class="k">SLIP</span>',en:'Slippage <span class="k">SLIP</span>'},
+  gl_slippage_p:{id:'Selisih antara harga yang diharapkan saat order dibuat dan harga eksekusi sebenarnya. Disebabkan oleh pergerakan harga, spread bid-ask, dan likuiditas. Mengabaikan slippage adalah penyebab umum hasil backtest yang terlalu optimistis.',en:'The difference between the expected price when an order is placed and the actual execution price. Caused by price movement, the bid-ask spread, and liquidity. Ignoring slippage is a common cause of overly optimistic backtest results.'},
+  gl_marketimpact_t:{id:'Market Impact <span class="k">IMPACT</span>',en:'Market Impact <span class="k">IMPACT</span>'},
+  gl_marketimpact_p:{id:'Pergerakan harga yang disebabkan oleh order kita sendiri ketika ukurannya besar relatif terhadap likuiditas pasar. Semakin besar posisi, semakin besar dampak harga. Faktor kritis dalam perhitungan <a href="#capacity">kapasitas</a> strategi di saham likuiditas tipis.',en:'The price movement caused by our own order when its size is large relative to market liquidity. The larger the position, the greater the price impact. A critical factor in calculating strategy <a href="#capacity">capacity</a> in thinly traded stocks.'},
+  gl_capacity_t:{id:'Capacity (Kapasitas Strategi) <span class="k">CAP</span>',en:'Capacity (Strategy Capacity) <span class="k">CAP</span>'},
+  gl_capacity_p:{id:'Jumlah modal maksimum yang dapat dijalankan sebuah strategi tanpa kinerjanya tergerus <a href="#market-impact">market impact</a> dan <a href="#liquidity">likuiditas</a>. Bot profitoath memodelkan kapasitas hingga skala miliaran Rupiah agar sinyal tetap dapat dieksekusi di pasar nyata.',en:'The maximum amount of capital a strategy can run without its performance being eroded by <a href="#market-impact">market impact</a> and <a href="#liquidity">liquidity</a>. The profitoath bot models capacity up to the scale of billions of Rupiah so signals remain executable in the real market.'},
+  gl_kelly_t:{id:'Kelly Criterion <span class="k">KELLY</span>',en:'Kelly Criterion <span class="k">KELLY</span>'},
+  gl_kelly_p:{id:'Rumus penentuan ukuran taruhan optimal yang memaksimalkan pertumbuhan modal jangka panjang berdasarkan peluang menang dan rasio imbal hasil. Karena Kelly penuh sangat agresif, praktisi umumnya memakai fractional Kelly (mis. setengah) untuk menekan <a href="#drawdown">drawdown</a>.',en:'A formula for determining the optimal bet size that maximizes long-term capital growth based on the win probability and the payoff ratio. Because full Kelly is very aggressive, practitioners generally use fractional Kelly (e.g. half) to limit <a href="#drawdown">drawdown</a>.'},
+
+  gl_s04_eyebrow:{id:'04 — METRIK RISIKO &amp; KINERJA',en:'04 — RISK &amp; PERFORMANCE METRICS'},
+  gl_s04_h3:{id:'Mengukur imbal hasil &amp; risiko',en:'Measuring return &amp; risk'},
+  gl_s04_p:{id:'Angka-angka yang membedakan keberuntungan dari keterampilan. Laporan bot menyajikan metrik ini, termasuk risiko dalam satuan Rupiah.',en:'The numbers that distinguish luck from skill. The bot report presents these metrics, including risk expressed in Rupiah.'},
+
+  gl_cagr_t:{id:'Compound Annual Growth Rate <span class="k">CAGR</span>',en:'Compound Annual Growth Rate <span class="k">CAGR</span>'},
+  gl_cagr_p:{id:'Tingkat pertumbuhan tahunan yang dimajemukkan, meratakan kinerja sebuah investasi menjadi satu angka per tahun seolah tumbuh konstan. Memungkinkan perbandingan adil antar strategi dengan jangka waktu berbeda.',en:'The compounded annual growth rate, smoothing an investment performance into a single per-year figure as if it grew at a constant pace. It allows a fair comparison between strategies with different time horizons.'},
+  gl_sharpe_t:{id:'Sharpe Ratio <span class="k">SHARPE</span>',en:'Sharpe Ratio <span class="k">SHARPE</span>'},
+  gl_sharpe_p:{id:'Imbal hasil berlebih (di atas suku bunga bebas risiko) dibagi <a href="#volatility">volatilitas</a> total. Mengukur imbal hasil per unit risiko: semakin tinggi semakin baik. Nilai di atas 1 dianggap layak, di atas 2 sangat baik. Standar emas perbandingan strategi.',en:'Excess return (above the risk-free rate) divided by total <a href="#volatility">volatility</a>. It measures return per unit of risk: the higher the better. Values above 1 are considered decent, above 2 excellent. The gold standard for comparing strategies.'},
+  gl_sortino_t:{id:'Sortino Ratio <span class="k">SORTINO</span>',en:'Sortino Ratio <span class="k">SORTINO</span>'},
+  gl_sortino_p:{id:'Varian Sharpe yang hanya menghukum volatilitas sisi negatif (downside deviation), bukan seluruh fluktuasi. Lebih relevan bagi investor yang tak keberatan dengan lonjakan ke atas dan hanya peduli pada risiko kerugian.',en:'A Sharpe variant that only penalizes downside volatility (downside deviation), not all fluctuation. More relevant for investors who do not mind upside spikes and care only about loss risk.'},
+  gl_drawdown_t:{id:'Maximum Drawdown <span class="k">MDD</span>',en:'Maximum Drawdown <span class="k">MDD</span>'},
+  gl_drawdown_p:{id:'Penurunan terbesar dari puncak ke lembah ekuitas selama periode tertentu, dinyatakan dalam persen. Menggambarkan rasa sakit terburuk yang harus ditahan investor. Metrik psikologis penting — drawdown dalam bisa memaksa keluar di waktu terburuk.',en:'The largest peak-to-trough decline in equity over a given period, expressed as a percentage. It describes the worst pain an investor must endure. An important psychological metric — a deep drawdown can force an exit at the worst time.'},
+  gl_calmar_t:{id:'Calmar Ratio <span class="k">CALMAR</span>',en:'Calmar Ratio <span class="k">CALMAR</span>'},
+  gl_calmar_p:{id:'Rasio <a href="#cagr">CAGR</a> terhadap <a href="#drawdown">maximum drawdown</a>. Menjawab pertanyaan "berapa imbal hasil tahunan per unit penderitaan terburuk?". Disukai untuk strategi yang harus bertahan menghadapi penurunan besar.',en:'The ratio of <a href="#cagr">CAGR</a> to <a href="#drawdown">maximum drawdown</a>. It answers the question "how much annual return per unit of worst-case pain?". Favored for strategies that must survive large declines.'},
+  gl_beta_t:{id:'Beta <span class="k">β</span>',en:'Beta <span class="k">β</span>'},
+  gl_beta_p:{id:'Sensitivitas imbal hasil sebuah saham terhadap pergerakan pasar (mis. IHSG). Beta 1 bergerak seirama pasar; di atas 1 lebih agresif, di bawah 1 lebih defensif. Mengukur risiko sistematis yang tak bisa didiversifikasi.',en:'The sensitivity of a stock return to market movements (e.g. the IHSG). A beta of 1 moves in step with the market; above 1 is more aggressive, below 1 more defensive. It measures systematic risk that cannot be diversified away.'},
+  gl_alpha_t:{id:'Alpha <span class="k">α</span>',en:'Alpha <span class="k">α</span>'},
+  gl_alpha_p:{id:'Imbal hasil berlebih yang dihasilkan di luar yang dijelaskan oleh eksposur pasar (<a href="#beta">beta</a>). Alpha positif menandakan keterampilan atau keunggulan strategi. Inilah nilai tambah yang dikejar manajer aktif dan model kuantitatif.',en:'Excess return generated beyond what is explained by market exposure (<a href="#beta">beta</a>). Positive alpha indicates skill or a strategy edge. This is the added value that active managers and quantitative models pursue.'},
+  gl_var_t:{id:'Value at Risk <span class="k">VaR</span>',en:'Value at Risk <span class="k">VaR</span>'},
+  gl_var_p:{id:'Estimasi kerugian maksimum portofolio pada tingkat kepercayaan tertentu (mis. 95%) dalam horizon waktu tertentu. "VaR 95% harian Rp 12 juta" berarti dalam 95% hari, kerugian tidak melebihi angka itu. Bot menyajikan VaR langsung dalam Rupiah.',en:'An estimate of the maximum portfolio loss at a given confidence level (e.g. 95%) over a given time horizon. "A daily 95% VaR of Rp 12 million" means that on 95% of days, the loss does not exceed that figure. The bot presents VaR directly in Rupiah.'},
+  gl_cvar_t:{id:'Conditional VaR (Expected Shortfall) <span class="k">CVaR</span>',en:'Conditional VaR (Expected Shortfall) <span class="k">CVaR</span>'},
+  gl_cvar_p:{id:'Rata-rata kerugian pada skenario terburuk yang melampaui ambang <a href="#var">VaR</a>. Menjawab "kalau kerugian melebihi VaR, seberapa parah rata-ratanya?". Lebih sensitif terhadap risiko ekor (tail risk) dan kini jadi standar pengukuran risiko modern.',en:'The average loss across the worst-case scenarios that exceed the <a href="#var">VaR</a> threshold. It answers "if the loss exceeds VaR, how bad is it on average?". More sensitive to tail risk and now a standard in modern risk measurement.'},
+
+  gl_s05_eyebrow:{id:'05 — OPTIMASI PORTOFOLIO',en:'05 — PORTFOLIO OPTIMIZATION'},
+  gl_s05_h3:{id:'Alokasi bobot &amp; diversifikasi',en:'Weight allocation &amp; diversification'},
+  gl_s05_p:{id:'Cara menyusun bobot aset agar imbal hasil dan risiko seimbang. profitoath menyediakan tiga metode: MVO, Risk Parity, dan HRP. <a href="../blog/optimasi-portofolio-markowitz.html">Baca artikel Markowitz →</a>',en:'How to set asset weights so that return and risk are balanced. profitoath offers three methods: MVO, Risk Parity, and HRP. <a href="../blog/optimasi-portofolio-markowitz.html">Read the Markowitz article →</a>'},
+
+  gl_markowitz_t:{id:'Mean-Variance Optimization (Markowitz) <span class="k">MVO</span>',en:'Mean-Variance Optimization (Markowitz) <span class="k">MVO</span>'},
+  gl_markowitz_p:{id:'Kerangka peraih Nobel Harry Markowitz yang mencari bobot portofolio dengan imbal hasil tertinggi untuk tingkat risiko tertentu, berdasarkan ekspektasi imbal hasil, varians, dan korelasi antar aset. Fondasi teori portofolio modern. <a href="../blog/optimasi-portofolio-markowitz.html">Selengkapnya →</a>',en:'The framework by Nobel laureate Harry Markowitz that seeks portfolio weights with the highest return for a given level of risk, based on expected returns, variances, and correlations between assets. The foundation of modern portfolio theory. <a href="../blog/optimasi-portofolio-markowitz.html">Read more →</a>'},
+  gl_frontier_t:{id:'Efficient Frontier <span class="k">FRONTIER</span>',en:'Efficient Frontier <span class="k">FRONTIER</span>'},
+  gl_frontier_p:{id:'Kurva himpunan portofolio optimal yang menawarkan imbal hasil tertinggi untuk setiap tingkat risiko. Portofolio di bawah kurva ini dianggap tidak efisien karena ada alternatif dengan imbal hasil lebih tinggi pada risiko sama. Hasil langsung dari <a href="#markowitz">MVO</a>.',en:'The curve of the set of optimal portfolios offering the highest return for each level of risk. Portfolios below this curve are considered inefficient because an alternative exists with higher return at the same risk. A direct result of <a href="#markowitz">MVO</a>.'},
+  gl_riskparity_t:{id:'Risk Parity <span class="k">RP</span>',en:'Risk Parity <span class="k">RP</span>'},
+  gl_riskparity_p:{id:'Pendekatan alokasi yang menyetarakan kontribusi risiko setiap aset, bukan kontribusi modalnya. Aset bervolatilitas rendah mendapat bobot lebih besar agar tak ada satu posisi pun yang mendominasi risiko portofolio. Lebih stabil saat estimasi imbal hasil tak pasti.',en:'An allocation approach that equalizes the risk contribution of each asset rather than its capital contribution. Low-volatility assets receive larger weights so that no single position dominates portfolio risk. More stable when return estimates are uncertain.'},
+  gl_hrp_t:{id:'Hierarchical Risk Parity <span class="k">HRP</span>',en:'Hierarchical Risk Parity <span class="k">HRP</span>'},
+  gl_hrp_p:{id:'Metode modern (López de Prado) yang mengelompokkan aset lewat clustering hierarkis berdasar korelasi, lalu mengalokasikan bobot bertingkat. Menghindari kelemahan <a href="#markowitz">MVO</a> yang sensitif terhadap kesalahan estimasi matriks kovarians, sehingga lebih tahan di luar sampel.',en:'A modern method (López de Prado) that groups assets via hierarchical clustering based on correlation, then allocates weights in stages. It avoids the weakness of <a href="#markowitz">MVO</a>, which is sensitive to covariance-matrix estimation errors, making it more robust out of sample.'},
+
+  gl_s06_eyebrow:{id:'06 — MIKROSTRUKTUR PASAR IDX',en:'06 — IDX MARKET MICROSTRUCTURE'},
+  gl_s06_h3:{id:'Aturan main Bursa Efek Indonesia',en:'The rules of the Indonesia Stock Exchange'},
+  gl_s06_p:{id:'Detail teknis perdagangan di BEI yang wajib dimodelkan agar backtest dan sinyal benar-benar bisa dieksekusi di pasar lokal.',en:'The technical trading details on the BEI that must be modeled so backtests and signals can truly be executed in the local market.'},
+
+  gl_araarb_t:{id:'ARA &amp; ARB <span class="k">AUTO-REJECT</span>',en:'ARA &amp; ARB <span class="k">AUTO-REJECT</span>'},
+  gl_araarb_p:{id:'Auto Rejection Atas (ARA) dan Auto Rejection Bawah (ARB) adalah batas maksimum kenaikan dan penurunan harga harian yang dipaksakan BEI, bervariasi menurut rentang harga. Saat menyentuh batas, order di luar rentang ditolak otomatis — fakta penting yang dimodelkan backtest profitoath.',en:'Auto Rejection Atas (ARA) and Auto Rejection Bawah (ARB) are the maximum daily price increase and decrease limits enforced by the BEI, varying by price range. When a limit is hit, orders outside the range are rejected automatically — an important fact modeled in the profitoath backtest.'},
+  gl_lot_t:{id:'Lot <span class="k">×100</span>',en:'Lot <span class="k">×100</span>'},
+  gl_lot_p:{id:'Satuan minimum perdagangan saham di BEI, yaitu 1 lot = 100 lembar. Semua perhitungan posisi, modal, dan eksekusi harus dibulatkan ke kelipatan lot. Bot profitoath menghitung jumlah lot realistis, bukan pecahan lembar yang mustahil ditransaksikan.',en:'The minimum stock trading unit on the BEI, namely 1 lot = 100 shares. All position, capital, and execution calculations must be rounded to whole lots. The profitoath bot computes a realistic number of lots, not fractional shares that cannot be traded.'},
+  gl_liquidity_t:{id:'Likuiditas &amp; ADVT <span class="k">ADVT</span>',en:'Liquidity &amp; ADVT <span class="k">ADVT</span>'},
+  gl_liquidity_p:{id:'Kemudahan membeli/menjual saham tanpa menggeser harga signifikan. Diukur dengan Average Daily Value Traded (ADVT) — nilai transaksi harian rata-rata. Saham ber-ADVT rendah membatasi ukuran posisi dan memperbesar <a href="#slippage">slippage</a> serta <a href="#market-impact">market impact</a>.',en:'The ease of buying/selling a stock without moving the price significantly. Measured by Average Daily Value Traded (ADVT) — the average daily transaction value. Stocks with low ADVT limit position size and amplify <a href="#slippage">slippage</a> and <a href="#market-impact">market impact</a>.'},
+  gl_screener_t:{id:'Screener <span class="k">SCREEN</span>',en:'Screener <span class="k">SCREEN</span>'},
+  gl_screener_p:{id:'Mesin penyaring yang memindai ribuan saham dengan kriteria kuantitatif — momentum, valuasi, likuiditas, sinyal teknikal — untuk menyoroti kandidat yang relevan. Screener profitoath bekerja di 69.221 instrumen agar daftar pantau tetap ringkas dan terukur.',en:'A filtering engine that scans thousands of stocks with quantitative criteria — momentum, valuation, liquidity, technical signals — to surface relevant candidates. The profitoath screener works across 69,221 instruments to keep the watchlist concise and measurable.'},
+
+  gl_cta_eyebrow:{id:'SIAP MEMPRAKTIKKAN ISTILAH INI?',en:'READY TO PUT THESE TERMS INTO PRACTICE?'},
+  gl_cta_h2:{id:'Dari teori ke sinyal nyata di Telegram.',en:'From theory to real signals on Telegram.'},
+  gl_cta_p:{id:'Pahami istilahnya di sini, lalu lihat bot menghitungnya secara realtime — indikator, backtest IDX-realistis, hingga laporan <a href="#var" style="color:var(--emerald2)">VaR</a> dalam Rupiah.',en:'Understand the terms here, then watch the bot compute them in realtime — indicators, IDX-realistic backtests, and <a href="#var" style="color:var(--emerald2)">VaR</a> reports in Rupiah.'},
+  gl_cta_btn1:{id:'Mulai Gratis →',en:'Start Free →'},
+  gl_cta_btn2:{id:'Jelajahi Quant Engine',en:'Explore the Quant Engine'},
+  gl_cta_btn3:{id:'Baca Blog',en:'Read the Blog'}
+};</script>
+<script src="../assets/i18n.js"></script>
+<script>
+  /* highlight chip of section currently in view */
+  (function(){
+    var chips=[].slice.call(document.querySelectorAll('.jump .chip'));
+    var map={};chips.forEach(function(c){map[c.getAttribute('href').slice(1)]=c;});
+    var ids=Object.keys(map);
+    function onScroll(){
+      var best=null,bestTop=-Infinity;
+      ids.forEach(function(id){
+        var el=document.getElementById(id);if(!el)return;
+        var t=el.getBoundingClientRect().top-130;
+        if(t<=0&&t>bestTop){bestTop=t;best=id;}
+      });
+      chips.forEach(function(c){c.classList.remove('active');});
+      if(best&&map[best])map[best].classList.add('active');
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  })();
+</script>
+</body></html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Docs — Panduan Bot, Perintah & CLI | profitoath</title><meta name="description" content="Dokumentasi profitoath: mulai cepat di Telegram, daftar lengkap perintah (/chart /forecast /backtest /portfolio), alur pasar global, tier & kuota, pembayaran, dan CLI untuk riset kuantitatif."/>
+<link rel="icon" type="image/svg+xml" href="./assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="./assets/style.css"/>
+<style>
+  /* layout unik untuk halaman Docs — sidebar lengket + konten prose */
+  .docs-layout{display:grid;grid-template-columns:248px 1fr;gap:48px;align-items:start}
+  .docs-side{position:sticky;top:96px;padding:22px;align-self:start}
+  .docs-side h5{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:0 0 14px}
+  .docs-side nav{display:flex;flex-direction:column;gap:2px}
+  .docs-side nav a{font-size:14px;color:var(--mut);padding:8px 12px;border-radius:9px;border-left:2px solid transparent;transition:all .3s}
+  .docs-side nav a:hover{color:var(--txt);background:rgba(22,224,168,.06);border-left-color:var(--emerald)}
+  .docs-side .side-cta{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+  .docs-main{min-width:0}
+  .docs-main .prose{max-width:100%;margin:0}
+  .docs-main .prose h2{scroll-margin-top:96px;display:flex;align-items:baseline;gap:12px}
+  .docs-main .prose h2 .num{font-family:var(--mono);font-size:14px;color:var(--emerald);font-weight:700}
+  .docs-main .prose table td:first-child{white-space:nowrap}
+  @media(max-width:920px){.docs-layout{grid-template-columns:1fr;gap:28px}.docs-side{position:static;top:auto}}
+</style></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" aria-current="page" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="./pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./docs.html" data-i18n="nav_docs">Docs</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb"><a href="./index.html" data-i18n="crumb_home_en">Home</a><span class="sep">/</span><span data-i18n="nav_docs">Docs</span></div>
+      <p class="eyebrow" style="margin-top:22px" data-i18n="docs_page_eyebrow">Dokumentasi</p>
+      <h1 class="h1" data-i18n-html="docs_page_h1_html">Panduan <span class="g-text">profitoath</span></h1>
+      <p class="lead" style="margin-top:20px" data-i18n-html="docs_page_lead_html">Semua yang Anda butuhkan untuk menjalankan analisa kuantitatif kelas institusional langsung dari Telegram — dari perintah pertama sampai riset lewat CLI. Mesin di baliknya kami bedah di <a class="mono" style="color:var(--emerald2)" href="./quant.html">Quant Engine</a>.</p>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="docs-layout">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="docs-side glass reveal">
+          <h5 data-i18n="dc_side_title">Di halaman ini</h5>
+          <nav>
+            <a href="#mulai-cepat" data-i18n="dc_side_quickstart">Mulai cepat</a>
+            <a href="#perintah" data-i18n="dc_side_commands">Perintah utama</a>
+            <a href="#pasar-global" data-i18n="dc_side_markets">Alur pasar global</a>
+            <a href="#tier" data-i18n="dc_side_tiers">Tier &amp; kuota</a>
+            <a href="#pembayaran" data-i18n="dc_side_payment">Pembayaran</a>
+            <a href="#cli" data-i18n="dc_side_cli">CLI untuk riset</a>
+            <a href="#faq" data-i18n="dc_side_faq">FAQ teknis</a>
+          </nav>
+          <div class="side-cta">
+            <a class="btn btn-primary btn-lg" href="./pricing.html" style="width:100%;justify-content:center" data-i18n="dc_side_openbot">Buka bot →</a>
+            <p style="font-size:12.5px;color:var(--dim);margin-top:12px;line-height:1.5" data-i18n-html="dc_side_basics_html">Butuh konsep dasar? Lihat <a style="color:var(--emerald2)" href="./glossary/index.html">Glosarium</a>.</p>
+          </div>
+        </aside>
+
+        <!-- ===== KONTEN ===== -->
+        <div class="docs-main reveal">
+          <article class="prose">
+
+            <h2 id="mulai-cepat"><span class="num">01</span> <span data-i18n="dc_s1_h">Mulai cepat</span></h2>
+            <p data-i18n="dc_s1_p">profitoath berjalan penuh di dalam Telegram — tidak ada aplikasi terpisah untuk dipasang. Empat langkah dari nol sampai grafik pertama:</p>
+            <ol>
+              <li data-i18n-html="dc_s1_li1_html">Buka bot di Telegram melalui tombol <strong>Mulai Gratis</strong> di halaman <a href="./pricing.html">Harga</a>, atau cari handle resmi kami.</li>
+              <li data-i18n-html="dc_s1_li2_html">Ketik <code>/start</code>. Bot membuat akun tier <strong>FREE</strong> otomatis dan menampilkan menu pasar.</li>
+              <li data-i18n-html="dc_s1_li3_html">Pilih kategori pasar (Saham IDX, US Equity, Crypto, Forex, Komoditas, Indeks) lewat <em>inline keyboard</em>.</li>
+              <li data-i18n-html="dc_s1_li4_html">Ketik kode instrumen — misalnya <code>BBCA</code> — lalu kirim <code>/chart</code> untuk analisa teknikal pertama Anda.</li>
+            </ol>
+            <div class="callout"><span class="ci">⚡</span><p data-i18n-html="dc_s1_callout_html">Database <strong>69.221 instrumen</strong> tersimpan offline, jadi resolusi simbol instan. Harga dan candle ditarik realtime dari feed data realtime saat Anda memintanya.</p></div>
+
+            <h2 id="perintah"><span class="num">02</span> <span data-i18n="dc_s2_h">Perintah utama</span></h2>
+            <p data-i18n-html="dc_s2_p_html">Setiap perintah menerima kode instrumen sebagai argumen, contohnya <code>/chart BBRI</code> atau <code>/forecast AAPL</code>. Tanpa argumen, bot memakai instrumen terakhir yang aktif di sesi Anda.</p>
+            <table>
+              <thead><tr><th data-i18n="dc_s2_th1">Perintah</th><th data-i18n="dc_s2_th2">Fungsi</th></tr></thead>
+              <tbody>
+                <tr><td><code>/chart</code></td><td data-i18n-html="dc_s2_chart_html">Grafik candlestick + overlay indikator (<a href="./glossary/index.html">RSI, MACD</a>, MA, Bollinger Bands, volume).</td></tr>
+                <tr><td><code>/forecast</code></td><td data-i18n-html="dc_s2_forecast_html">Proyeksi harga probabilistik beserta pita skenario. Detail model di <a href="./quant.html">Quant Engine</a>.</td></tr>
+                <tr><td><code>/tapower</code></td><td data-i18n="dc_s2_tapower">Skor kekuatan teknikal agregat dari momentum, tren, dan volatilitas menjadi satu angka.</td></tr>
+                <tr><td><code>/regime</code></td><td data-i18n-html="dc_s2_regime_html">Deteksi <a href="./glossary/index.html">rezim pasar</a> — bullish, bearish, atau ranging — untuk menyesuaikan strategi.</td></tr>
+                <tr><td><code>/screener</code></td><td data-i18n-html="dc_s2_screener_html">Saring instrumen berdasarkan filter teknikal &amp; fundamental di seluruh pasar.</td></tr>
+                <tr><td><code>/backtest</code></td><td data-i18n-html="dc_s2_backtest_html">Uji strategi pada data historis dengan model IDX-realistis: lot 100 lembar, batas <a href="./glossary/index.html">ARA/ARB</a>, slippage, dan fee.</td></tr>
+                <tr><td><code>/walkforward</code></td><td data-i18n-html="dc_s2_walkforward_html">Validasi <a href="./glossary/index.html">walk-forward</a> anti-overfitting: optimasi in-sample, uji out-of-sample bergulir.</td></tr>
+                <tr><td><code>/portfolio</code></td><td data-i18n-html="dc_s2_portfolio_html">Optimasi alokasi multi-aset: <a href="./glossary/index.html">Mean-Variance</a>, <a href="./glossary/index.html">Risk Parity</a>, dan <a href="./glossary/index.html">HRP</a>.</td></tr>
+                <tr><td><code>/capacity</code></td><td data-i18n-html="dc_s2_capacity_html">Estimasi kapasitas strategi hingga miliaran Rupiah berdasarkan likuiditas &amp; turnover.</td></tr>
+                <tr><td><code>/watchlist</code></td><td data-i18n="dc_s2_watchlist">Kelola daftar pantauan pribadi; kirim ringkasan harian instrumen favorit.</td></tr>
+                <tr><td><code>/account</code></td><td data-i18n="dc_s2_account">Status tier, sisa kuota harian, dan riwayat penggunaan akun Anda.</td></tr>
+                <tr><td><code>/upgrade</code></td><td data-i18n-html="dc_s2_upgrade_html">Naik ke tier PRO atau VIP via Telegram Stars atau QRIS — lihat <a href="#pembayaran">Pembayaran</a>.</td></tr>
+              </tbody>
+            </table>
+
+            <h2 id="pasar-global"><span class="num">03</span> <span data-i18n="dc_s3_h">Alur pasar global</span></h2>
+            <p data-i18n-html="dc_s3_p_html">profitoath menjangkau <strong>43 negara</strong> dalam satu antarmuka. Alurnya konsisten di semua kelas aset:</p>
+            <ol>
+              <li data-i18n-html="dc_s3_li1_html"><strong>Pilih kategori.</strong> Inline keyboard menampilkan Saham IDX, US Equity, Crypto, Forex, Komoditas, dan Indeks.</li>
+              <li data-i18n-html="dc_s3_li2_html"><strong>Ketik kode.</strong> Misalnya <code>TLKM</code>, <code>NVDA</code>, <code>BTCUSD</code>, atau <code>XAUUSD</code>.</li>
+              <li data-i18n-html="dc_s3_li3_html"><strong>Disambiguasi inline.</strong> Bila satu ticker dipakai di beberapa bursa (mis. <code>GOTO</code>), bot menampilkan tombol pilihan bursa agar Anda memilih instrumen yang tepat sebelum analisa berjalan.</li>
+            </ol>
+            <p data-i18n-html="dc_s3_p2_html">Setelah instrumen terkunci, seluruh perintah di <a href="#perintah">bagian 02</a> langsung berlaku tanpa perlu mengetik kode lagi. Bot mengingat konteks pasar terakhir Anda per sesi, jadi berpindah dari <code>/chart</code> ke <code>/forecast</code> lalu <code>/backtest</code> berjalan mulus pada instrumen yang sama. Daftar fitur lengkap ada di halaman <a href="./features.html">Fitur</a>.</p>
+
+            <h2 id="tier"><span class="num">04</span> <span data-i18n="dc_s4_h">Tier &amp; kuota</span></h2>
+            <p data-i18n="dc_s4_p">Tiga tingkat akses, masing-masing dengan kuota harian yang menyegar otomatis tengah malam WIB:</p>
+            <table>
+              <thead><tr><th data-i18n="dc_s4_th1">Tier</th><th data-i18n="dc_s4_th2">Cakupan</th></tr></thead>
+              <tbody>
+                <tr><td><strong>FREE</strong></td><td data-i18n="dc_s4_free">Grafik &amp; indikator dasar, kuota harian terbatas, akses ke semua pasar untuk eksplorasi.</td></tr>
+                <tr><td><strong>PRO</strong></td><td data-i18n="dc_s4_pro">Forecast, backtest IDX-realistis, screener, regime, dan kuota harian lebih besar.</td></tr>
+                <tr><td><strong>VIP</strong></td><td data-i18n-html="dc_s4_vip_html">Optimasi portofolio (MV/RP/HRP), walk-forward, analisis kapasitas, <a href="./glossary/index.html">VaR/CVaR</a> dalam Rupiah, dan prioritas antrian.</td></tr>
+              </tbody>
+            </table>
+            <p data-i18n-html="dc_s4_p2_html">Cek <code>/account</code> kapan saja untuk melihat sisa kuota. Rincian harga per tier ada di halaman <a href="./pricing.html">Harga</a>.</p>
+
+            <h2 id="pembayaran"><span class="num">05</span> <span data-i18n="dc_s5_h">Pembayaran</span></h2>
+            <p data-i18n-html="dc_s5_p_html">Upgrade berlangsung di dalam chat lewat <code>/upgrade</code> — pilih tier, lalu metode bayar:</p>
+            <ul>
+              <li data-i18n-html="dc_s5_li1_html"><strong>Telegram Stars</strong> — pembayaran native Telegram, aktivasi instan begitu transaksi terkonfirmasi.</li>
+              <li data-i18n-html="dc_s5_li2_html"><strong>QRIS</strong> — scan dengan e-wallet atau mobile banking apa pun di Indonesia; tier naik otomatis setelah pembayaran terverifikasi.</li>
+            </ul>
+            <div class="callout"><span class="ci">🔒</span><p data-i18n="dc_s5_callout">profitoath tidak pernah menyimpan kredensial bank atau kartu Anda. Pembayaran ditangani sepenuhnya oleh kanal Telegram Stars dan provider QRIS.</p></div>
+
+            <h2 id="cli"><span class="num">06</span> <span data-i18n="dc_s6_h">CLI untuk riset</span></h2>
+            <p data-i18n="dc_s6_p">Untuk riset batch dan reproduksibilitas, mesin yang sama tersedia sebagai antarmuka baris perintah. Cocok untuk menjalankan banyak backtest atau mengekspor hasil ke notebook.</p>
+            <pre><code data-i18n="dc_s6_code"># Analisa teknikal satu instrumen IDX
+python cli.py chart BBCA --interval 1d --indicators rsi,macd,bb
+
+# Backtest IDX-realistis: lot 100, batas ARA/ARB, fee + slippage
+python cli.py backtest BBRI \
+    --strategy ma_cross --fast 20 --slow 50 \
+    --start 2019-01-01 --capital 100000000
+
+# Validasi walk-forward anti-overfitting
+python cli.py walkforward TLKM --train 252 --test 63 --roll 21
+
+# Optimasi portofolio dengan VaR/CVaR Rupiah
+python cli.py portfolio BBCA BBRI TLKM ASII \
+    --method hrp --capital 1000000000 --var 0.95</code></pre>
+            <p data-i18n-html="dc_s6_p2_html">Argumen mengikuti konvensi yang sama dengan perintah Telegram, sehingga strategi yang Anda validasi di CLI bisa langsung dijalankan dari chat. Output dicetak sebagai tabel ringkas dan dapat diekspor ke CSV untuk diolah lebih lanjut di notebook atau spreadsheet. Latar belakang metodologinya dijelaskan di <a href="./quant.html">Quant Engine</a>, dan studi kasus penerapannya kami bahas di <a href="./blog/index.html">Blog</a>.</p>
+
+            <h2 id="faq"><span class="num">07</span> <span data-i18n="dc_s7_h">FAQ teknis</span></h2>
+            <h3 data-i18n="dc_s7_q1">Seberapa realtime datanya?</h3>
+            <p data-i18n="dc_s7_a1">Candle dan harga ditarik dari feed data realtime saat Anda mengirim perintah. Metadata 69.221 instrumen tersimpan offline sehingga resolusi simbol tidak menunggu jaringan.</p>
+            <h3 data-i18n="dc_s7_q2">Apakah backtest memodelkan aturan IDX?</h3>
+            <p data-i18n-html="dc_s7_a2_html">Ya. Engine menerapkan ukuran lot 100 lembar, batas <a href="./glossary/index.html">Auto Reject Atas/Bawah (ARA/ARB)</a>, fee, dan slippage agar hasil mendekati eksekusi nyata, bukan kurva ekuitas ideal.</p>
+            <h3 data-i18n="dc_s7_q3">Bagaimana overfitting dicegah?</h3>
+            <p data-i18n-html="dc_s7_a3_html">Gunakan <code>/walkforward</code>: parameter dioptimasi pada jendela in-sample lalu diuji pada data out-of-sample yang bergulir maju. Konsepnya kami uraikan di <a href="./glossary/index.html">Glosarium</a> dan <a href="./blog/index.html">Blog</a>.</p>
+            <h3 data-i18n="dc_s7_q4">Seberapa besar modal yang didukung?</h3>
+            <p data-i18n-html="dc_s7_a4_html">Modul <code>/capacity</code> mengestimasi kapasitas strategi hingga miliaran Rupiah dengan memperhitungkan likuiditas dan turnover, supaya alokasi tidak menggerakkan harga melawan diri sendiri.</p>
+            <h3 data-i18n="dc_s7_q5">Ini nasihat investasi?</h3>
+            <p data-i18n-html="dc_s7_a5_html">Bukan. profitoath adalah alat analisis dan edukasi. Semua keputusan ada di tangan Anda — DYOR. Pertanyaan lain? Hubungi kami via <a href="./contact.html">Kontak</a> atau pelajari misi kami di <a href="./about.html">Tentang</a>.</p>
+
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <h2 data-i18n="dc_cta_h">Siap menjalankan perintah pertama?</h2>
+        <p data-i18n="dc_cta_p">Mulai gratis di Telegram dalam hitungan detik. Tanpa kartu kredit, tanpa instalasi.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px">
+          <a class="btn btn-primary btn-lg" href="./pricing.html" data-i18n="dc_cta_btn1">Mulai Gratis →</a>
+          <a class="btn btn-lg btn-ghost" href="./features.html" data-i18n="dc_cta_btn2">Jelajahi Fitur</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="./index.html"><img src="./assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+    <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="./features.html" data-i18n="nav_features">Fitur</a><a href="./quant.html" data-i18n="nav_quant">Quant Engine</a><a href="./pricing.html" data-i18n="nav_pricing">Harga</a><a href="./docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="./blog/index.html" data-i18n="nav_blog">Blog</a><a href="./glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="./about.html" data-i18n="footer_about_link">Tentang</a><a href="./contact.html" data-i18n="footer_contact">Kontak</a><a href="./glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="./assets/site.js"></script>
+<script>window.PO_I18N_PAGE = {
+  docs_page_eyebrow:{id:"Dokumentasi",en:"Documentation"},
+  docs_page_h1_html:{id:"Panduan <span class=\"g-text\">profitoath</span>",en:"The <span class=\"g-text\">profitoath</span> Guide"},
+  docs_page_lead_html:{id:"Semua yang Anda butuhkan untuk menjalankan analisa kuantitatif kelas institusional langsung dari Telegram — dari perintah pertama sampai riset lewat CLI. Mesin di baliknya kami bedah di <a class=\"mono\" style=\"color:var(--emerald2)\" href=\"./quant.html\">Quant Engine</a>.",en:"Everything you need to run institutional-grade quantitative analysis right from Telegram — from your first command to research via the CLI. We break down the engine behind it on the <a class=\"mono\" style=\"color:var(--emerald2)\" href=\"./quant.html\">Quant Engine</a> page."},
+
+  dc_side_title:{id:"Di halaman ini",en:"On this page"},
+  dc_side_quickstart:{id:"Mulai cepat",en:"Quick start"},
+  dc_side_commands:{id:"Perintah utama",en:"Core commands"},
+  dc_side_markets:{id:"Alur pasar global",en:"Global market flow"},
+  dc_side_tiers:{id:"Tier & kuota",en:"Tiers & quotas"},
+  dc_side_payment:{id:"Pembayaran",en:"Payment"},
+  dc_side_cli:{id:"CLI untuk riset",en:"CLI for research"},
+  dc_side_faq:{id:"FAQ teknis",en:"Technical FAQ"},
+  dc_side_openbot:{id:"Buka bot →",en:"Open the bot →"},
+  dc_side_basics_html:{id:"Butuh konsep dasar? Lihat <a style=\"color:var(--emerald2)\" href=\"./glossary/index.html\">Glosarium</a>.",en:"Need the basics? See the <a style=\"color:var(--emerald2)\" href=\"./glossary/index.html\">Glossary</a>."},
+
+  dc_s1_h:{id:"Mulai cepat",en:"Quick start"},
+  dc_s1_p:{id:"profitoath berjalan penuh di dalam Telegram — tidak ada aplikasi terpisah untuk dipasang. Empat langkah dari nol sampai grafik pertama:",en:"profitoath runs entirely inside Telegram — there is no separate app to install. Four steps from zero to your first chart:"},
+  dc_s1_li1_html:{id:"Buka bot di Telegram melalui tombol <strong>Mulai Gratis</strong> di halaman <a href=\"./pricing.html\">Harga</a>, atau cari handle resmi kami.",en:"Open the bot in Telegram via the <strong>Start Free</strong> button on the <a href=\"./pricing.html\">Pricing</a> page, or search for our official handle."},
+  dc_s1_li2_html:{id:"Ketik <code>/start</code>. Bot membuat akun tier <strong>FREE</strong> otomatis dan menampilkan menu pasar.",en:"Type <code>/start</code>. The bot automatically creates a <strong>FREE</strong> tier account and shows the market menu."},
+  dc_s1_li3_html:{id:"Pilih kategori pasar (Saham IDX, US Equity, Crypto, Forex, Komoditas, Indeks) lewat <em>inline keyboard</em>.",en:"Pick a market category (IDX Stocks, US Equity, Crypto, Forex, Commodities, Indices) via the <em>inline keyboard</em>."},
+  dc_s1_li4_html:{id:"Ketik kode instrumen — misalnya <code>BBCA</code> — lalu kirim <code>/chart</code> untuk analisa teknikal pertama Anda.",en:"Type an instrument code — for example <code>BBCA</code> — then send <code>/chart</code> for your first technical analysis."},
+  dc_s1_callout_html:{id:"Database <strong>69.221 instrumen</strong> tersimpan offline, jadi resolusi simbol instan. Harga dan candle ditarik realtime dari feed data realtime saat Anda memintanya.",en:"A database of <strong>69,221 instruments</strong> is stored offline, so symbol resolution is instant. Prices and candles are pulled in realtime from the realtime feed when you request them."},
+
+  dc_s2_h:{id:"Perintah utama",en:"Core commands"},
+  dc_s2_p_html:{id:"Setiap perintah menerima kode instrumen sebagai argumen, contohnya <code>/chart BBRI</code> atau <code>/forecast AAPL</code>. Tanpa argumen, bot memakai instrumen terakhir yang aktif di sesi Anda.",en:"Every command accepts an instrument code as an argument, for example <code>/chart BBRI</code> or <code>/forecast AAPL</code>. Without an argument, the bot uses the last instrument active in your session."},
+  dc_s2_th1:{id:"Perintah",en:"Command"},
+  dc_s2_th2:{id:"Fungsi",en:"Function"},
+  dc_s2_chart_html:{id:"Grafik candlestick + overlay indikator (<a href=\"./glossary/index.html\">RSI, MACD</a>, MA, Bollinger Bands, volume).",en:"Candlestick chart + indicator overlays (<a href=\"./glossary/index.html\">RSI, MACD</a>, MA, Bollinger Bands, volume)."},
+  dc_s2_forecast_html:{id:"Proyeksi harga probabilistik beserta pita skenario. Detail model di <a href=\"./quant.html\">Quant Engine</a>.",en:"Probabilistic price projection with scenario bands. Model details on the <a href=\"./quant.html\">Quant Engine</a> page."},
+  dc_s2_tapower:{id:"Skor kekuatan teknikal agregat dari momentum, tren, dan volatilitas menjadi satu angka.",en:"Aggregate technical-strength score combining momentum, trend, and volatility into a single number."},
+  dc_s2_regime_html:{id:"Deteksi <a href=\"./glossary/index.html\">rezim pasar</a> — bullish, bearish, atau ranging — untuk menyesuaikan strategi.",en:"Detects the <a href=\"./glossary/index.html\">market regime</a> — bullish, bearish, or ranging — to adapt your strategy."},
+  dc_s2_screener_html:{id:"Saring instrumen berdasarkan filter teknikal & fundamental di seluruh pasar.",en:"Screen instruments by technical & fundamental filters across all markets."},
+  dc_s2_backtest_html:{id:"Uji strategi pada data historis dengan model IDX-realistis: lot 100 lembar, batas <a href=\"./glossary/index.html\">ARA/ARB</a>, slippage, dan fee.",en:"Test strategies on historical data with an IDX-realistic model: 100-share lots, <a href=\"./glossary/index.html\">ARA/ARB</a> limits, slippage, and fees."},
+  dc_s2_walkforward_html:{id:"Validasi <a href=\"./glossary/index.html\">walk-forward</a> anti-overfitting: optimasi in-sample, uji out-of-sample bergulir.",en:"Anti-overfitting <a href=\"./glossary/index.html\">walk-forward</a> validation: in-sample optimization, rolling out-of-sample testing."},
+  dc_s2_portfolio_html:{id:"Optimasi alokasi multi-aset: <a href=\"./glossary/index.html\">Mean-Variance</a>, <a href=\"./glossary/index.html\">Risk Parity</a>, dan <a href=\"./glossary/index.html\">HRP</a>.",en:"Multi-asset allocation optimization: <a href=\"./glossary/index.html\">Mean-Variance</a>, <a href=\"./glossary/index.html\">Risk Parity</a>, and <a href=\"./glossary/index.html\">HRP</a>."},
+  dc_s2_capacity_html:{id:"Estimasi kapasitas strategi hingga miliaran Rupiah berdasarkan likuiditas & turnover.",en:"Estimates strategy capacity into the billions of Rupiah based on liquidity & turnover."},
+  dc_s2_watchlist:{id:"Kelola daftar pantauan pribadi; kirim ringkasan harian instrumen favorit.",en:"Manage a personal watchlist; send a daily summary of your favorite instruments."},
+  dc_s2_account:{id:"Status tier, sisa kuota harian, dan riwayat penggunaan akun Anda.",en:"Tier status, remaining daily quota, and your account usage history."},
+  dc_s2_upgrade_html:{id:"Naik ke tier PRO atau VIP via Telegram Stars atau QRIS — lihat <a href=\"#pembayaran\">Pembayaran</a>.",en:"Upgrade to the PRO or VIP tier via Telegram Stars or QRIS — see <a href=\"#pembayaran\">Payment</a>."},
+
+  dc_s3_h:{id:"Alur pasar global",en:"Global market flow"},
+  dc_s3_p_html:{id:"profitoath menjangkau <strong>43 negara</strong> dalam satu antarmuka. Alurnya konsisten di semua kelas aset:",en:"profitoath reaches <strong>43 countries</strong> in a single interface. The flow is consistent across every asset class:"},
+  dc_s3_li1_html:{id:"<strong>Pilih kategori.</strong> Inline keyboard menampilkan Saham IDX, US Equity, Crypto, Forex, Komoditas, dan Indeks.",en:"<strong>Pick a category.</strong> The inline keyboard shows IDX Stocks, US Equity, Crypto, Forex, Commodities, and Indices."},
+  dc_s3_li2_html:{id:"<strong>Ketik kode.</strong> Misalnya <code>TLKM</code>, <code>NVDA</code>, <code>BTCUSD</code>, atau <code>XAUUSD</code>.",en:"<strong>Type the code.</strong> For example <code>TLKM</code>, <code>NVDA</code>, <code>BTCUSD</code>, or <code>XAUUSD</code>."},
+  dc_s3_li3_html:{id:"<strong>Disambiguasi inline.</strong> Bila satu ticker dipakai di beberapa bursa (mis. <code>GOTO</code>), bot menampilkan tombol pilihan bursa agar Anda memilih instrumen yang tepat sebelum analisa berjalan.",en:"<strong>Inline disambiguation.</strong> When one ticker is used on several exchanges (e.g. <code>GOTO</code>), the bot shows exchange-choice buttons so you select the right instrument before the analysis runs."},
+  dc_s3_p2_html:{id:"Setelah instrumen terkunci, seluruh perintah di <a href=\"#perintah\">bagian 02</a> langsung berlaku tanpa perlu mengetik kode lagi. Bot mengingat konteks pasar terakhir Anda per sesi, jadi berpindah dari <code>/chart</code> ke <code>/forecast</code> lalu <code>/backtest</code> berjalan mulus pada instrumen yang sama. Daftar fitur lengkap ada di halaman <a href=\"./features.html\">Fitur</a>.",en:"Once an instrument is locked in, every command in <a href=\"#perintah\">section 02</a> applies immediately without retyping the code. The bot remembers your last market context per session, so moving from <code>/chart</code> to <code>/forecast</code> then <code>/backtest</code> runs smoothly on the same instrument. The full feature list is on the <a href=\"./features.html\">Features</a> page."},
+
+  dc_s4_h:{id:"Tier & kuota",en:"Tiers & quotas"},
+  dc_s4_p:{id:"Tiga tingkat akses, masing-masing dengan kuota harian yang menyegar otomatis tengah malam WIB:",en:"Three access levels, each with a daily quota that refreshes automatically at midnight WIB:"},
+  dc_s4_th1:{id:"Tier",en:"Tier"},
+  dc_s4_th2:{id:"Cakupan",en:"Coverage"},
+  dc_s4_free:{id:"Grafik & indikator dasar, kuota harian terbatas, akses ke semua pasar untuk eksplorasi.",en:"Basic charts & indicators, a limited daily quota, and access to all markets for exploration."},
+  dc_s4_pro:{id:"Forecast, backtest IDX-realistis, screener, regime, dan kuota harian lebih besar.",en:"Forecast, IDX-realistic backtest, screener, regime, and a larger daily quota."},
+  dc_s4_vip_html:{id:"Optimasi portofolio (MV/RP/HRP), walk-forward, analisis kapasitas, <a href=\"./glossary/index.html\">VaR/CVaR</a> dalam Rupiah, dan prioritas antrian.",en:"Portfolio optimization (MV/RP/HRP), walk-forward, capacity analysis, <a href=\"./glossary/index.html\">VaR/CVaR</a> in Rupiah, and queue priority."},
+  dc_s4_p2_html:{id:"Cek <code>/account</code> kapan saja untuk melihat sisa kuota. Rincian harga per tier ada di halaman <a href=\"./pricing.html\">Harga</a>.",en:"Check <code>/account</code> anytime to see your remaining quota. Pricing details per tier are on the <a href=\"./pricing.html\">Pricing</a> page."},
+
+  dc_s5_h:{id:"Pembayaran",en:"Payment"},
+  dc_s5_p_html:{id:"Upgrade berlangsung di dalam chat lewat <code>/upgrade</code> — pilih tier, lalu metode bayar:",en:"Upgrades happen inside the chat via <code>/upgrade</code> — pick a tier, then a payment method:"},
+  dc_s5_li1_html:{id:"<strong>Telegram Stars</strong> — pembayaran native Telegram, aktivasi instan begitu transaksi terkonfirmasi.",en:"<strong>Telegram Stars</strong> — native Telegram payment, instant activation as soon as the transaction is confirmed."},
+  dc_s5_li2_html:{id:"<strong>QRIS</strong> — scan dengan e-wallet atau mobile banking apa pun di Indonesia; tier naik otomatis setelah pembayaran terverifikasi.",en:"<strong>QRIS</strong> — scan with any e-wallet or mobile banking app in Indonesia; your tier upgrades automatically once payment is verified."},
+  dc_s5_callout:{id:"profitoath tidak pernah menyimpan kredensial bank atau kartu Anda. Pembayaran ditangani sepenuhnya oleh kanal Telegram Stars dan provider QRIS.",en:"profitoath never stores your bank or card credentials. Payments are handled entirely by the Telegram Stars channel and the QRIS provider."},
+
+  dc_s6_h:{id:"CLI untuk riset",en:"CLI for research"},
+  dc_s6_p:{id:"Untuk riset batch dan reproduksibilitas, mesin yang sama tersedia sebagai antarmuka baris perintah. Cocok untuk menjalankan banyak backtest atau mengekspor hasil ke notebook.",en:"For batch research and reproducibility, the same engine is available as a command-line interface. Ideal for running many backtests or exporting results to a notebook."},
+  dc_s6_code:{id:"# Analisa teknikal satu instrumen IDX\npython cli.py chart BBCA --interval 1d --indicators rsi,macd,bb\n\n# Backtest IDX-realistis: lot 100, batas ARA/ARB, fee + slippage\npython cli.py backtest BBRI \\\n    --strategy ma_cross --fast 20 --slow 50 \\\n    --start 2019-01-01 --capital 100000000\n\n# Validasi walk-forward anti-overfitting\npython cli.py walkforward TLKM --train 252 --test 63 --roll 21\n\n# Optimasi portofolio dengan VaR/CVaR Rupiah\npython cli.py portfolio BBCA BBRI TLKM ASII \\\n    --method hrp --capital 1000000000 --var 0.95",en:"# Technical analysis for a single IDX instrument\npython cli.py chart BBCA --interval 1d --indicators rsi,macd,bb\n\n# IDX-realistic backtest: 100-share lot, ARA/ARB limits, fee + slippage\npython cli.py backtest BBRI \\\n    --strategy ma_cross --fast 20 --slow 50 \\\n    --start 2019-01-01 --capital 100000000\n\n# Anti-overfitting walk-forward validation\npython cli.py walkforward TLKM --train 252 --test 63 --roll 21\n\n# Portfolio optimization with Rupiah VaR/CVaR\npython cli.py portfolio BBCA BBRI TLKM ASII \\\n    --method hrp --capital 1000000000 --var 0.95"},
+  dc_s6_p2_html:{id:"Argumen mengikuti konvensi yang sama dengan perintah Telegram, sehingga strategi yang Anda validasi di CLI bisa langsung dijalankan dari chat. Output dicetak sebagai tabel ringkas dan dapat diekspor ke CSV untuk diolah lebih lanjut di notebook atau spreadsheet. Latar belakang metodologinya dijelaskan di <a href=\"./quant.html\">Quant Engine</a>, dan studi kasus penerapannya kami bahas di <a href=\"./blog/index.html\">Blog</a>.",en:"The arguments follow the same conventions as the Telegram commands, so a strategy you validate in the CLI can be run straight from the chat. Output is printed as a compact table and can be exported to CSV for further work in a notebook or spreadsheet. The methodology background is explained on the <a href=\"./quant.html\">Quant Engine</a> page, and applied case studies are covered on the <a href=\"./blog/index.html\">Blog</a>."},
+
+  dc_s7_h:{id:"FAQ teknis",en:"Technical FAQ"},
+  dc_s7_q1:{id:"Seberapa realtime datanya?",en:"How realtime is the data?"},
+  dc_s7_a1:{id:"Candle dan harga ditarik dari feed data realtime saat Anda mengirim perintah. Metadata 69.221 instrumen tersimpan offline sehingga resolusi simbol tidak menunggu jaringan.",en:"Candles and prices are pulled from the realtime feed when you send a command. Metadata for 69,221 instruments is stored offline, so symbol resolution does not wait on the network."},
+  dc_s7_q2:{id:"Apakah backtest memodelkan aturan IDX?",en:"Does the backtest model IDX rules?"},
+  dc_s7_a2_html:{id:"Ya. Engine menerapkan ukuran lot 100 lembar, batas <a href=\"./glossary/index.html\">Auto Reject Atas/Bawah (ARA/ARB)</a>, fee, dan slippage agar hasil mendekati eksekusi nyata, bukan kurva ekuitas ideal.",en:"Yes. The engine applies 100-share lot sizing, <a href=\"./glossary/index.html\">Auto Reject Upper/Lower (ARA/ARB)</a> limits, fees, and slippage so results approximate real execution rather than an idealized equity curve."},
+  dc_s7_q3:{id:"Bagaimana overfitting dicegah?",en:"How is overfitting prevented?"},
+  dc_s7_a3_html:{id:"Gunakan <code>/walkforward</code>: parameter dioptimasi pada jendela in-sample lalu diuji pada data out-of-sample yang bergulir maju. Konsepnya kami uraikan di <a href=\"./glossary/index.html\">Glosarium</a> dan <a href=\"./blog/index.html\">Blog</a>.",en:"Use <code>/walkforward</code>: parameters are optimized on an in-sample window then tested on out-of-sample data that rolls forward. We explain the concept in the <a href=\"./glossary/index.html\">Glossary</a> and <a href=\"./blog/index.html\">Blog</a>."},
+  dc_s7_q4:{id:"Seberapa besar modal yang didukung?",en:"How much capital is supported?"},
+  dc_s7_a4_html:{id:"Modul <code>/capacity</code> mengestimasi kapasitas strategi hingga miliaran Rupiah dengan memperhitungkan likuiditas dan turnover, supaya alokasi tidak menggerakkan harga melawan diri sendiri.",en:"The <code>/capacity</code> module estimates strategy capacity into the billions of Rupiah by accounting for liquidity and turnover, so the allocation does not move the price against itself."},
+  dc_s7_q5:{id:"Ini nasihat investasi?",en:"Is this investment advice?"},
+  dc_s7_a5_html:{id:"Bukan. profitoath adalah alat analisis dan edukasi. Semua keputusan ada di tangan Anda — DYOR. Pertanyaan lain? Hubungi kami via <a href=\"./contact.html\">Kontak</a> atau pelajari misi kami di <a href=\"./about.html\">Tentang</a>.",en:"No. profitoath is an analysis and education tool. Every decision is in your hands — DYOR. Other questions? Reach us via <a href=\"./contact.html\">Contact</a> or learn about our mission on the <a href=\"./about.html\">About</a> page."},
+
+  dc_cta_h:{id:"Siap menjalankan perintah pertama?",en:"Ready to run your first command?"},
+  dc_cta_p:{id:"Mulai gratis di Telegram dalam hitungan detik. Tanpa kartu kredit, tanpa instalasi.",en:"Start free on Telegram in seconds. No credit card, no installation."},
+  dc_cta_btn1:{id:"Mulai Gratis →",en:"Start Free →"},
+  dc_cta_btn2:{id:"Jelajahi Fitur",en:"Explore Features"}
+};</script>
+<script src="./assets/i18n.js"></script></body></html>

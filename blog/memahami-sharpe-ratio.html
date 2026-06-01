@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Memahami Sharpe Ratio, Sortino, dan Metrik Kinerja Lainnya — profitoath</title><meta name="description" content="Panduan metrik kinerja risk-adjusted: Sharpe, Sortino, Calmar, maximum drawdown, profit factor, win rate, dan CAGR. Kenapa return yang disesuaikan risiko mengalahkan return mentah, plus deflated Sharpe untuk melawan multiple-testing."/>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+<style>
+  #read-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+    background:linear-gradient(90deg,var(--emerald),var(--cyan));box-shadow:0 0 14px var(--emerald);transition:width .12s linear}
+  .article-head{max-width:74ch;margin:0 auto 10px}
+  .article-head .tagpill{display:inline-flex;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--emerald2);border:1px solid var(--line2);border-radius:100px;padding:6px 13px;background:rgba(22,224,168,.06)}
+  .article-head h1{font-size:clamp(30px,5vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.08;margin:22px 0 18px;color:var(--txt)}
+  .byline{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-family:var(--mono);font-size:13px;color:var(--dim)}
+  .byline .au{color:var(--mut)}.byline .sep{opacity:.4}
+  .prose figure.tbl{margin:24px 0}.prose figure.tbl figcaption{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:8px}
+  .related{max-width:74ch;margin:54px auto 0;border-top:1px solid var(--line);padding-top:32px}
+  .related h3{font-size:14px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--emerald);margin-bottom:18px}
+</style></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+<div id="read-bar"></div>
+
+<nav class="site"><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="../blog/index.html" aria-current="page" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="../pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb reveal"><a href="../index.html">Beranda</a><span class="sep">/</span><a href="../blog/index.html">Blog</a><span class="sep">/</span><span>Memahami Sharpe Ratio</span></div>
+
+      <div class="article-head reveal" style="margin-top:34px">
+        <span class="tagpill">Quant</span>
+        <h1>Memahami Sharpe Ratio, Sortino, dan Metrik Kinerja Lainnya</h1>
+        <div class="byline">
+          <span class="au">Tim profitoath</span><span class="sep">•</span>
+          <span>13 Mei 2026</span><span class="sep">•</span>
+          <span>10 menit baca</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <article class="prose reveal">
+        <p>Pertanyaan pertama yang diajukan orang tentang sebuah strategi hampir selalu salah: "Berapa cuannya?" Pertanyaan yang benar adalah "Berapa cuannya, untuk risiko sebesar apa?" Dua strategi bisa sama-sama menghasilkan return 30% setahun, tapi yang satu melewatinya dengan kurva ekuitas mulus sementara yang lain sempat anjlok 50% di tengah jalan. Bagi investor nyata — yang panik, menarik dana, dan tidur gelisah — keduanya bukan hal yang sama sekali.</p>
+        <p>Di sinilah <strong>metrik kinerja yang disesuaikan risiko</strong> (risk-adjusted return) masuk. Mereka menormalkan return terhadap risiko sehingga Anda bisa membandingkan strategi secara adil, alih-alih tertipu angka return mentah yang besar. Artikel ini membedah metrik yang paling sering dipakai analis kuantitatif: Sharpe, Sortino, Calmar, maximum drawdown, profit factor, win rate, dan CAGR — apa yang masing-masing ukur, kapan menyesatkan, dan kenapa satu angka tidak pernah cukup.</p>
+
+        <h2>Return mentah adalah jebakan</h2>
+        <p>Return total memberi tahu Anda ke mana ekuitas berakhir, tapi diam soal jalan yang ditempuh. Bayangkan dua strategi pada modal Rp100 juta selama setahun:</p>
+        <ul>
+          <li><strong>Strategi A</strong> naik stabil ke Rp130 juta, drawdown terdalam hanya 8%.</li>
+          <li><strong>Strategi B</strong> juga berakhir di Rp130 juta, tapi sempat turun ke Rp62 juta (drawdown 38%) sebelum pulih.</li>
+        </ul>
+        <p>Keduanya melaporkan "+30%". Tapi B menuntut toleransi psikologis dan modal yang jauh lebih besar untuk bertahan. Sebagian besar trader akan menyerah di titik terendah B dan mengunci kerugian. Return mentah memuji keduanya secara setara; metrik risk-adjusted dengan tegas memilih A.</p>
+
+        <h2>Sharpe Ratio: standar emas yang penuh asumsi</h2>
+        <p>Diperkenalkan William F. Sharpe (1966), rasio ini mengukur <strong>return berlebih per unit volatilitas total</strong>. Formulanya sederhana:</p>
+        <pre><code>Sharpe = (R_p − R_f) / σ_p
+
+R_p = return rata-rata portofolio
+R_f = risk-free rate (mis. yield SBN/SUN jangka pendek)
+σ_p = standar deviasi return portofolio</code></pre>
+        <p>Intuisinya: setiap unit naik-turun yang Anda tanggung, berapa imbalan ekstra di atas aset bebas risiko yang Anda terima? Sharpe biasanya disetahunkan (annualized) dengan mengalikan √252 untuk data harian. Sebagai patokan kasar di dunia nyata: di bawah 1 lemah, 1–2 layak, di atas 2 sangat baik, di atas 3 patut dicurigai sebagai overfit.</p>
+        <p>Kelemahan utamanya: Sharpe menghukum <em>seluruh</em> volatilitas, termasuk lonjakan ke atas. Strategi yang sesekali melompat +15% dalam sehari akan dihukum sama seperti yang anjlok −15%, padahal investor jelas menyukai yang pertama. Sharpe juga mengasumsikan return terdistribusi mendekati normal — asumsi yang runtuh pada return saham yang punya <em>fat tails</em> dan skewness.</p>
+
+        <h2>Sortino Ratio: hanya hukum risiko yang merugikan</h2>
+        <p>Sortino memperbaiki kelemahan itu dengan mengganti standar deviasi total menjadi <strong>downside deviation</strong> — hanya volatilitas dari return di bawah ambang tertentu (biasanya nol atau target return). Volatilitas ke atas tidak dihukum, karena memang bukan "risiko" yang ditakuti investor.</p>
+        <pre><code>Sortino = (R_p − R_f) / σ_downside
+
+σ_downside = standar deviasi hanya dari
+             return yang berada di bawah target</code></pre>
+        <p>Untuk strategi dengan return asimetris — misalnya yang sering kalah kecil tapi sesekali menang besar (trend following) — Sortino memberi gambaran yang jauh lebih jujur daripada Sharpe. Sortino hampir selalu lebih tinggi dari Sharpe untuk strategi yang sehat; selisih besar antara keduanya menandakan distribusi return condong ke atas, yang justru bagus.</p>
+
+        <h2>Calmar & maximum drawdown: ujian nyali</h2>
+        <p><strong>Maximum drawdown (MDD)</strong> adalah penurunan persentase terbesar dari puncak ekuitas ke lembah berikutnya. Ini metrik paling viseral karena menjawab: "Seburuk apa rasa sakit terdalam yang harus saya tahan?" Drawdown 50% berarti Anda butuh kenaikan 100% sekadar untuk balik modal — matematika pemulihan yang kejam.</p>
+        <p><strong>Calmar Ratio</strong> menghubungkan return dengan rasa sakit itu: ia membagi CAGR dengan maximum drawdown (umumnya atas periode 3 tahun).</p>
+        <pre><code>Calmar = CAGR / |Maximum Drawdown|
+
+Contoh: CAGR 24%, MDD −12%  →  Calmar = 2.0</code></pre>
+        <p>Calmar populer di kalangan manajer dana karena selaras dengan cara investor benar-benar merasakan risiko: bukan sebagai varians abstrak, melainkan sebagai seberapa dalam lubang yang pernah mereka jatuhi. Calmar di atas 1 sudah dihormati; di atas 3 jarang bertahan jujur dalam jangka panjang.</p>
+
+        <h2>Profit factor & win rate: kualitas eksekusi</h2>
+        <p>Dua metrik ini menggambarkan karakter transaksi, bukan kurva ekuitas.</p>
+        <h3>Profit factor</h3>
+        <p>Total laba kotor dibagi total rugi kotor. Profit factor 1,5 berarti untuk setiap Rp1 yang hilang, strategi menghasilkan Rp1,5. Di bawah 1 berarti rugi bersih; 1,3–2,0 umumnya sehat; di atas 3 patut dicurigai sebagai sampel terlalu kecil atau overfit.</p>
+        <h3>Win rate</h3>
+        <p>Persentase transaksi yang menguntungkan. Yang sering disalahpahami: <strong>win rate tinggi tidak menjamin profit</strong>. Strategi dengan win rate 80% bisa bangkrut bila 20% transaksi rugi jauh lebih besar daripada 80% kemenangan kecilnya. Sebaliknya, trend following kerap punya win rate 35% namun untung besar karena rasio menang:kalah-nya luar biasa. Win rate hanya bermakna dipasangkan dengan rasio rata-rata laba terhadap rata-rata rugi (payoff ratio).</p>
+
+        <h2>CAGR: pertumbuhan yang sesungguhnya</h2>
+        <p><strong>Compound Annual Growth Rate (CAGR)</strong> adalah laju pertumbuhan tahunan majemuk yang menghaluskan perjalanan menjadi satu angka setara. Ia lebih jujur daripada rata-rata return aritmetik, yang melebih-lebihkan akibat volatilitas. Modal Rp100 juta yang turun 50% lalu naik 50% berakhir di Rp75 juta — rata-rata aritmetik bilang 0%, padahal CAGR negatif. CAGR memakai efek majemuk nyata, jadi selalu pakai itu sebagai ukuran pertumbuhan, bukan rata-rata sederhana.</p>
+
+        <figure class="tbl">
+        <table>
+          <thead><tr><th>Metrik</th><th>Mengukur</th><th>Kapan menyesatkan</th></tr></thead>
+          <tbody>
+            <tr><td>Return mentah</td><td>Hasil akhir total</td><td>Buta terhadap risiko & jalan tempuh</td></tr>
+            <tr><td>CAGR</td><td>Pertumbuhan majemuk tahunan</td><td>Sembunyikan volatilitas antar-tahun</td></tr>
+            <tr><td>Sharpe</td><td>Return berlebih / volatilitas total</td><td>Menghukum lonjakan naik; asumsi normal</td></tr>
+            <tr><td>Sortino</td><td>Return berlebih / downside saja</td><td>Lebih relevan, tapi butuh banyak data ekor</td></tr>
+            <tr><td>Calmar</td><td>CAGR / max drawdown</td><td>Sensitif pada panjang periode sampel</td></tr>
+            <tr><td>Profit factor</td><td>Laba kotor / rugi kotor</td><td>Tinggi palsu bila transaksi sedikit</td></tr>
+            <tr><td>Win rate</td><td>% transaksi menang</td><td>Tak berarti tanpa payoff ratio</td></tr>
+          </tbody>
+        </table>
+        <figcaption>Tidak ada satu angka pun yang cukup. Baca metrik sebagai panel instrumen, bukan satu speedometer.</figcaption>
+        </figure>
+
+        <h2>Deflated Sharpe: ketika Anda menguji terlalu banyak</h2>
+        <p>Inilah jebakan paling halus dalam riset kuantitatif. Jika Anda menguji 1.000 kombinasi parameter, beberapa di antaranya pasti memunculkan Sharpe tinggi <em>murni karena kebetulan</em> — persis seperti melempar 1.000 koin: sebagian akan keluar "heads" beruntun. Sharpe yang dilaporkan dari pencarian semacam itu bias ke atas dan menyesatkan.</p>
+        <p><strong>Deflated Sharpe Ratio (DSR)</strong>, yang diformalkan Marcos López de Prado dan David Bailey, mengoreksi Sharpe dengan memperhitungkan: berapa banyak percobaan independen yang dilakukan, panjang sampel, serta skewness dan kurtosis return. Hasilnya adalah probabilitas bahwa Sharpe sejati Anda benar-benar di atas nol, setelah memperhitungkan beruntung-untungan dari pencarian berlebih (multiple testing).</p>
+        <blockquote>"Semakin banyak konfigurasi yang Anda coba pada data yang sama, semakin tinggi Sharpe yang Anda butuhkan agar hasil itu bermakna. Mengabaikan jumlah percobaan adalah cara paling cepat menipu diri sendiri." — prinsip yang lazim dikutip dari literatur quant institusional.</blockquote>
+        <p>Konsekuensinya praktis: Sharpe 1,8 dari satu hipotesis tunggal jauh lebih kredibel daripada Sharpe 2,6 yang muncul setelah menggali 500 varian. Selalu catat berapa banyak yang Anda uji, dan diskon Sharpe Anda sesuai itu.</p>
+
+        <div class="callout">
+          <span class="ci">⚠️</span>
+          <p><strong>Jangan optimasi pada satu metrik.</strong> Memaksimalkan Sharpe saja melahirkan strategi yang menjual volatilitas diam-diam — mulus bertahun-tahun lalu meledak sekali. Selalu baca Sharpe bersama Sortino, Calmar, max drawdown, dan profit factor. Konsistensi lintas metrik jauh lebih meyakinkan daripada satu angka cemerlang.</p>
+        </div>
+
+        <div class="callout">
+          <span class="ci">🛈</span>
+          <p><strong>FYI:</strong> profitoath menghitung seluruh panel ini secara otomatis. Setiap <a href="./apa-itu-backtesting-saham.html">backtest</a> melaporkan Sharpe, Sortino, Calmar, max drawdown, profit factor, win rate, CAGR, plus deflated Sharpe yang sudah dikoreksi atas jumlah percobaan — langsung dari Telegram, di atas 69.221 instrumen offline dan data realtime. Anda merancang strateginya; metriknya kami sajikan jujur, lengkap dengan konteks risikonya.</p>
+        </div>
+
+        <h2>Cara membaca panel metrik dalam praktik</h2>
+        <ol>
+          <li>Mulai dari <strong>CAGR</strong> untuk pertumbuhan riil, bukan return mentah atau rata-rata aritmetik.</li>
+          <li>Cek <strong>maximum drawdown</strong> — tanyakan jujur: sanggupkah saya menahan ini tanpa menyerah?</li>
+          <li>Bandingkan <strong>Sharpe vs Sortino</strong>: selisih besar = distribusi condong ke atas (bagus).</li>
+          <li>Lihat <strong>Calmar</strong> untuk return relatif terhadap rasa sakit terdalam.</li>
+          <li>Pastikan <strong>profit factor &gt; 1</strong> dan pahami <strong>win rate</strong> berpasangan dengan payoff ratio.</li>
+          <li>Tanyakan berapa percobaan dilakukan, lalu lihat <strong>deflated Sharpe</strong> sebelum percaya.</li>
+        </ol>
+        <p>Metrik kinerja bukan ramalan. Mereka tidak menjanjikan masa depan dan tidak ada angka yang bisa. Tapi dibaca sebagai satu panel, mereka menyaring ilusi: memisahkan strategi yang benar-benar mengelola risiko dari yang sekadar beruntung di periode tertentu. Itulah seluruh nilainya — bukan mengejar angka tertinggi, melainkan memahami harga sebenarnya dari setiap rupiah return.</p>
+      </article>
+
+      <div class="related reveal">
+        <h3>Bacaan Terkait</h3>
+        <div class="prose" style="margin-top:0">
+          <ul>
+            <li><a href="./apa-itu-backtesting-saham.html">Apa Itu Backtesting Saham dan Mengapa Realisme IDX Penting</a></li>
+            <li><a href="./optimasi-portofolio-markowitz.html">Optimasi Portofolio Markowitz: efficient frontier sampai HRP</a></li>
+            <li><a href="./value-at-risk-manajemen-risiko.html">Value at Risk: mengukur kerugian dalam Rupiah</a></li>
+            <li>Glosarium: <a href="../glossary/index.html#sharpe">Sharpe Ratio</a>, <a href="../glossary/index.html#sortino">Sortino Ratio</a>, <a href="../glossary/index.html#drawdown">Maximum Drawdown</a>, <a href="../glossary/index.html#cagr">CAGR</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-band reveal" style="margin-top:48px">
+        <h2>Lihat metrik strategi Anda secara utuh.</h2>
+        <p>Sharpe, Sortino, Calmar, drawdown, dan deflated Sharpe — dihitung otomatis dengan realisme IDX, langsung di Telegram.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+          <a class="btn btn-primary btn-lg" href="../pricing.html">Mulai Gratis →</a>
+          <a class="btn btn-lg" href="../quant.html">Lihat Quant Engine</a>
+          <a class="btn btn-lg btn-ghost" href="../glossary/index.html">Buka Glosarium</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site"><div class="wrap"><div class="foot-top">
+    <div><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+      <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+    <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a><a href="../docs.html" data-i18n="nav_docs">Docs</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="../blog/index.html" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="../about.html" data-i18n="footer_about_link">Tentang</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a><a href="../glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+    <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+    <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/i18n.js"></script>
+<script>
+  (function(){
+    var bar=document.getElementById('read-bar');
+    function upd(){
+      var h=document.documentElement;
+      var max=(h.scrollHeight-h.clientHeight)||1;
+      var p=Math.min(1,Math.max(0,(h.scrollTop||window.scrollY)/max));
+      bar.style.width=(p*100).toFixed(2)+'%';
+    }
+    window.addEventListener('scroll',upd,{passive:true});
+    window.addEventListener('resize',upd);upd();
+  })();
+</script>
+</body></html>

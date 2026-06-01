@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Value at Risk (VaR) & CVaR: Mengukur Risiko dalam Rupiah | profitoath</title><meta name="description" content="Panduan praktis Value at Risk (VaR) dan Conditional VaR (CVaR): metode historis vs parametrik, confidence level, scaling ke bulanan, position sizing ATR, fractional Kelly, dan drawdown circuit breaker untuk portofolio saham IDX."/>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/style.css"/></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="../blog/index.html" aria-current="page" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="../pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<div class="reading-bar"><span id="rb-fill"></span></div>
+
+<main>
+  <header class="page-hero">
+    <div class="wrap-sm">
+      <div class="crumb reveal">
+        <a href="../index.html">Beranda</a><span class="sep">/</span>
+        <a href="../blog/index.html">Blog</a><span class="sep">/</span>
+        <span>Value at Risk &amp; CVaR</span>
+      </div>
+      <div class="art-head reveal">
+        <span class="pill"><span class="dot"></span>Manajemen Risiko</span>
+        <h1 class="h1">Value at Risk (VaR) &amp; CVaR: Mengukur Risiko dalam Rupiah</h1>
+        <p class="lead">Berapa besar kerugian yang masuk akal Anda tanggung dalam sehari yang buruk? VaR dan CVaR menerjemahkan volatilitas menjadi angka Rupiah yang bisa Anda pakai untuk position sizing, batas eksposur, dan circuit breaker drawdown.</p>
+        <div class="byline">
+          <span>Tim profitoath</span><span class="sep">·</span>
+          <span>30 Mei 2026</span><span class="sep">·</span>
+          <span>11 menit baca</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="block" style="padding-top:0">
+  <article class="prose reveal">
+    <p>Mayoritas investor ritel mengukur risiko dengan perasaan: "saham ini agak liar" atau "yang ini lebih aman". Manajer risiko institusional tidak punya kemewahan itu. Mereka memakai <strong>Value at Risk (VaR)</strong> dan <strong>Conditional Value at Risk (CVaR)</strong> untuk mengubah ketidakpastian menjadi satu angka Rupiah yang konkret. Artikel ini membedah keduanya dari nol, lengkap dengan cara menghitung, kapan masing-masing relevan, dan bagaimana mengubahnya menjadi aturan ukuran posisi yang disiplin.</p>
+
+    <h2>Apa itu Value at Risk (VaR)?</h2>
+    <p>VaR menjawab satu pertanyaan spesifik: <em>"Pada tingkat keyakinan tertentu, berapa kerugian maksimum yang akan saya alami dalam horizon waktu tertentu?"</em> Definisinya selalu memuat tiga komponen:</p>
+    <ul>
+      <li><strong>Confidence level</strong> — misalnya 95% atau 99%.</li>
+      <li><strong>Horizon waktu</strong> — 1 hari, 1 minggu, atau 1 bulan.</li>
+      <li><strong>Nilai kerugian</strong> — dinyatakan dalam persen atau Rupiah.</li>
+    </ul>
+    <p>Kalimat lengkapnya berbunyi: <em>"VaR 1-hari 95% portofolio saya adalah Rp 4,2 juta."</em> Artinya, pada 95% dari hari-hari perdagangan, kerugian harian tidak akan melebihi Rp 4,2 juta. Sebaliknya, pada sekitar 5% hari (kira-kira satu hari per tiga minggu bursa), kerugian <em>bisa</em> melampaui angka itu — dan VaR tidak memberi tahu Anda seberapa parah.</p>
+
+    <div class="callout"><span class="ci">⚠️</span><p><strong>Jebakan terbesar VaR:</strong> ia adalah batas, bukan plafon. VaR 99% sebesar Rp 10 juta tidak berarti kerugian maksimum Anda Rp 10 juta. Ia berarti pada 1% hari terburuk, kerugian akan <em>lebih besar</em> dari Rp 10 juta — entah Rp 12 juta atau Rp 80 juta. Inilah celah yang ditutup CVaR.</p></div>
+
+    <h2>CVaR: ketika VaR tidak cukup</h2>
+    <p><strong>Conditional VaR (CVaR)</strong>, sering disebut <em>Expected Shortfall (ES)</em>, menjawab pertanyaan lanjutan: <em>"Kalau hari terburuk itu benar terjadi, rata-rata seberapa dalam kerugiannya?"</em> CVaR adalah rata-rata seluruh kerugian yang berada <em>di luar</em> ambang VaR.</p>
+    <p>Bayangkan distribusi return harian. VaR 95% memotong titik di persentil ke-5. CVaR 95% adalah <strong>rata-rata dari semua kerugian di ekor 5% terburuk itu</strong>. Karena ekor distribusi return saham cenderung "gemuk" (fat tails) — kejadian ekstrem lebih sering daripada yang diramalkan distribusi normal — CVaR hampir selalu lebih besar dari VaR dan jauh lebih jujur tentang risiko bencana.</p>
+
+    <table>
+      <thead><tr><th>Aspek</th><th>VaR</th><th>CVaR / Expected Shortfall</th></tr></thead>
+      <tbody>
+        <tr><td>Yang diukur</td><td>Ambang kerugian pada persentil tertentu</td><td>Rata-rata kerugian di luar ambang itu</td></tr>
+        <tr><td>Sensitif terhadap fat tails</td><td>Tidak — abai pada bentuk ekor</td><td>Ya — menangkap kedalaman ekor</td></tr>
+        <tr><td>Coherent risk measure</td><td>Tidak (tidak subadditif)</td><td>Ya — diversifikasi selalu menurunkan risiko</td></tr>
+        <tr><td>Regulasi (Basel III)</td><td>Ditinggalkan</td><td>Standar baru sejak 2019</td></tr>
+        <tr><td>Pesan praktis</td><td>"Seberapa sering rugi besar"</td><td>"Seberapa dalam saat rugi besar"</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Dua cara menghitung: historis vs parametrik</h2>
+
+    <h3>1. Metode historis (non-parametrik)</h3>
+    <p>Pendekatan paling intuitif: ambil return harian aktual selama, misalnya, 252 hari bursa terakhir, urutkan dari terburuk ke terbaik, lalu baca langsung persentilnya. Tidak ada asumsi soal bentuk distribusi — datanya bicara sendiri.</p>
+    <pre><code># VaR & CVaR historis (return harian, contoh konsep)
+returns = portofolio.daily_returns(window=252)   # 252 observasi
+returns_sorted = sort(returns)                    # terburuk -> terbaik
+
+# VaR 95% = persentil ke-5
+i = floor(0.05 * len(returns_sorted))             # indeks ke-12 dari 252
+VaR_95 = -returns_sorted[i]                        # mis. 0.021 -> 2,1%
+
+# CVaR 95% = rata-rata semua return di bawah VaR
+tail = returns_sorted[0:i]                          # 12 hari terburuk
+CVaR_95 = -mean(tail)                               # mis. 0.034 -> 3,4%
+
+# Konversi ke Rupiah
+nilai_portofolio = 200_000_000                      # Rp 200 juta
+VaR_rupiah  = VaR_95  * nilai_portofolio            # Rp 4.200.000
+CVaR_rupiah = CVaR_95 * nilai_portofolio            # Rp 6.800.000</code></pre>
+    <p><strong>Kelebihan:</strong> menangkap fat tails dan skewness yang benar-benar terjadi di IDX. <strong>Kekurangan:</strong> sepenuhnya bergantung pada periode sampel — kalau 252 hari terakhir kebetulan tenang, VaR akan meremehkan risiko menjelang guncangan berikutnya.</p>
+
+    <h3>2. Metode parametrik (variance-covariance)</h3>
+    <p>Asumsikan return mengikuti distribusi normal, lalu hitung VaR dari volatilitas (standar deviasi) dan sebuah z-score:</p>
+    <pre><code>VaR = z * σ * √horizon * nilai_portofolio
+
+# z-score per confidence level (distribusi normal)
+#   90%  -> 1,282
+#   95%  -> 1,645
+#   99%  -> 2,326
+
+# Contoh: σ harian 1,3%, portofolio Rp 200 juta, 95%
+VaR_1hari_95 = 1,645 * 0,013 * 200_000_000 = Rp 4.277.000</code></pre>
+    <p><strong>Kelebihan:</strong> cepat, hanya butuh volatilitas. <strong>Kekurangan:</strong> asumsi normal meremehkan risiko ekstrem secara sistematis — persis ekor yang paling mematikan. Untuk saham IDX yang rawan ARA/ARB dan gap, metode historis biasanya lebih realistis.</p>
+
+    <blockquote>"Semua model salah, sebagian model berguna." — VaR parametrik berguna untuk estimasi cepat, tetapi jangan pernah mempertaruhkan modal pada asumsi bahwa pasar saham berperilaku normal di hari-hari yang paling tidak normal.</blockquote>
+
+    <h2>Confidence level: 95% atau 99%?</h2>
+    <p>Pemilihan confidence level menentukan seberapa konservatif angka Anda. Tidak ada jawaban universal; ia mencerminkan toleransi Anda terhadap kejutan:</p>
+    <ul>
+      <li><strong>95%</strong> — pelanggaran terjadi ~1 dari 20 hari (~13 hari/tahun). Cocok untuk monitoring harian yang responsif.</li>
+      <li><strong>99%</strong> — pelanggaran ~1 dari 100 hari (~2-3 hari/tahun). Dipakai untuk batas modal dan stress yang lebih ketat.</li>
+    </ul>
+    <p>Praktik yang sehat: pantau keduanya. 95% memberi sinyal cepat tentang ritme normal, sedangkan 99% (dan CVaR 99%) menjaga Anda tetap waspada terhadap skenario ekor.</p>
+
+    <h2>Scaling: dari harian ke bulanan</h2>
+    <p>VaR sering dihitung harian tetapi keputusan alokasi bersifat bulanan. Untuk menskalakan, gunakan <strong>square-root-of-time rule</strong> — dengan asumsi return tidak berkorelasi antar hari:</p>
+    <pre><code>VaR_horizon = VaR_1hari * √(jumlah_hari)
+
+# 1 bulan bursa ≈ 21 hari
+VaR_bulanan_95 = VaR_1hari_95 * √21
+              = Rp 4.277.000 * 4,58
+              ≈ Rp 19.600.000</code></pre>
+    <p>Perhatikan: aturan akar ini meremehkan risiko bila return menunjukkan <em>volatility clustering</em> (volatilitas tinggi cenderung berkelompok) atau autokorelasi — keduanya umum di pasar nyata. Anggap hasil scaling sebagai lantai optimistis, bukan kepastian.</p>
+
+    <div class="callout"><span class="ci">🤖</span><p><strong>FYI — profitoath mengotomasi seluruh perhitungan ini.</strong> Engine kami menghitung VaR &amp; CVaR (historis dan parametrik) dalam Rupiah untuk setiap portofolio Anda, lengkap dengan scaling horizon, di atas 69.221 instrumen dengan data realtime. Anda hanya menerima angkanya, bukan mengoprek spreadsheet.</p></div>
+
+    <h2>Dari risiko ke aksi: position sizing</h2>
+    <p>VaR dan CVaR jadi berguna ketika diterjemahkan menjadi <strong>ukuran posisi</strong>. Tiga teknik yang saling melengkapi:</p>
+
+    <h3>1. Position sizing berbasis ATR</h3>
+    <p><strong>Average True Range (ATR)</strong> mengukur volatilitas absolut dalam Rupiah per saham. Idenya: setiap posisi mempertaruhkan jumlah risiko yang sama, sehingga saham liar mendapat lot lebih kecil dan saham tenang mendapat lebih besar.</p>
+    <pre><code># Risiko per trade = 1% dari modal
+modal          = 100_000_000          # Rp 100 juta
+risiko_per_trade = 0,01 * modal        # Rp 1.000.000
+
+# Stop = 2 * ATR di bawah harga masuk
+ATR  = 80                              # Rp 80 per saham
+stop_distance = 2 * ATR                # Rp 160 per saham
+
+# Ukuran posisi (dibulatkan ke lot 100 saham IDX)
+saham = risiko_per_trade / stop_distance   # 6.250 saham
+lot   = floor(saham / 100)                  # 62 lot = 6.200 saham</code></pre>
+    <p>Hasilnya: berapa pun yang Anda beli, kerugian jika stop tersentuh tetap ~Rp 1 juta. Ini menstandarkan risiko lintas posisi, bukan lintas Rupiah yang diinvestasikan.</p>
+
+    <h3>2. Fractional Kelly</h3>
+    <p>Kriteria Kelly menghitung fraksi modal optimal untuk dipertaruhkan agar memaksimalkan pertumbuhan jangka panjang, berdasarkan win rate dan rasio menang/kalah:</p>
+    <pre><code>f* = W - (1 - W) / R
+
+W = win rate            (mis. 0,55)
+R = avg menang / avg kalah (mis. 1,8)
+
+f* = 0,55 - (0,45 / 1,8) = 0,55 - 0,25 = 0,30  (30% modal)</code></pre>
+    <p>Full Kelly secara matematis optimal tetapi brutal — drawdown-nya bisa melebihi 50% dan sangat sensitif terhadap estimasi win rate yang keliru. Praktisi memakai <strong>fractional Kelly</strong>, biasanya ¼ hingga ½ Kelly. Pada contoh di atas, ½ Kelly = 15% modal: pertumbuhan tetap kuat, tetapi guncangan estimasi tidak langsung menghancurkan akun.</p>
+
+    <table>
+      <thead><tr><th>Strategi</th><th>Fraksi taruhan</th><th>Karakter</th></tr></thead>
+      <tbody>
+        <tr><td>Full Kelly</td><td>f*</td><td>Pertumbuhan maksimal, drawdown ekstrem</td></tr>
+        <tr><td>Half Kelly</td><td>0,5 × f*</td><td>~75% pertumbuhan, volatilitas jauh lebih jinak</td></tr>
+        <tr><td>Quarter Kelly</td><td>0,25 × f*</td><td>Konservatif, tahan terhadap salah estimasi</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3. Drawdown circuit breaker</h3>
+    <p>Lapisan pertahanan terakhir: aturan keras yang memangkas eksposur saat akun sedang terluka. Ini mencegah <em>risk of ruin</em> — spiral di mana akun yang menyusut tidak akan pernah pulih.</p>
+    <ul>
+      <li><strong>Drawdown −10%</strong> → pangkas ukuran posisi baru menjadi setengah.</li>
+      <li><strong>Drawdown −15%</strong> → hentikan posisi baru, hanya kelola posisi terbuka.</li>
+      <li><strong>Drawdown −20%</strong> → flat total, evaluasi ulang strategi sebelum kembali.</li>
+    </ul>
+    <p>Logikanya sederhana: pulih dari −10% butuh +11%, tetapi pulih dari −50% butuh +100%. Circuit breaker menjaga Anda jauh dari zona di mana matematika pemulihan menjadi mustahil.</p>
+
+    <h2>Menyatukan semuanya</h2>
+    <p>Sistem risiko yang utuh bekerja berlapis: <strong>CVaR</strong> menetapkan batas eksposur portofolio dalam Rupiah, <strong>ATR sizing</strong> menstandarkan risiko per posisi, <strong>fractional Kelly</strong> mengatur agresivitas keseluruhan, dan <strong>circuit breaker</strong> menjadi rem darurat. Tidak ada satu metrik pun yang cukup sendirian — tetapi bersama, mereka mengubah "merasa aman" menjadi proses yang bisa diaudit, diukur dalam Rupiah, dan diulang secara konsisten.</p>
+
+    <hr/>
+    <h2>Bacaan terkait</h2>
+    <ul>
+      <li><a href="../blog/optimasi-portofolio-markowitz.html">Manajemen Portofolio Kuantitatif: MV, Risk Parity &amp; HRP</a> — bagaimana CVaR masuk ke optimisasi bobot.</li>
+      <li><a href="../blog/apa-itu-backtesting-saham.html">Backtest Realistis di IDX: Lot 100, ARA/ARB, dan Slippage</a> — menguji aturan risiko sebelum modal nyata.</li>
+      <li><a href="../blog/cara-membaca-rsi-macd.html">Membaca RSI &amp; MACD untuk Timing Entry-Exit</a> — sinyal teknikal yang dipadukan dengan ATR sizing.</li>
+      <li>Glosarium: <a href="../glossary/index.html#var">Value at Risk</a> · <a href="../glossary/index.html#cvar">CVaR / Expected Shortfall</a> · <a href="../glossary/index.html#atr">ATR</a> · <a href="../glossary/index.html#drawdown">Maximum Drawdown</a> · <a href="../glossary/index.html#kelly">Kelly Criterion</a></li>
+    </ul>
+
+    <div class="callout"><span class="ci">🚀</span><p>Ingin VaR, CVaR, ATR sizing, dan circuit breaker dihitung otomatis untuk portofolio Anda langsung di Telegram? <a href="../pricing.html">Lihat paket profitoath</a> — mulai gratis, upgrade ke PRO/VIP kapan saja dengan Telegram Stars atau QRIS.</p></div>
+  </article>
+  </section>
+</main>
+
+<footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+    <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a><a href="../docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="../blog/index.html" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="../about.html" data-i18n="footer_about_link">Tentang</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a><a href="../glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+
+<style>
+  .reading-bar{position:fixed;top:0;left:0;width:100%;height:3px;background:transparent;z-index:200;pointer-events:none}
+  .reading-bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--emerald),var(--cyan));box-shadow:0 0 12px var(--emerald);transition:width .1s linear}
+  .art-head{margin-top:26px}
+  .art-head .h1{margin:18px 0 18px}
+  .byline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-family:var(--mono);font-size:13px;color:var(--dim);margin-top:22px}
+  .byline .sep{opacity:.5}
+  .prose hr{border:none;border-top:1px solid var(--line);margin:46px 0}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/i18n.js"></script>
+<script>
+  (function(){
+    var fill=document.getElementById('rb-fill');
+    function upd(){
+      var h=document.documentElement;
+      var max=h.scrollHeight-h.clientHeight;
+      var p=max>0?(h.scrollTop||document.body.scrollTop)/max*100:0;
+      fill.style.width=p.toFixed(2)+'%';
+    }
+    window.addEventListener('scroll',upd,{passive:true});
+    window.addEventListener('resize',upd);
+    upd();
+  })();
+</script>
+</body></html>

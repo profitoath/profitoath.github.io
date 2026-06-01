@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Analisa Saham 43 Negara, Forex & Kripto Lewat Telegram — profitoath</title><meta name="description" content="Cara profitoath me-resolve ticker apa pun secara offline dari 69.221 instrumen, menangani tabrakan kode antarnegara, menarik harga realtime, dan alur category picker — lengkap dengan contoh AAPL, EUR/USD, dan 7203 Tokyo."/>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+<style>
+ /* page-specific layout — analisa-saham-multi-negara-telegram.html only */
+ #progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;
+  background:linear-gradient(90deg,var(--emerald),var(--cyan));box-shadow:0 0 12px rgba(22,224,168,.6);transition:width .1s linear}
+ .art-head{max-width:74ch;margin:0 auto}
+ .tag-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;padding:7px 13px;border-radius:8px;background:rgba(22,224,168,.07);
+  border:1px solid var(--line2);color:var(--emerald2)}
+ .byline{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:22px;font-family:var(--mono);
+  font-size:12.5px;color:var(--dim)}
+ .byline .au{color:var(--mut)}
+ .byline .sep{opacity:.4}
+ .related{max-width:74ch;margin:46px auto 0;border-top:1px solid var(--line);padding-top:32px}
+ .related h3{font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:16px}
+ .related ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+ .related li{display:flex;gap:10px;align-items:flex-start}
+ .related li .ar{color:var(--emerald);font-family:var(--mono);margin-top:2px}
+ .related a{color:var(--emerald2);border-bottom:1px solid rgba(91,255,208,.3)}
+ .related a:hover{border-color:var(--emerald2)}
+</style></head><body>
+<div id="progress"></div>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+
+<nav class="site"><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+ <div class="nav-links"><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a>
+  <a href="../blog/index.html" aria-current="page" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+ <div class="nav-right"><a class="btn btn-primary" href="../pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+  <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+ <a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../blog/index.html" data-i18n="nav_blog">Blog</a>
+ <a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+ <!-- HERO / ARTICLE HEADER -->
+ <section class="page-hero">
+  <div class="wrap">
+   <div class="crumb reveal"><a href="../index.html">Beranda</a><span class="sep">/</span><a href="../blog/index.html">Blog</a><span class="sep">/</span><span>Analisa Saham 43 Negara Lewat Telegram</span></div>
+   <div class="art-head" style="margin-top:30px">
+    <span class="tag-pill reveal">Tutorial Bot</span>
+    <h1 class="h1 reveal" style="font-size:clamp(32px,5.2vw,58px);margin-top:20px;letter-spacing:-.03em">Analisa Saham 43 Negara, Forex &amp; Kripto Lewat Telegram</h1>
+    <div class="byline reveal">
+     <span class="au">Tim profitoath</span><span class="sep">·</span>
+     <span>30 Mei 2026</span><span class="sep">·</span>
+     <span>10 menit baca</span>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- ARTICLE BODY -->
+ <section class="block" style="padding-top:10px">
+  <article class="prose reveal">
+   <p>Kebanyakan tools analisa memaksa kamu memilih dulu: mau pasar Indonesia, atau pasar Amerika? Mau saham, atau forex? Setiap kategori biasanya jadi aplikasi atau tab terpisah, dengan format kode yang berbeda-beda. profitoath dibangun dengan filosofi sebaliknya — satu kotak chat di Telegram, satu kode yang kamu ketik, dan engine yang mencari tahu sendiri instrumen apa yang kamu maksud di antara <strong>69.221 instrumen</strong> dari <strong>43 negara</strong>, mencakup saham, indeks, forex, komoditas, dan kripto.</p>
+
+   <p>Artikel ini membongkar bagaimana mekanismenya bekerja: bagaimana ticker di-<em>resolve</em> secara offline, apa yang terjadi ketika kode yang sama dipakai di banyak bursa, bagaimana harga realtime ditarik, dan seperti apa alur <em>category picker</em> ketika sistem butuh memastikan maksudmu.</p>
+
+   <h2>Satu kotak chat, ribuan instrumen</h2>
+   <p>Saat kamu mengirim sebuah kode ke bot, profitoath tidak langsung memanggil server eksternal untuk "menebak" apa yang kamu maksud. Resolusi tahap pertama dilakukan <strong>offline</strong> — seluruh katalog instrumen tersimpan lokal di sisi engine. Artinya pencocokan ticker berlangsung dalam milidetik, tidak tergantung latensi jaringan, dan tetap konsisten meski koneksi data harga sedang fluktuatif.</p>
+
+   <p>Katalog offline ini menyimpan, untuk tiap instrumen, sekumpulan metadata yang dipakai untuk disambiguasi:</p>
+   <ul>
+    <li><strong>Simbol</strong> — kode dagang resmi, mis. <code>AAPL</code>, <code>BBCA</code>, <code>7203</code>.</li>
+    <li><strong>Bursa &amp; negara</strong> — mis. NASDAQ (AS), IDX (Indonesia), TSE (Jepang).</li>
+    <li><strong>Kelas aset</strong> — saham, indeks, forex, komoditas, atau kripto.</li>
+    <li><strong>Nama lengkap &amp; alias</strong> — untuk pencarian berbasis teks, bukan hanya kode persis.</li>
+   </ul>
+
+   <h2>Bagaimana sebuah ticker di-resolve</h2>
+   <p>Resolusi berjalan bertahap, dari yang paling pasti ke yang paling ambigu. Inti pikirnya: kalau ada satu jawaban yang jelas, langsung tampilkan; kalau ada beberapa kandidat, tanyakan ke pengguna alih-alih menebak.</p>
+
+   <pre><code>Input pengguna: "AAPL"
+ 1. Normalisasi  → huruf besar, buang spasi/simbol liar
+ 2. Cocokkan persis di katalog offline
+ 3. Hitung jumlah kandidat:
+    - 1 kandidat → langsung resolve, tarik harga realtime
+    - >1 kandidat → munculkan category picker
+    - 0 kandidat → pencarian fuzzy (alias / nama)
+ 4. Kembalikan instrumen terpilih + sumber data harga</code></pre>
+
+   <p>Untuk <code>AAPL</code>, jawabannya tunggal: Apple Inc. di NASDAQ. Tidak ada bursa besar lain yang memakai simbol identik untuk instrumen berbeda, jadi engine langsung lanjut menarik harga dan menyiapkan chart. Tidak ada pertanyaan tambahan — pengalaman yang kamu harapkan untuk ticker yang tidak ambigu.</p>
+
+   <h2>Ketika kode bertabrakan antarnegara</h2>
+   <p>Masalah menarik muncul karena bursa tidak berkoordinasi soal penamaan. Simbol yang sama bisa menunjuk perusahaan yang sama sekali berbeda di negara berbeda. Beberapa contoh yang sering bikin keliru:</p>
+
+   <table>
+    <thead><tr><th>Kode</th><th>Kemungkinan instrumen</th><th>Bursa / negara</th></tr></thead>
+    <tbody>
+     <tr><td><code>ANTM</code></td><td>Aneka Tambang</td><td>IDX · Indonesia</td></tr>
+     <tr><td><code>BBL</code></td><td>Bangkok Bank / Blackbaud</td><td>SET Thailand · NASDAQ AS</td></tr>
+     <tr><td><code>005930</code></td><td>Samsung Electronics</td><td>KRX · Korea</td></tr>
+     <tr><td><code>7203</code></td><td>Toyota Motor</td><td>TSE · Jepang</td></tr>
+     <tr><td><code>BMW</code></td><td>BMW AG / instrumen lain</td><td>XETRA Jerman · lainnya</td></tr>
+    </tbody>
+   </table>
+
+   <p>Saat sebuah kode cocok dengan lebih dari satu instrumen, engine <strong>tidak menebak</strong>. Menebak adalah cara tercepat untuk memberi analisa yang salah pada saham yang salah. Sebagai gantinya, profitoath memunculkan <em>category picker</em> — daftar singkat kandidat beserta bursa dan kelas asetnya, supaya kamu memilih satu yang dimaksud.</p>
+
+   <blockquote>Prinsipnya sederhana: lebih baik bertanya satu kali daripada menganalisa instrumen yang keliru. Sekali kamu memilih, pilihan itu jelas dan analisanya akurat untuk pasar yang benar — termasuk aturan tick, jam dagang, dan mata uang yang sesuai.</blockquote>
+
+   <h3>Alur category picker</h3>
+   <p>Picker muncul sebagai tombol inline di Telegram. Kamu tidak perlu mengetik ulang apa pun — cukup ketuk kandidat yang benar.</p>
+   <pre><code>Kamu : 7203
+Bot : Beberapa instrumen cocok dengan "7203". Pilih:
+    [ 7203 · Toyota Motor — TSE (Jepang, JPY) ]
+    [ 7203 · instrumen lain — bursa X ]
+Kamu : *ketuk Toyota Motor — TSE*
+Bot : ✓ Toyota Motor (7203, TSE)
+    Harga realtime · chart · RSI/MACD · forecast siap.</code></pre>
+
+   <p>Setelah dipilih, engine mengunci konteks pasar: harga ditampilkan dalam Yen, jam perdagangan mengikuti TSE, dan aturan satuan transaksi mengikuti bursa tersebut. Untuk saham IDX, konteks ini mencakup lot 100 lembar dan batas <a href="../glossary/index.html#ara-arb">ARA/ARB</a> — detail yang penting saat kamu beranjak ke backtest realistis.</p>
+
+   <h2>Forex dan kripto: format pasangan</h2>
+   <p>Untuk forex dan kripto, formatnya adalah pasangan mata uang. <code>EUR/USD</code> berarti berapa Dolar AS untuk satu Euro; kamu juga bisa menulisnya tanpa garis miring (<code>EURUSD</code>) dan engine menormalkannya. Kripto mengikuti pola yang sama: <code>BTC/USD</code>, <code>ETH/USDT</code>.</p>
+
+   <p>Karena forex dan kripto diperdagangkan praktis 24 jam (kripto bahkan tanpa libur), konteks "jam pasar" berbeda dari saham. profitoath menyesuaikan secara otomatis: tidak ada gap akhir pekan untuk kripto, sementara forex mengikuti sesi global (Sydney → Tokyo → London → New York).</p>
+
+   <table>
+    <thead><tr><th>Contoh input</th><th>Diinterpretasikan sebagai</th><th>Kelas aset</th></tr></thead>
+    <tbody>
+     <tr><td><code>AAPL</code></td><td>Apple Inc. — NASDAQ</td><td>Saham (AS)</td></tr>
+     <tr><td><code>BBCA</code></td><td>Bank Central Asia — IDX</td><td>Saham (Indonesia)</td></tr>
+     <tr><td><code>7203</code></td><td>Toyota Motor — TSE</td><td>Saham (Jepang)</td></tr>
+     <tr><td><code>EUR/USD</code></td><td>Euro vs Dolar AS</td><td>Forex</td></tr>
+     <tr><td><code>BTC/USD</code></td><td>Bitcoin vs Dolar AS</td><td>Kripto</td></tr>
+    </tbody>
+   </table>
+
+   <h2>Harga realtime</h2>
+   <p>Setelah instrumen terpilih dan dikunci, barulah lapisan data harga bekerja. profitoath menarik kuotasi <strong>realtime dari sumber data kami</strong> untuk membangun chart, menghitung indikator, dan menjalankan forecast di atas data terkini — bukan snapshot kedaluwarsa.</p>
+
+   <p>Pembagian tugasnya jelas dan disengaja:</p>
+   <ul>
+    <li><strong>Lapisan offline</strong> menjawab "instrumen apa ini?" — cepat, deterministik, tidak tergantung jaringan.</li>
+    <li><strong>Lapisan realtime</strong> menjawab "berapa harganya sekarang?" — dipanggil hanya untuk instrumen yang sudah pasti dipilih.</li>
+   </ul>
+   <p>Pemisahan ini membuat disambiguasi tetap instan sekaligus menjaga data harga tetap segar. Kamu tidak menunggu jaringan hanya untuk tahu bahwa <code>AAPL</code> itu Apple; jaringan baru dipakai saat benar-benar dibutuhkan untuk menggambar harga.</p>
+
+   <div class="callout">
+    <span class="ci">💡</span>
+    <p><strong>FYI —</strong> Seluruh alur ini berjalan otomatis di profitoath. Kirim satu kode ke bot Telegram, engine me-resolve dari 69.221 instrumen 43 negara, menampilkan category picker bila perlu, lalu menarik harga realtime dan langsung menyiapkan chart beranotasi, RSI/MACD, forecast, dan backtest — tanpa kamu berpindah aplikasi atau menghafal format kode tiap bursa.</p>
+   </div>
+
+   <h2>Tips memakai resolver secara efektif</h2>
+   <ol>
+    <li><strong>Untuk kode unik, ketik apa adanya.</strong> <code>AAPL</code>, <code>BBCA</code>, <code>NVDA</code> akan langsung resolve tanpa pertanyaan.</li>
+    <li><strong>Untuk kode yang mungkin bertabrakan, siapkan picker.</strong> Kode numerik (Jepang/Korea) atau singkatan umum kerap punya lebih dari satu kandidat — pilih dari daftar.</li>
+    <li><strong>Forex/kripto pakai format pasangan.</strong> <code>EUR/USD</code> atau <code>EURUSD</code>, <code>BTC/USD</code>. Urutan menentukan arti kuotasi.</li>
+    <li><strong>Tidak hafal kode? Cari dengan nama.</strong> Bila cocok-persis gagal, engine jatuh ke pencarian alias/nama, lalu menawarkan kandidat terdekat.</li>
+    <li><strong>Perhatikan label bursa di hasil.</strong> Label seperti "TSE (Jepang, JPY)" memastikan kamu menganalisa instrumen, mata uang, dan jam dagang yang benar.</li>
+   </ol>
+
+   <p>Intinya, multi-negara bukan sekadar "banyak data" — ia soal menghilangkan gesekan. Kamu memikirkan instrumen yang ingin dianalisa, bukan format kode bursa mana. Resolver offline membuatnya instan, category picker membuatnya akurat, dan data realtime membuatnya relevan. Begitu instrumen terkunci, seluruh perangkat analisa profitoath — dari indikator momentum sampai <a href="../glossary/index.html#backtest">backtest</a> dan optimasi portofolio — bekerja di atas dasar yang benar.</p>
+  </article>
+
+  <!-- BACAAN TERKAIT -->
+  <div class="related reveal">
+   <h3>Bacaan terkait</h3>
+   <ul>
+    <li><span class="ar">→</span><a href="./cara-membaca-rsi-macd.html">Cara Membaca RSI dan MACD untuk Sinyal Saham</a></li>
+    <li><span class="ar">→</span><a href="./apa-itu-backtesting-saham.html">Apa Itu Backtesting Saham dan Cara Membacanya</a></li>
+    <li><span class="ar">→</span><a href="./apa-itu-arima-ara-arb-idx.html">ARIMA, ARA &amp; ARB: Memahami Aturan Khas IDX</a></li>
+    <li><span class="ar">→</span>Glosarium: <a href="../glossary/index.html">Ticker</a> · <a href="../glossary/index.html#idx">Bursa</a> · <a href="../glossary/index.html">Forex</a> · <a href="../glossary/index.html#ara-arb">ARA/ARB</a></li>
+    <li><span class="ar">→</span>Coba langsung: <a href="../pricing.html">mulai gratis di profitoath</a> dan analisa instrumen apa pun dari 43 negara di Telegram.</li>
+   </ul>
+  </div>
+ </section>
+
+ <!-- CTA BAND -->
+ <section class="block" style="padding-top:30px">
+  <div class="wrap">
+   <div class="cta-band reveal">
+    <h2>Satu kode. 43 negara. Nol gesekan.</h2>
+    <p>Kirim ticker apa pun — saham, forex, atau kripto — dan biarkan profitoath me-resolve, menarik harga realtime, dan menyiapkan analisanya langsung di Telegram.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+     <a class="btn btn-primary btn-lg" href="../pricing.html">Mulai Gratis →</a>
+     <a class="btn btn-lg" href="../features.html">Jelajahi Fitur</a>
+     <a class="btn btn-lg btn-ghost" href="../quant.html">Lihat Quant Engine</a>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <footer class="site"><div class="wrap"><div class="foot-top">
+  <div><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+   <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+  <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a><a href="../docs.html" data-i18n="nav_docs">Docs</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="../blog/index.html" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a></div>
+  <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="../about.html" data-i18n="footer_about_link">Tentang</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a><a href="../glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+  <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+  <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/i18n.js"></script>
+<script>
+ // reading-progress bar
+ (function(){
+  var bar=document.getElementById('progress');
+  function upd(){
+   var h=document.documentElement;
+   var max=h.scrollHeight-h.clientHeight;
+   var p=max>0?(h.scrollTop||document.body.scrollTop)/max*100:0;
+   bar.style.width=p+'%';
+  }
+  document.addEventListener('scroll',upd,{passive:true});
+  window.addEventListener('resize',upd);upd();
+ })();
+</script></body></html>

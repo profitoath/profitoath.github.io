@@ -1,0 +1,198 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Apa Itu Backtesting Saham dan Mengapa Realisme IDX Penting — profitoath</title><meta name="description" content="Panduan backtesting saham yang jujur: look-ahead bias, aturan IDX (lot 100, fee asimetris, ARA/ARB, slippage), walk-forward, Monte Carlo, dan deflated Sharpe untuk melawan overfitting."/>
+<link rel="icon" type="image/svg+xml" href="../assets/logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+<style>
+  #read-bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+    background:linear-gradient(90deg,var(--emerald),var(--cyan));box-shadow:0 0 14px var(--emerald);transition:width .12s linear}
+  .article-head{max-width:74ch;margin:0 auto 10px}
+  .article-head .tagpill{display:inline-flex;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--emerald2);border:1px solid var(--line2);border-radius:100px;padding:6px 13px;background:rgba(22,224,168,.06)}
+  .article-head h1{font-size:clamp(30px,5vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.08;margin:22px 0 18px;color:var(--txt)}
+  .byline{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-family:var(--mono);font-size:13px;color:var(--dim)}
+  .byline .au{color:var(--mut)}.byline .sep{opacity:.4}
+  .prose figure.tbl{margin:24px 0}.prose figure.tbl figcaption{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:8px}
+  .related{max-width:74ch;margin:54px auto 0;border-top:1px solid var(--line);padding-top:32px}
+  .related h3{font-size:14px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--emerald);margin-bottom:18px}
+</style></head><body>
+<canvas id="bg-canvas" data-mode="calm"></canvas><div class="grid-overlay"></div><div class="noise"></div><div class="vignette"></div>
+<div id="read-bar"></div>
+
+<nav class="site"><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+  <div class="nav-links"><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a>
+    <a href="../blog/index.html" aria-current="page" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+  <div class="nav-right"><a class="btn btn-primary" href="../pricing.html" data-i18n="cta_primary">Mulai Gratis →</a>
+    <button class="menu-btn" aria-label="menu">☰</button></div></nav>
+<div class="drawer" id="drawer"><button class="close">×</button>
+  <a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../blog/index.html" data-i18n="nav_blog">Blog</a>
+  <a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../docs.html" data-i18n="nav_docs">Docs</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a></div>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumb reveal"><a href="../index.html">Beranda</a><span class="sep">/</span><a href="../blog/index.html">Blog</a><span class="sep">/</span><span>Apa Itu Backtesting Saham</span></div>
+
+      <div class="article-head reveal" style="margin-top:34px">
+        <span class="tagpill">Quant</span>
+        <h1>Apa Itu Backtesting Saham dan Mengapa Realisme IDX Penting</h1>
+        <div class="byline">
+          <span class="au">Tim profitoath</span><span class="sep">•</span>
+          <span>28 Mei 2026</span><span class="sep">•</span>
+          <span>11 menit baca</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <article class="prose reveal">
+        <p>Backtesting adalah proses menguji sebuah strategi trading atau investasi terhadap data harga historis, seolah-olah strategi itu dijalankan di masa lalu. Tujuannya sederhana: sebelum mempertaruhkan modal nyata, kita ingin tahu apakah seperangkat aturan beli-jual punya dasar yang masuk akal — atau hanya kebetulan yang terlihat meyakinkan di grafik.</p>
+        <p>Masalahnya, backtest itu mudah dibuat <em>terlihat</em> hebat dan sangat sulit dibuat <em>jujur</em>. Mayoritas kurva ekuitas yang dipamerkan di media sosial roboh begitu dihadapkan pada gesekan nyata pasar: biaya transaksi, likuiditas, dan aturan bursa. Di Bursa Efek Indonesia (IDX), gesekan itu punya bentuk yang sangat spesifik. Artikel ini membahas cara membaca backtest secara skeptis, dan mengapa realisme aturan IDX bukan detail teknis yang bisa diabaikan — melainkan penentu apakah hasil uji Anda berarti sesuatu.</p>
+
+        <h2>Anatomi backtest yang benar</h2>
+        <p>Pada intinya, sebuah backtest mensimulasikan tiga hal secara berurutan, bar demi bar: <strong>sinyal</strong> (kapan aturan menyuruh masuk/keluar), <strong>eksekusi</strong> (pada harga berapa order benar-benar terisi), dan <strong>akuntansi</strong> (bagaimana ekuitas, posisi, dan kas berubah setelah biaya). Kelemahan biasanya bukan di sinyal — orang sangat kreatif menyusun indikator — melainkan di eksekusi dan akuntansi yang dibuat terlalu optimis.</p>
+        <p>Sebuah backtest minimal harus melaporkan, di luar return total, beberapa metrik risiko: <strong>maximum drawdown</strong> (penurunan terdalam dari puncak ke lembah), <strong>Sharpe ratio</strong> (return berlebih per unit volatilitas), <strong>win rate</strong> dan <strong>profit factor</strong>, serta jumlah transaksi. Return tinggi dengan dua transaksi tidak punya signifikansi statistik; return moderat dengan ratusan transaksi yang konsisten jauh lebih bisa dipercaya.</p>
+
+        <h2>Look-ahead bias: pembunuh diam-diam</h2>
+        <p><strong>Look-ahead bias</strong> terjadi ketika strategi secara tidak sengaja "mengintip" informasi yang belum tersedia pada saat keputusan dibuat. Ini adalah cacat paling umum dan paling merusak, karena ia melambungkan hasil tanpa terlihat sebagai bug.</p>
+        <p>Contoh klasik di IDX: menghitung sinyal dari <em>harga penutupan</em> hari ini, lalu mengasumsikan order terisi pada penutupan yang sama. Pada praktiknya, Anda baru tahu harga penutupan setelah pasar tutup — jadi eksekusi paling cepat adalah pembukaan hari berikutnya. Bentuk lain yang halus:</p>
+        <ul>
+          <li><strong>Survivorship bias</strong> — menguji hanya saham yang masih listing hari ini, mengabaikan emiten yang sudah delisting atau bangkrut. Kumpulan "pemenang yang selamat" ini secara otomatis membuat strategi tampak lebih baik.</li>
+          <li><strong>Data restatement</strong> — laporan keuangan sering direvisi. Memakai angka final padahal versi awal yang berbeda yang tersedia saat itu adalah bentuk mengintip masa depan.</li>
+          <li><strong>Normalisasi global</strong> — men-scale fitur (mis. z-score) memakai mean/standar deviasi seluruh periode, termasuk data masa depan. Normalisasi harus dihitung hanya dari data sampai titik keputusan.</li>
+        </ul>
+        <div class="callout">
+          <span class="ci">⚠️</span>
+          <p><strong>Aturan emas:</strong> pada bar ke-<code>t</code>, keputusan hanya boleh memakai informasi yang benar-benar tersedia di akhir <code>t</code>, dan eksekusi paling cepat di <code>t+1</code>. Jika sebuah baris kode menyentuh data <code>t+1</code> untuk memutuskan di <code>t</code>, itu look-ahead.</p>
+        </div>
+
+        <h2>Mengapa aturan IDX mengubah segalanya</h2>
+        <p>Backtest yang ditulis untuk pasar AS sering kali tidak realistis di Indonesia karena mengabaikan mikrostruktur lokal. Empat hal ini wajib disimulasikan.</p>
+
+        <h3>1. Satuan lot 100 lembar</h3>
+        <p>Di IDX, transaksi reguler dilakukan dalam kelipatan 1 lot = 100 lembar. Anda tidak bisa membeli 137 lembar. Backtest yang membeli "Rp10 juta saham" lalu membagi mulus dengan harga akan salah — alokasi nyata harus dibulatkan ke bawah ke lot penuh, dan sisa kas menganggur. Untuk saham harga tinggi, pembulatan ini menggeser bobot portofolio secara signifikan.</p>
+
+        <h3>2. Fee asimetris</h3>
+        <p>Biaya beli dan jual tidak sama. Selain komisi broker, transaksi <em>jual</em> dikenakan tambahan PPh final 0,1% dari nilai transaksi. Mengabaikan asimetri ini membuat strategi berfrekuensi tinggi tampak jauh lebih untung daripada kenyataannya, karena setiap perputaran (turnover) menggerus modal lebih besar di sisi jual.</p>
+
+        <h3>3. Auto Reject Atas/Bawah (ARA/ARB)</h3>
+        <p>IDX membatasi pergerakan harga harian melalui Auto Reject. Ketika saham menyentuh batas atas (ARA) atau bawah (ARB), order pada sisi yang ekstrem praktis tidak terisi — tidak ada penjual saat ARA, tidak ada pembeli saat ARB. Backtest yang naif akan "membeli di ARA" atau "menjual di ARB" pada harga limit, padahal di dunia nyata order Anda mengantre dan kemungkinan besar gagal. Mensimulasikan kegagalan eksekusi saat menyentuh batas adalah pembeda backtest IDX yang serius.</p>
+
+        <h3>4. Slippage dan likuiditas</h3>
+        <p>Slippage adalah selisih antara harga yang Anda harapkan dan harga eksekusi sebenarnya. Pada saham lapis dua/tiga dengan volume tipis, order beli sedikit saja sudah menggerakkan harga naik beberapa tick. Backtest realistis memodelkan slippage proporsional terhadap ukuran order relatif terhadap volume harian, bukan sekadar konstanta nol.</p>
+
+        <figure class="tbl">
+        <table>
+          <thead><tr><th>Aturan IDX</th><th>Asumsi naif (salah)</th><th>Simulasi realistis</th></tr></thead>
+          <tbody>
+            <tr><td>Satuan lot</td><td>Pecahan lembar bebas</td><td>Bulatkan ke 100 lembar, sisa jadi kas</td></tr>
+            <tr><td>Fee jual</td><td>Sama dengan fee beli</td><td>+ PPh final 0,1% di sisi jual</td></tr>
+            <tr><td>ARA/ARB</td><td>Selalu terisi di harga limit</td><td>Order gagal/antre saat sentuh batas</td></tr>
+            <tr><td>Slippage</td><td>Nol (harga ideal)</td><td>Proporsional ukuran order vs volume</td></tr>
+            <tr><td>Timing</td><td>Eksekusi di close hari sinyal</td><td>Eksekusi paling cepat di open t+1</td></tr>
+          </tbody>
+        </table>
+        <figcaption>Selisih antar dua kolom inilah yang biasanya memisahkan kurva ekuitas indah dari kerugian nyata.</figcaption>
+        </figure>
+
+        <h2>Melawan overfitting: walk-forward dan Monte Carlo</h2>
+        <p>Bahaya terbesar setelah look-ahead adalah <strong>overfitting</strong> — menyetel parameter sampai strategi hafal kebisingan data historis, bukan menangkap pola yang sebenarnya. Strategi overfit memberi backtest spektakuler dan gagal total di pasar nyata. Dua teknik membantu mendeteksinya.</p>
+
+        <h3>Walk-forward analysis</h3>
+        <p>Alih-alih mengoptimasi parameter di seluruh data lalu menguji di data yang sama (dosa besar), walk-forward membagi sejarah menjadi jendela bergulir: optimasi di periode <em>in-sample</em>, uji di periode <em>out-of-sample</em> berikutnya yang belum pernah dilihat, lalu geser jendela maju. Performa yang bertahan di banyak segmen out-of-sample jauh lebih bisa dipercaya daripada satu angka tunggal.</p>
+
+        <h3>Monte Carlo</h3>
+        <p>Simulasi Monte Carlo mengacak urutan atau resampling transaksi/return ribuan kali untuk membangun distribusi hasil yang mungkin. Ini menjawab pertanyaan penting: seberapa beruntung backtest saya? Jika drawdown 15% Anda berada di tepi distribusi, satu kejadian buruk bisa mendorongnya ke 40%. Monte Carlo mengubah satu kurva mulus menjadi rentang skenario yang lebih jujur.</p>
+
+        <pre><code># Pseudocode walk-forward sederhana
+for window in rolling(data, train=3yr, test=6mo, step=6mo):
+    params = optimize(window.train)        # in-sample
+    result = run(window.test, params)      # out-of-sample, sekali saja
+    oos_results.append(result)
+
+# Hasil yang dipercaya = konsistensi lintas semua window OOS,
+# bukan return tertinggi di salah satu window.
+robustness = stability(oos_results)</code></pre>
+
+        <h2>Deflated Sharpe Ratio: mengoreksi pencarian berlebih</h2>
+        <p>Jika Anda menguji 500 kombinasi parameter, beberapa di antaranya akan punya Sharpe tinggi <em>murni karena kebetulan</em> — sama seperti melempar 500 koin, sebagian akan muncul "heads" berkali-kali. <strong>Deflated Sharpe Ratio (DSR)</strong>, yang dipopulerkan Marcos López de Prado, mengoreksi Sharpe yang dilaporkan dengan memperhitungkan berapa banyak percobaan yang dilakukan, panjang sampel, serta skewness dan kurtosis return.</p>
+        <blockquote>"Backtesting bukan alat penemuan; ia alat verifikasi. Jika Anda menemukan strategi <em>melalui</em> backtesting, kemungkinan besar yang Anda temukan adalah overfit." — prinsip yang sering dikutip dari literatur quant institusional.</blockquote>
+        <p>Intinya: semakin banyak Anda mencari, semakin tinggi ambang Sharpe yang Anda butuhkan agar hasil itu bermakna secara statistik. Sebuah Sharpe 1,8 dari satu hipotesis tunggal jauh lebih kredibel daripada Sharpe 2,5 yang muncul setelah menggali ratusan varian.</p>
+
+        <div class="callout">
+          <span class="ci">🛈</span>
+          <p><strong>FYI:</strong> profitoath mengotomatiskan seluruh disiplin ini. Mesin backtest kami menerapkan aturan IDX (lot 100, fee asimetris + PPh, ARA/ARB, slippage berbasis volume), eksekusi t+1 untuk mencegah look-ahead, plus walk-forward, Monte Carlo, dan deflated Sharpe — langsung dari Telegram, di atas 69.221 instrumen offline dan data realtime. Anda fokus pada ide; realisme kami yang urus.</p>
+        </div>
+
+        <h2>Daftar periksa backtest yang jujur</h2>
+        <ol>
+          <li>Eksekusi paling cepat di <code>t+1</code>, tidak ada keputusan menyentuh data masa depan.</li>
+          <li>Universe menyertakan emiten delisting (bebas survivorship bias).</li>
+          <li>Biaya lengkap: komisi, PPh jual 0,1%, dan slippage realistis.</li>
+          <li>Lot 100 dengan pembulatan, bukan pecahan lembar.</li>
+          <li>Order gagal/antre saat menyentuh ARA/ARB.</li>
+          <li>Validasi out-of-sample lewat walk-forward, bukan optimasi penuh.</li>
+          <li>Sharpe didiskon (DSR) sesuai jumlah percobaan.</li>
+          <li>Distribusi hasil via Monte Carlo, bukan satu kurva tunggal.</li>
+        </ol>
+        <p>Backtest tidak menjamin masa depan — dan tidak ada teknik yang bisa. Tapi backtest yang realistis menyaring sebagian besar ilusi sebelum uang sungguhan dilibatkan. Itulah seluruh nilainya: bukan menjanjikan kemenangan, melainkan mencegah kekalahan yang seharusnya bisa diramalkan.</p>
+      </article>
+
+      <div class="related reveal">
+        <h3>Bacaan Terkait</h3>
+        <div class="prose" style="margin-top:0">
+          <ul>
+            <li><a href="./optimasi-portofolio-markowitz.html">Mengenal Quant Engine: dari sinyal ke eksekusi</a></li>
+            <li><a href="./value-at-risk-manajemen-risiko.html">Manajemen risiko portofolio: VaR &amp; CVaR dalam Rupiah</a></li>
+            <li><a href="./cara-membaca-rsi-macd.html">Membaca RSI dan MACD tanpa bias konfirmasi</a></li>
+            <li>Glosarium: <a href="../glossary/index.html#backtesting">Backtesting</a>, <a href="../glossary/index.html#sharpe">Sharpe Ratio</a>, <a href="../glossary/index.html#ara-arb">ARA/ARB</a>, <a href="../glossary/index.html#slippage">Slippage</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-band reveal" style="margin-top:48px">
+        <h2>Uji strategi Anda dengan realisme IDX.</h2>
+        <p>Backtest lot 100, fee asimetris, ARA/ARB, dan deflated Sharpe — otomatis, langsung di Telegram.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:32px">
+          <a class="btn btn-primary btn-lg" href="../pricing.html">Mulai Gratis →</a>
+          <a class="btn btn-lg" href="../quant.html">Lihat Quant Engine</a>
+          <a class="btn btn-lg btn-ghost" href="../glossary/index.html">Buka Glosarium</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site"><div class="wrap"><div class="foot-top">
+    <div><a class="brand" href="../index.html"><img src="../assets/logo.svg" alt="profitoath"/>profit<b>oath</b></a>
+      <p class="foot-about" data-i18n="footer_about">Platform analisa saham AI & quantitative finance kelas institusional, langsung di Telegram. Data realtime, 43 negara.</p></div>
+    <div class="foot-cols"><h5 data-i18n="footer_product">Produk</h5><a href="../features.html" data-i18n="nav_features">Fitur</a><a href="../quant.html" data-i18n="nav_quant">Quant Engine</a><a href="../pricing.html" data-i18n="nav_pricing">Harga</a><a href="../docs.html" data-i18n="nav_docs">Docs</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_resources">Sumber Daya</h5><a href="../blog/index.html" data-i18n="nav_blog">Blog</a><a href="../glossary/index.html" data-i18n="nav_glossary">Glosarium</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a></div>
+    <div class="foot-cols"><h5 data-i18n="footer_company">Perusahaan</h5><a href="../about.html" data-i18n="footer_about_link">Tentang</a><a href="../contact.html" data-i18n="footer_contact">Kontak</a><a href="../glossary/index.html" data-i18n="footer_education">Edukasi</a></div></div>
+    <p class="disclaimer" data-i18n="footer_disclaimer">⚠️ profitoath adalah alat analisis & edukasi, BUKAN nasihat investasi, rekomendasi, atau ajakan transaksi. Tidak berafiliasi/berizin OJK/BEI. Kinerja masa lalu & hasil backtest tidak menjamin hasil masa depan. Investasi saham berisiko termasuk kehilangan modal. Keputusan ada di tangan Anda (DYOR).</p>
+    <div class="foot-bottom"><span>© 2026 profitoath</span><span data-i18n="footer_made">Dibuat untuk para analis kuantitatif</span></div></div></footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/i18n.js"></script>
+<script>
+  (function(){
+    var bar=document.getElementById('read-bar');
+    function upd(){
+      var h=document.documentElement;
+      var max=(h.scrollHeight-h.clientHeight)||1;
+      var p=Math.min(1,Math.max(0,(h.scrollTop||window.scrollY)/max));
+      bar.style.width=(p*100).toFixed(2)+'%';
+    }
+    window.addEventListener('scroll',upd,{passive:true});
+    window.addEventListener('resize',upd);upd();
+  })();
+</script>
+</body></html>
